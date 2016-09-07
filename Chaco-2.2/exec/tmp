@@ -1,0 +1,1974 @@
+
+                    Chaco 2.0
+          Sandia National Laboratories
+
+Reading parameter modification file `User_Params'
+  Parameter `RANDOM_SEED' reset to 7654321
+  Parameter `OUTPUT_ASSIGN' reset to True
+  Parameter `DEBUG_TRACE' reset to 2
+
+<Entering input_queries>
+Graph input file: Host input file: Assignment output file: Global partitioning method:
+  (1) Multilevel-KL
+  (2) Spectral
+  (3) Inertial
+  (4) Linear
+  (5) Random
+  (6) Scattered
+  (7) Read-from-file
+Number of vertices to coarsen down to: Total number of target hypercube dimensions: Capacity for PM1: ----21.000000 u^2 + 5.390000 u + 0.030000
+Capacity for PM2: ----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM3: ----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM4: ----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM5: ----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM6: ----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM7: ----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM8: ----0.000000 u^2 + 0.000000 u + 0.000000
+~~~~~~~~~~~~  47
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+Partitioning dimension: 
+  (1) Bisection
+  (2) Quadrisection
+  (3) Octasection
+<Entering input_graph>
+----0: 1---------1: 2---------2: 3---------3: 4---------4: 5---------5: 1---------6: 2---------7: 3---------8: 4---------9: 5---------10: 1---------11: 2---------12: 3---------13: 4---------14: 5---------15: 1---------16: 2---------17: 3---------18: 4---------19: 5---------20: 1---------21: 2---------22: 3---------23: 4---------24: 5---------25: 1---------26: 2---------27: 3---------28: 4---------29: 5---------30: 1---------31: 2---------32: 3---------33: 4---------34: 5---------35: 1---------36: 2---------37: 3---------38: 4---------39: 5---------40: 1---------41: 2---------42: 3---------43: 4---------44: 5---------45: 1---------46: 2---------47: 3---------48: 4---------49: 5---------50: 1---------51: 2---------52: 3---------53: 4---------54: 5---------55: 1---------56: 2---------57: 3---------58: 4---------59: 5---------60: 1---------61: 2---------62: 3---------63: 4---------64: 5---------65: 1---------66: 2---------67: 3---------68: 4---------69: 5---------70: 1---------71: 2---------72: 3---------73: 4---------74: 5---------75: 1---------76: 2---------77: 3---------78: 4---------79: 5---------80: 1---------81: 2---------82: 3---------83: 4---------84: 5---------85: 1---------86: 2---------87: 3---------88: 4---------89: 5---------90: 1---------91: 2---------92: 3---------93: 4---------94: 5---------95: 1---------96: 2---------97: 3---------98: 4---------99: 5---------100: 1---------101: 2---------102: 3---------103: 4---------104: 5---------105: 1---------106: 2---------107: 3---------108: 4---------109: 5---------110: 1---------111: 2---------112: 3---------113: 4---------114: 5---------115: 1---------116: 2---------117: 3---------118: 4---------119: 5---------120: 1---------121: 2---------122: 3---------123: 4---------124: 5---------125: 1---------126: 2---------127: 3---------128: 4---------129: 5---------130: 1---------131: 2---------132: 3---------133: 4---------134: 5---------135: 1---------136: 2---------137: 3---------138: 4---------139: 5---------140: 1---------141: 2---------142: 3---------143: 4---------144: 5---------145: 1---------146: 2---------147: 3---------148: 4---------149: 5---------150: 1---------151: 2---------152: 3---------153: 4---------154: 5---------155: 1---------156: 2---------157: 3---------158: 4---------159: 5---------160: 1---------161: 2---------162: 3---------163: 4---------164: 5---------165: 1---------166: 2---------167: 3---------168: 4---------169: 5---------170: 1---------171: 2---------172: 3---------173: 4---------174: 5---------175: 1---------176: 2---------177: 3---------178: 4---------179: 5---------180: 1---------181: 2---------182: 3---------183: 4---------184: 5---------185: 1---------186: 2---------187: 3---------188: 4---------189: 5---------190: 1---------191: 2---------192: 3---------193: 4---------194: 5---------195: 1---------196: 2---------197: 3---------198: 4---------199: 5---------200: 1---------201: 2---------202: 3---------203: 4---------204: 5---------205: 1---------206: 2---------207: 3---------208: 4---------209: 5---------210: 1---------211: 2---------212: 3---------213: 4---------214: 5---------215: 1---------216: 2---------217: 3---------218: 4---------219: 5---------220: 1---------221: 2---------222: 3---------223: 4---------224: 5---------225: 1---------226: 2---------227: 3---------228: 4---------229: 5---------230: 1---------231: 2---------232: 3---------233: 4---------234: 5---------235: 1---------236: 2---------237: 3---------238: 4---------239: 5---------240: 1---------241: 2---------242: 3---------243: 4---------244: 5---------245: 1---------246: 2---------247: 3---------248: 4---------249: 5---------250: 1---------251: 2---------252: 3---------253: 4---------254: 5---------255: 1---------256: 2---------257: 3---------258: 4---------259: 5---------260: 1---------261: 2---------262: 3---------263: 4---------264: 5---------265: 1---------266: 2---------267: 3---------268: 4---------269: 5---------270: 1---------271: 2---------272: 3---------273: 4---------274: 5---------275: 1---------276: 2---------277: 3---------278: 4---------279: 5---------280: 1---------281: 2---------282: 3---------283: 4---------284: 5---------285: 1---------286: 2---------287: 3---------288: 4---------289: 5---------290: 1---------291: 2---------292: 3---------293: 4---------294: 5---------295: 1---------296: 2---------297: 3---------298: 4---------299: 5---------300: 1---------301: 2---------302: 3---------303: 4---------304: 5---------305: 1---------306: 2---------307: 3---------308: 4---------309: 5---------310: 1---------311: 2---------312: 3---------313: 4---------314: 5---------315: 1---------316: 2---------317: 3---------318: 4---------319: 5---------320: 1---------321: 2---------322: 3---------323: 4---------324: 5---------325: 1---------326: 2---------327: 3---------328: 4---------329: 5---------330: 1---------331: 2---------332: 3---------333: 4---------334: 5---------335: 1---------336: 2---------337: 3---------338: 4---------339: 5---------340: 1---------341: 2---------342: 3---------343: 4---------344: 5---------345: 1---------346: 2---------347: 3---------348: 4---------349: 5---------350: 1---------351: 2---------352: 3---------353: 4---------354: 5---------355: 1---------356: 2---------357: 3---------358: 4---------359: 5---------360: 1---------361: 2---------362: 3---------363: 4---------364: 5---------365: 1---------366: 2---------367: 3---------368: 4---------369: 5---------370: 1---------371: 2---------372: 3---------373: 4---------374: 5---------375: 1---------376: 2---------377: 3---------378: 4---------379: 5---------380: 1---------381: 2---------382: 3---------383: 4---------384: 5---------385: 1---------386: 2---------387: 3---------388: 4---------389: 5---------390: 1---------391: 2---------392: 3---------393: 4---------394: 5---------395: 1---------396: 2---------397: 3---------398: 4---------399: 5-----# of PMs: 8
+<Entering input_graph>
+~~~~~current switch capacity~~~~~~~  47
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+<Entering interface>
+Siyuan: vwgt_sum: 400.000000, nsets_tot: 8
+Siyuan: Total capacity: 47.000000
+ Set goals:
+	goal[0]: 400.000000
+	goal[1]: 0.000000
+	goal[2]: 0.000000
+	goal[3]: 0.000000
+	goal[4]: 0.000000
+	goal[5]: 0.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+11
+start 22577376, ad 22578992, n 400, pn -52008508, vw 0, ew 0, pg -52008504
+1
+2
+3
+22578992!!!!!!!!! 22578992, 0
+22
+<Entering submain>
+<Entering check_input>
+<Entering reflect_input>
+
+
+           Input and Parameter Values
+
+Graph file: `grid20x20.graph', # vertices = 400, # edges = 760
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 50
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Assignment output file: `grid20x20.output' (normal format)
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+  DEBUG_TRACE = 2
+
+
+
+Starting to partition ...
+
+<Entering balance>
+About to call divide with nvtxs = 400, nedges = 760, ndims = 0
+<Entering divide, nvtxs = 400, nedges = 760>
+<Entering coarsen_kl, step=0, nvtxs=400, nedges=760, vmax=50>
+<Entering coarsen_kl, step=1, nvtxs=201, nedges=399, vmax=50>
+<Entering coarsen_kl, step=2, nvtxs=101, nedges=195, vmax=50>
+<Entering coarsen_kl, step=3, nvtxs=52, nedges=114, vmax=50>
+<Entering coarsen_kl, step=4, nvtxs=27, nedges=57, vmax=50>
+<Entering eigensolve, nvtxs = 27, nedges = 57>
+<Entering lanczos_so>
+<Leaving eigensolve>
+<Entering assign, nvtxs = 27, ndims = 3>
+<Entering klspiff, nvtxs = 27>
+<Entering klspiff, nvtxs = 101>
+<Entering klspiff, nvtxs = 400>
+
+
+                     Partitioning Results
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                     400          400            0
+Edge Cuts:                      0            0            0
+Hypercube Hops:                 0            0            0
+Boundary Vertices:              0            0            0
+Boundary Vertex Hops:           0            0            0
+Adjacent Sets:                  0            0            0
+Internal Vertices:            400          400            0
+
+Size of all sets:
+400 0 0 0 0 0 0 0 
+
+
+Total time: 0.001699 sec.
+  input 0.00037
+  reformatting 1.1e-05
+  checking input 1.2e-05
+  partitioning 0.000654
+  evaluation 6.1e-05
+  printing assignment file 0.000462
+
+KL time: 0.000116 sec.
+  initialization 9e-06
+  nway refinement 9.8e-05
+    bucket sorting 7.4e-05
+
+Coarsening 6.9e-05 sec.
+  maxmatch 7e-06
+  makecgraph 5.4e-05
+
+Lanczos time: 0.000112 sec.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~current host percentage~~~~~~~  1200
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+<Entering input_graph>
+~~~~~current switch capacity~~~~~~~  23
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+<Entering interface>
+Siyuan: vwgt_sum: 400.000000, nsets_tot: 8
+Siyuan: Total capacity: 23.000000
+ Set goals:
+	goal[0]: 400.000000
+	goal[1]: 0.000000
+	goal[2]: 0.000000
+	goal[3]: 0.000000
+	goal[4]: 0.000000
+	goal[5]: 0.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+11
+start 22577376, ad 22578992, n 400, pn -52008508, vw 0, ew 0, pg -52008504
+1
+2
+3
+22578992!!!!!!!!! 22578992, 0
+22
+<Entering submain>
+<Entering check_input>
+<Entering reflect_input>
+
+
+           Input and Parameter Values
+
+Graph file: `grid20x20.graph', # vertices = 400, # edges = 760
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 50
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Assignment output file: `grid20x20.output' (normal format)
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+  DEBUG_TRACE = 2
+
+
+
+Starting to partition ...
+
+<Entering balance>
+About to call divide with nvtxs = 400, nedges = 760, ndims = 0
+<Entering divide, nvtxs = 400, nedges = 760>
+<Entering coarsen_kl, step=0, nvtxs=400, nedges=760, vmax=50>
+<Entering coarsen_kl, step=1, nvtxs=201, nedges=399, vmax=50>
+<Entering coarsen_kl, step=2, nvtxs=101, nedges=195, vmax=50>
+<Entering coarsen_kl, step=3, nvtxs=52, nedges=114, vmax=50>
+<Entering coarsen_kl, step=4, nvtxs=27, nedges=57, vmax=50>
+<Entering eigensolve, nvtxs = 27, nedges = 57>
+<Entering lanczos_so>
+<Leaving eigensolve>
+<Entering assign, nvtxs = 27, ndims = 3>
+<Entering klspiff, nvtxs = 27>
+<Entering klspiff, nvtxs = 101>
+<Entering klspiff, nvtxs = 400>
+
+
+                     Partitioning Results
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                     400          400            0
+Edge Cuts:                      0            0            0
+Hypercube Hops:                 0            0            0
+Boundary Vertices:              0            0            0
+Boundary Vertex Hops:           0            0            0
+Adjacent Sets:                  0            0            0
+Internal Vertices:            400          400            0
+
+Size of all sets:
+400 0 0 0 0 0 0 0 
+
+
+Total time: 0.004108 sec.
+  input 0.00037
+  reformatting 1.7e-05
+  checking input 2.3e-05
+  partitioning 0.0011
+  evaluation 8.6e-05
+  printing assignment file 0.000548
+
+KL time: 0.00018 sec.
+  initialization 9e-06
+  nway refinement 0.000157
+    bucket sorting 0.000133
+
+Coarsening 0.000105 sec.
+  maxmatch 1.4e-05
+  makecgraph 7.7e-05
+
+Lanczos time: 0.00019 sec.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~current host percentage~~~~~~~  1200
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+<Entering input_graph>
+~~~~~current switch capacity~~~~~~~  23
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+<Entering interface>
+Siyuan: vwgt_sum: 400.000000, nsets_tot: 8
+Siyuan: Total capacity: 23.000000
+ Set goals:
+	goal[0]: 400.000000
+	goal[1]: 0.000000
+	goal[2]: 0.000000
+	goal[3]: 0.000000
+	goal[4]: 0.000000
+	goal[5]: 0.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+11
+start 22577376, ad 22578992, n 400, pn -52008508, vw 0, ew 0, pg -52008504
+1
+2
+3
+22578992!!!!!!!!! 22578992, 0
+22
+<Entering submain>
+<Entering check_input>
+<Entering reflect_input>
+
+
+           Input and Parameter Values
+
+Graph file: `grid20x20.graph', # vertices = 400, # edges = 760
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 50
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Assignment output file: `grid20x20.output' (normal format)
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+  DEBUG_TRACE = 2
+
+
+
+Starting to partition ...
+
+<Entering balance>
+About to call divide with nvtxs = 400, nedges = 760, ndims = 0
+<Entering divide, nvtxs = 400, nedges = 760>
+<Entering coarsen_kl, step=0, nvtxs=400, nedges=760, vmax=50>
+<Entering coarsen_kl, step=1, nvtxs=201, nedges=399, vmax=50>
+<Entering coarsen_kl, step=2, nvtxs=101, nedges=195, vmax=50>
+<Entering coarsen_kl, step=3, nvtxs=52, nedges=114, vmax=50>
+<Entering coarsen_kl, step=4, nvtxs=27, nedges=57, vmax=50>
+<Entering eigensolve, nvtxs = 27, nedges = 57>
+<Entering lanczos_so>
+<Leaving eigensolve>
+<Entering assign, nvtxs = 27, ndims = 3>
+<Entering klspiff, nvtxs = 27>
+<Entering klspiff, nvtxs = 101>
+<Entering klspiff, nvtxs = 400>
+
+
+                     Partitioning Results
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                     400          400            0
+Edge Cuts:                      0            0            0
+Hypercube Hops:                 0            0            0
+Boundary Vertices:              0            0            0
+Boundary Vertex Hops:           0            0            0
+Adjacent Sets:                  0            0            0
+Internal Vertices:            400          400            0
+
+Size of all sets:
+400 0 0 0 0 0 0 0 
+
+
+Total time: 0.007245 sec.
+  input 0.00037
+  reformatting 3e-05
+  checking input 3.3e-05
+  partitioning 0.001548
+  evaluation 0.00011
+  printing assignment file 0.000634
+
+KL time: 0.000258 sec.
+  initialization 9e-06
+  nway refinement 0.000229
+    bucket sorting 0.000188
+
+Coarsening 0.000151 sec.
+  maxmatch 2.1e-05
+  makecgraph 0.000108
+
+Lanczos time: 0.000266 sec.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~current host percentage~~~~~~~  1200
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+
+Run Another Problem? <Leaving main>
+
+                    Chaco 2.0
+          Sandia National Laboratories
+
+Reading parameter modification file `User_Params'
+  Parameter `RANDOM_SEED' reset to 7654321
+  Parameter `OUTPUT_ASSIGN' reset to True
+  Parameter `DEBUG_TRACE' reset to 2
+
+<Entering input_queries>
+Graph input file: Host input file: Assignment output file: Global partitioning method:
+  (1) Multilevel-KL
+  (2) Spectral
+  (3) Inertial
+  (4) Linear
+  (5) Random
+  (6) Scattered
+  (7) Read-from-file
+Number of vertices to coarsen down to: Total number of target hypercube dimensions: Capacity for PM1: 
+----21.000000 u^2 + 5.390000 u + 0.030000
+Capacity for PM2: 
+----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM3: 
+----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM4: 
+----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM5: 
+----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM6: 
+----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM7: 
+----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM8: 
+----0.000000 u^2 + 0.000000 u + 0.000000
+~~~~~~~~~~~~  210560
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+Partitioning dimension: 
+  (1) Bisection
+  (2) Quadrisection
+  (3) Octasection
+<Entering input_graph>
+# of PMs: 8
+<Entering input_graph>
+~~~~~current switch capacity~~~~~~~  210560
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+<Entering interface>
+Siyuan: vwgt_sum: 400.000000, nsets_tot: 8
+Siyuan: Total capacity: 210560.000000
+ Set goals:
+	goal[0]: 400.000000
+	goal[1]: 0.000000
+	goal[2]: 0.000000
+	goal[3]: 0.000000
+	goal[4]: 0.000000
+	goal[5]: 0.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+11
+start 19992800, ad 19994416, n 400, pn -1849970620, vw 0, ew 0, pg -1849970616
+1
+2
+3
+19994416!!!!!!!!! 19994416, 0
+22
+<Entering submain>
+<Entering check_input>
+<Entering reflect_input>
+
+
+           Input and Parameter Values
+
+Graph file: `grid20x20.graph', # vertices = 400, # edges = 760
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 50
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Assignment output file: `grid20x20.output' (normal format)
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+  DEBUG_TRACE = 2
+
+
+
+Starting to partition ...
+
+<Entering balance>
+About to call divide with nvtxs = 400, nedges = 760, ndims = 0
+<Entering divide, nvtxs = 400, nedges = 760>
+<Entering coarsen_kl, step=0, nvtxs=400, nedges=760, vmax=50>
+<Entering coarsen_kl, step=1, nvtxs=201, nedges=399, vmax=50>
+<Entering coarsen_kl, step=2, nvtxs=101, nedges=195, vmax=50>
+<Entering coarsen_kl, step=3, nvtxs=52, nedges=114, vmax=50>
+<Entering coarsen_kl, step=4, nvtxs=27, nedges=57, vmax=50>
+<Entering eigensolve, nvtxs = 27, nedges = 57>
+<Entering lanczos_so>
+<Leaving eigensolve>
+<Entering assign, nvtxs = 27, ndims = 3>
+<Entering klspiff, nvtxs = 27>
+<Entering klspiff, nvtxs = 101>
+<Entering klspiff, nvtxs = 400>
+
+
+                     Partitioning Results
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                     400          400            0
+Edge Cuts:                      0            0            0
+Hypercube Hops:                 0            0            0
+Boundary Vertices:              0            0            0
+Boundary Vertex Hops:           0            0            0
+Adjacent Sets:                  0            0            0
+Internal Vertices:            400          400            0
+
+Size of all sets:
+400 0 0 0 0 0 0 0 
+
+
+Total time: 0.0015 sec.
+  input 0.000246
+  reformatting 1.6e-05
+  checking input 1.7e-05
+  partitioning 0.000915
+  evaluation 2.8e-05
+  printing assignment file 0.000153
+
+KL time: 0.000166 sec.
+  initialization 1.2e-05
+  nway refinement 0.000138
+    bucket sorting 0.000104
+
+Coarsening 7.1e-05 sec.
+  maxmatch 1.5e-05
+  makecgraph 4.9e-05
+
+Lanczos time: 0.000143 sec.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~current host percentage~~~~~~~  1200
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+<Entering input_graph>
+~~~~~current switch capacity~~~~~~~  52790
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+<Entering interface>
+Siyuan: vwgt_sum: 400.000000, nsets_tot: 8
+Siyuan: Total capacity: 52790.000000
+ Set goals:
+	goal[0]: 400.000000
+	goal[1]: 0.000000
+	goal[2]: 0.000000
+	goal[3]: 0.000000
+	goal[4]: 0.000000
+	goal[5]: 0.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+11
+start 19992800, ad 19994416, n 400, pn -1849970620, vw 0, ew 0, pg -1849970616
+1
+2
+3
+19994416!!!!!!!!! 19994416, 0
+22
+<Entering submain>
+<Entering check_input>
+<Entering reflect_input>
+
+
+           Input and Parameter Values
+
+Graph file: `grid20x20.graph', # vertices = 400, # edges = 760
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 50
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Assignment output file: `grid20x20.output' (normal format)
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+  DEBUG_TRACE = 2
+
+
+
+Starting to partition ...
+
+<Entering balance>
+About to call divide with nvtxs = 400, nedges = 760, ndims = 0
+<Entering divide, nvtxs = 400, nedges = 760>
+<Entering coarsen_kl, step=0, nvtxs=400, nedges=760, vmax=50>
+<Entering coarsen_kl, step=1, nvtxs=201, nedges=399, vmax=50>
+<Entering coarsen_kl, step=2, nvtxs=101, nedges=195, vmax=50>
+<Entering coarsen_kl, step=3, nvtxs=52, nedges=114, vmax=50>
+<Entering coarsen_kl, step=4, nvtxs=27, nedges=57, vmax=50>
+<Entering eigensolve, nvtxs = 27, nedges = 57>
+<Entering lanczos_so>
+<Leaving eigensolve>
+<Entering assign, nvtxs = 27, ndims = 3>
+<Entering klspiff, nvtxs = 27>
+<Entering klspiff, nvtxs = 101>
+<Entering klspiff, nvtxs = 400>
+
+
+                     Partitioning Results
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                     400          400            0
+Edge Cuts:                      0            0            0
+Hypercube Hops:                 0            0            0
+Boundary Vertices:              0            0            0
+Boundary Vertex Hops:           0            0            0
+Adjacent Sets:                  0            0            0
+Internal Vertices:            400          400            0
+
+Size of all sets:
+400 0 0 0 0 0 0 0 
+
+
+Total time: 0.003979 sec.
+  input 0.000246
+  reformatting 2.4e-05
+  checking input 3.3e-05
+  partitioning 0.00158
+  evaluation 4.6e-05
+  printing assignment file 0.000254
+
+KL time: 0.000271 sec.
+  initialization 1.6e-05
+  nway refinement 0.000231
+    bucket sorting 0.000171
+
+Coarsening 0.000124 sec.
+  maxmatch 2.4e-05
+  makecgraph 8e-05
+
+Lanczos time: 0.000254 sec.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~current host percentage~~~~~~~  1200
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+<Entering input_graph>
+~~~~~current switch capacity~~~~~~~  52790
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+~~~~~current switch capacity~~~~~~~  0
+<Entering interface>
+Siyuan: vwgt_sum: 400.000000, nsets_tot: 8
+Siyuan: Total capacity: 52790.000000
+ Set goals:
+	goal[0]: 400.000000
+	goal[1]: 0.000000
+	goal[2]: 0.000000
+	goal[3]: 0.000000
+	goal[4]: 0.000000
+	goal[5]: 0.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+11
+start 19992800, ad 19994416, n 400, pn -1849970620, vw 0, ew 0, pg -1849970616
+1
+2
+3
+19994416!!!!!!!!! 19994416, 0
+22
+<Entering submain>
+<Entering check_input>
+<Entering reflect_input>
+
+
+           Input and Parameter Values
+
+Graph file: `grid20x20.graph', # vertices = 400, # edges = 760
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 50
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Assignment output file: `grid20x20.output' (normal format)
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+  DEBUG_TRACE = 2
+
+
+
+Starting to partition ...
+
+<Entering balance>
+About to call divide with nvtxs = 400, nedges = 760, ndims = 0
+<Entering divide, nvtxs = 400, nedges = 760>
+<Entering coarsen_kl, step=0, nvtxs=400, nedges=760, vmax=50>
+<Entering coarsen_kl, step=1, nvtxs=201, nedges=399, vmax=50>
+<Entering coarsen_kl, step=2, nvtxs=101, nedges=195, vmax=50>
+<Entering coarsen_kl, step=3, nvtxs=52, nedges=114, vmax=50>
+<Entering coarsen_kl, step=4, nvtxs=27, nedges=57, vmax=50>
+<Entering eigensolve, nvtxs = 27, nedges = 57>
+<Entering lanczos_so>
+<Leaving eigensolve>
+<Entering assign, nvtxs = 27, ndims = 3>
+<Entering klspiff, nvtxs = 27>
+<Entering klspiff, nvtxs = 101>
+<Entering klspiff, nvtxs = 400>
+
+
+                     Partitioning Results
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                     400          400            0
+Edge Cuts:                      0            0            0
+Hypercube Hops:                 0            0            0
+Boundary Vertices:              0            0            0
+Boundary Vertex Hops:           0            0            0
+Adjacent Sets:                  0            0            0
+Internal Vertices:            400          400            0
+
+Size of all sets:
+400 0 0 0 0 0 0 0 
+
+
+Total time: 0.007362 sec.
+  input 0.000246
+  reformatting 3.2e-05
+  checking input 4.8e-05
+  partitioning 0.002202
+  evaluation 6.5e-05
+  printing assignment file 0.000357
+
+KL time: 0.000409 sec.
+  initialization 2e-05
+  nway refinement 0.000354
+    bucket sorting 0.000265
+
+Coarsening 0.000173 sec.
+  maxmatch 3.6e-05
+  makecgraph 0.00011
+
+Lanczos time: 0.000353 sec.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~current host percentage~~~~~~~  1200
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+~~~~~current host percentage~~~~~~~  0
+
+Run Another Problem? <Leaving main>
+
+                    Chaco 2.0
+          Sandia National Laboratories
+
+Reading parameter modification file `User_Params'
+  Parameter `RANDOM_SEED' reset to 7654321
+  Parameter `OUTPUT_ASSIGN' reset to True
+  Parameter `DEBUG_TRACE' reset to 2
+
+<Entering input_queries>
+Graph input file: Host input file: Assignment output file: Global partitioning method:
+  (1) Multilevel-KL
+  (2) Spectral
+  (3) Inertial
+  (4) Linear
+  (5) Random
+  (6) Scattered
+  (7) Read-from-file
+Number of vertices to coarsen down to: Total number of target hypercube dimensions: Capacity for PM1: 
+----21.000000 u^2 + 5.390000 u + 0.030000
+Capacity for PM2: 
+----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM3: 
+----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM4: 
+----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM5: 
+----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM6: 
+----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM7: 
+----0.000000 u^2 + 0.000000 u + 0.000000
+Capacity for PM8: 
+----0.000000 u^2 + 0.000000 u + 0.000000
+~~~~~~~~~~~~  210560
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+~~~~~~~~~~~~  0
+Partitioning dimension: 
+  (1) Bisection
+  (2) Quadrisection
+  (3) Octasection
+<Entering input_graph>
+# of PMs: 8
+<Entering input_graph>
+~~~~~time 0: current switch capacity~~~~~~~  210560
+~~~~~time 0: current switch capacity~~~~~~~  0
+~~~~~time 0: current switch capacity~~~~~~~  0
+~~~~~time 0: current switch capacity~~~~~~~  0
+~~~~~time 0: current switch capacity~~~~~~~  0
+~~~~~time 0: current switch capacity~~~~~~~  0
+~~~~~time 0: current switch capacity~~~~~~~  0
+~~~~~time 0: current switch capacity~~~~~~~  0
+<Entering interface>
+Siyuan: vwgt_sum: 400.000000, nsets_tot: 8
+Siyuan: Total capacity: 210560.000000
+ Set goals:
+	goal[0]: 400.000000
+	goal[1]: 0.000000
+	goal[2]: 0.000000
+	goal[3]: 0.000000
+	goal[4]: 0.000000
+	goal[5]: 0.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+11
+22
+<Entering submain>
+<Entering check_input>
+<Entering reflect_input>
+
+
+           Input and Parameter Values
+
+Graph file: `grid20x20.graph', # vertices = 400, # edges = 760
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 50
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Assignment output file: `grid20x20.output' (normal format)
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+  DEBUG_TRACE = 2
+
+
+
+Starting to partition ...
+
+<Entering balance>
+About to call divide with nvtxs = 400, nedges = 760, ndims = 0
+<Entering divide, nvtxs = 400, nedges = 760>
+<Entering coarsen_kl, step=0, nvtxs=400, nedges=760, vmax=50>
+<Entering coarsen_kl, step=1, nvtxs=201, nedges=399, vmax=50>
+<Entering coarsen_kl, step=2, nvtxs=101, nedges=195, vmax=50>
+<Entering coarsen_kl, step=3, nvtxs=52, nedges=114, vmax=50>
+<Entering coarsen_kl, step=4, nvtxs=27, nedges=57, vmax=50>
+<Entering eigensolve, nvtxs = 27, nedges = 57>
+<Entering lanczos_so>
+<Leaving eigensolve>
+<Entering assign, nvtxs = 27, ndims = 3>
+<Entering klspiff, nvtxs = 27>
+<Entering klspiff, nvtxs = 101>
+<Entering klspiff, nvtxs = 400>
+
+
+                     Partitioning Results
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                     400          400            0
+Edge Cuts:                      0            0            0
+Hypercube Hops:                 0            0            0
+Boundary Vertices:              0            0            0
+Boundary Vertex Hops:           0            0            0
+Adjacent Sets:                  0            0            0
+Internal Vertices:            400          400            0
+
+Size of all sets:
+400 0 0 0 0 0 0 0 
+
+
+Total time: 0.001519 sec.
+  input 0.000246
+  reformatting 1.3e-05
+  checking input 1.7e-05
+  partitioning 0.000951
+  evaluation 2.3e-05
+  printing assignment file 0.000141
+
+KL time: 0.000254 sec.
+  initialization 1.1e-05
+  nway refinement 0.000187
+    bucket sorting 0.000152
+
+Coarsening 7e-05 sec.
+  maxmatch 1.5e-05
+  makecgraph 4.8e-05
+
+Lanczos time: 0.000139 sec.
+~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~
+	current host percentage after partitioning: 1200
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+<Entering input_graph>
+~~~~~time 1: current switch capacity~~~~~~~  52790
+~~~~~time 1: current switch capacity~~~~~~~  0
+~~~~~time 1: current switch capacity~~~~~~~  0
+~~~~~time 1: current switch capacity~~~~~~~  0
+~~~~~time 1: current switch capacity~~~~~~~  0
+~~~~~time 1: current switch capacity~~~~~~~  0
+~~~~~time 1: current switch capacity~~~~~~~  0
+~~~~~time 1: current switch capacity~~~~~~~  0
+<Entering interface>
+Siyuan: vwgt_sum: 400.000000, nsets_tot: 8
+Siyuan: Total capacity: 52790.000000
+ Set goals:
+	goal[0]: 400.000000
+	goal[1]: 0.000000
+	goal[2]: 0.000000
+	goal[3]: 0.000000
+	goal[4]: 0.000000
+	goal[5]: 0.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+11
+22
+<Entering submain>
+<Entering check_input>
+<Entering reflect_input>
+
+
+           Input and Parameter Values
+
+Graph file: `grid20x20.graph', # vertices = 400, # edges = 760
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 50
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Assignment output file: `grid20x20.output' (normal format)
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+  DEBUG_TRACE = 2
+
+
+
+Starting to partition ...
+
+<Entering balance>
+About to call divide with nvtxs = 400, nedges = 760, ndims = 0
+<Entering divide, nvtxs = 400, nedges = 760>
+<Entering coarsen_kl, step=0, nvtxs=400, nedges=760, vmax=50>
+<Entering coarsen_kl, step=1, nvtxs=201, nedges=399, vmax=50>
+<Entering coarsen_kl, step=2, nvtxs=101, nedges=195, vmax=50>
+<Entering coarsen_kl, step=3, nvtxs=52, nedges=114, vmax=50>
+<Entering coarsen_kl, step=4, nvtxs=27, nedges=57, vmax=50>
+<Entering eigensolve, nvtxs = 27, nedges = 57>
+<Entering lanczos_so>
+<Leaving eigensolve>
+<Entering assign, nvtxs = 27, ndims = 3>
+<Entering klspiff, nvtxs = 27>
+<Entering klspiff, nvtxs = 101>
+<Entering klspiff, nvtxs = 400>
+
+
+                     Partitioning Results
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                     400          400            0
+Edge Cuts:                      0            0            0
+Hypercube Hops:                 0            0            0
+Boundary Vertices:              0            0            0
+Boundary Vertex Hops:           0            0            0
+Adjacent Sets:                  0            0            0
+Internal Vertices:            400          400            0
+
+Size of all sets:
+400 0 0 0 0 0 0 0 
+
+
+Total time: 0.003913 sec.
+  input 0.000246
+  reformatting 1.8e-05
+  checking input 3e-05
+  partitioning 0.001547
+  evaluation 4.2e-05
+  printing assignment file 0.000243
+
+KL time: 0.000362 sec.
+  initialization 1.8e-05
+  nway refinement 0.00028
+    bucket sorting 0.00022
+
+Coarsening 0.000116 sec.
+  maxmatch 2.4e-05
+  makecgraph 8e-05
+
+Lanczos time: 0.000239 sec.
+~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~
+	current host percentage after partitioning: 1200
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+<Entering input_graph>
+~~~~~time 2: current switch capacity~~~~~~~  52790
+~~~~~time 2: current switch capacity~~~~~~~  0
+~~~~~time 2: current switch capacity~~~~~~~  0
+~~~~~time 2: current switch capacity~~~~~~~  0
+~~~~~time 2: current switch capacity~~~~~~~  0
+~~~~~time 2: current switch capacity~~~~~~~  0
+~~~~~time 2: current switch capacity~~~~~~~  0
+~~~~~time 2: current switch capacity~~~~~~~  0
+<Entering interface>
+Siyuan: vwgt_sum: 400.000000, nsets_tot: 8
+Siyuan: Total capacity: 52790.000000
+ Set goals:
+	goal[0]: 400.000000
+	goal[1]: 0.000000
+	goal[2]: 0.000000
+	goal[3]: 0.000000
+	goal[4]: 0.000000
+	goal[5]: 0.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+11
+22
+<Entering submain>
+<Entering check_input>
+<Entering reflect_input>
+
+
+           Input and Parameter Values
+
+Graph file: `grid20x20.graph', # vertices = 400, # edges = 760
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 50
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Assignment output file: `grid20x20.output' (normal format)
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+  DEBUG_TRACE = 2
+
+
+
+Starting to partition ...
+
+<Entering balance>
+About to call divide with nvtxs = 400, nedges = 760, ndims = 0
+<Entering divide, nvtxs = 400, nedges = 760>
+<Entering coarsen_kl, step=0, nvtxs=400, nedges=760, vmax=50>
+<Entering coarsen_kl, step=1, nvtxs=201, nedges=399, vmax=50>
+<Entering coarsen_kl, step=2, nvtxs=101, nedges=195, vmax=50>
+<Entering coarsen_kl, step=3, nvtxs=52, nedges=114, vmax=50>
+<Entering coarsen_kl, step=4, nvtxs=27, nedges=57, vmax=50>
+<Entering eigensolve, nvtxs = 27, nedges = 57>
+<Entering lanczos_so>
+<Leaving eigensolve>
+<Entering assign, nvtxs = 27, ndims = 3>
+<Entering klspiff, nvtxs = 27>
+<Entering klspiff, nvtxs = 101>
+<Entering klspiff, nvtxs = 400>
+
+
+                     Partitioning Results
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                     400          400            0
+Edge Cuts:                      0            0            0
+Hypercube Hops:                 0            0            0
+Boundary Vertices:              0            0            0
+Boundary Vertex Hops:           0            0            0
+Adjacent Sets:                  0            0            0
+Internal Vertices:            400          400            0
+
+Size of all sets:
+400 0 0 0 0 0 0 0 
+
+
+Total time: 0.007192 sec.
+  input 0.000246
+  reformatting 2.2e-05
+  checking input 4.3e-05
+  partitioning 0.002166
+  evaluation 6e-05
+  printing assignment file 0.00035
+
+KL time: 0.000479 sec.
+  initialization 2.2e-05
+  nway refinement 0.000386
+    bucket sorting 0.000293
+
+Coarsening 0.000172 sec.
+  maxmatch 3.3e-05
+  makecgraph 0.000122
+
+Lanczos time: 0.000342 sec.
+~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~
+	current host percentage after partitioning: 1200
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+
+Run Another Problem? <Leaving main>
+
+                    Chaco 2.0
+          Sandia National Laboratories
+
+Reading parameter modification file `User_Params'
+  Parameter `RANDOM_SEED' reset to 7654321
+  Parameter `OUTPUT_ASSIGN' reset to True
+  Parameter `DEBUG_TRACE' reset to 2
+
+<Entering input_queries>
+Graph input file: Host input file: Assignment output file: Global partitioning method:
+  (1) Multilevel-KL
+  (2) Spectral
+  (3) Inertial
+  (4) Linear
+  (5) Random
+  (6) Scattered
+  (7) Read-from-file
+Number of vertices to coarsen down to: Total number of target hypercube dimensions: Enter Capacity function for PM1: 
+Capacity function for PM1: 21.000000 u^2 + 5.390000 u + 0.030000
+Enter Capacity function for PM2: 
+Capacity function for PM2: 0.000000 u^2 + 0.000000 u + 0.000000
+Enter Capacity function for PM3: 
+Capacity function for PM3: 0.000000 u^2 + 0.000000 u + 0.000000
+Enter Capacity function for PM4: 
+Capacity function for PM4: 0.000000 u^2 + 0.000000 u + 0.000000
+Enter Capacity function for PM5: 
+Capacity function for PM5: 0.000000 u^2 + 0.000000 u + 0.000000
+Enter Capacity function for PM6: 
+Capacity function for PM6: 0.000000 u^2 + 0.000000 u + 0.000000
+Enter Capacity function for PM7: 
+Capacity function for PM7: 0.000000 u^2 + 0.000000 u + 0.000000
+Enter Capacity function for PM8: 
+Capacity function for PM8: 0.000000 u^2 + 0.000000 u + 0.000000
+Capacity value: 210560
+Capacity value: 0
+Capacity value: 0
+Capacity value: 0
+Capacity value: 0
+Capacity value: 0
+Capacity value: 0
+Capacity value: 0
+Partitioning dimension: 
+  (1) Bisection
+  (2) Quadrisection
+  (3) Octasection
+<Entering input_graph>
+# of PMs: 8
+<Entering input_graph>
+~~~~~time 0: current switch capacity~~~~~~~  210560
+~~~~~time 0: current switch capacity~~~~~~~  0
+~~~~~time 0: current switch capacity~~~~~~~  0
+~~~~~time 0: current switch capacity~~~~~~~  0
+~~~~~time 0: current switch capacity~~~~~~~  0
+~~~~~time 0: current switch capacity~~~~~~~  0
+~~~~~time 0: current switch capacity~~~~~~~  0
+~~~~~time 0: current switch capacity~~~~~~~  0
+<Entering interface>
+Siyuan: vwgt_sum: 400.000000, nsets_tot: 8
+Siyuan: Total capacity: 210560.000000
+ Set goals:
+	goal[0]: 400.000000
+	goal[1]: 0.000000
+	goal[2]: 0.000000
+	goal[3]: 0.000000
+	goal[4]: 0.000000
+	goal[5]: 0.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+11
+22
+<Entering submain>
+<Entering check_input>
+<Entering reflect_input>
+
+
+           Input and Parameter Values
+
+Graph file: `grid20x20.graph', # vertices = 400, # edges = 760
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 50
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Assignment output file: `grid20x20.output' (normal format)
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+  DEBUG_TRACE = 2
+
+
+
+Starting to partition ...
+
+<Entering balance>
+About to call divide with nvtxs = 400, nedges = 760, ndims = 0
+<Entering divide, nvtxs = 400, nedges = 760>
+<Entering coarsen_kl, step=0, nvtxs=400, nedges=760, vmax=50>
+<Entering coarsen_kl, step=1, nvtxs=201, nedges=399, vmax=50>
+<Entering coarsen_kl, step=2, nvtxs=101, nedges=195, vmax=50>
+<Entering coarsen_kl, step=3, nvtxs=52, nedges=114, vmax=50>
+<Entering coarsen_kl, step=4, nvtxs=27, nedges=57, vmax=50>
+<Entering eigensolve, nvtxs = 27, nedges = 57>
+<Entering lanczos_so>
+<Leaving eigensolve>
+<Entering assign, nvtxs = 27, ndims = 3>
+<Entering klspiff, nvtxs = 27>
+<Entering klspiff, nvtxs = 101>
+<Entering klspiff, nvtxs = 400>
+
+
+                     Partitioning Results
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                     400          400            0
+Edge Cuts:                      0            0            0
+Hypercube Hops:                 0            0            0
+Boundary Vertices:              0            0            0
+Boundary Vertex Hops:           0            0            0
+Adjacent Sets:                  0            0            0
+Internal Vertices:            400          400            0
+
+Size of all sets:
+400 0 0 0 0 0 0 0 
+
+
+Total time: 0.001496 sec.
+  input 0.000248
+  reformatting 1.3e-05
+  checking input 1.9e-05
+  partitioning 0.000907
+  evaluation 2.5e-05
+  printing assignment file 0.000156
+
+KL time: 0.00016 sec.
+  initialization 1.2e-05
+  nway refinement 0.000135
+    bucket sorting 9.9e-05
+
+Coarsening 7.1e-05 sec.
+  maxmatch 1.3e-05
+  makecgraph 4.9e-05
+
+Lanczos time: 0.00014 sec.
+~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~
+	current host percentage after partitioning: 1200
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+<Entering input_graph>
+~~~~~time 1: current switch capacity~~~~~~~  52790
+~~~~~time 1: current switch capacity~~~~~~~  0
+~~~~~time 1: current switch capacity~~~~~~~  0
+~~~~~time 1: current switch capacity~~~~~~~  0
+~~~~~time 1: current switch capacity~~~~~~~  0
+~~~~~time 1: current switch capacity~~~~~~~  0
+~~~~~time 1: current switch capacity~~~~~~~  0
+~~~~~time 1: current switch capacity~~~~~~~  0
+<Entering interface>
+Siyuan: vwgt_sum: 400.000000, nsets_tot: 8
+Siyuan: Total capacity: 52790.000000
+ Set goals:
+	goal[0]: 400.000000
+	goal[1]: 0.000000
+	goal[2]: 0.000000
+	goal[3]: 0.000000
+	goal[4]: 0.000000
+	goal[5]: 0.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+11
+22
+<Entering submain>
+<Entering check_input>
+<Entering reflect_input>
+
+
+           Input and Parameter Values
+
+Graph file: `grid20x20.graph', # vertices = 400, # edges = 760
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 50
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Assignment output file: `grid20x20.output' (normal format)
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+  DEBUG_TRACE = 2
+
+
+
+Starting to partition ...
+
+<Entering balance>
+About to call divide with nvtxs = 400, nedges = 760, ndims = 0
+<Entering divide, nvtxs = 400, nedges = 760>
+<Entering coarsen_kl, step=0, nvtxs=400, nedges=760, vmax=50>
+<Entering coarsen_kl, step=1, nvtxs=201, nedges=399, vmax=50>
+<Entering coarsen_kl, step=2, nvtxs=101, nedges=195, vmax=50>
+<Entering coarsen_kl, step=3, nvtxs=52, nedges=114, vmax=50>
+<Entering coarsen_kl, step=4, nvtxs=27, nedges=57, vmax=50>
+<Entering eigensolve, nvtxs = 27, nedges = 57>
+<Entering lanczos_so>
+<Leaving eigensolve>
+<Entering assign, nvtxs = 27, ndims = 3>
+<Entering klspiff, nvtxs = 27>
+<Entering klspiff, nvtxs = 101>
+<Entering klspiff, nvtxs = 400>
+
+
+                     Partitioning Results
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                     400          400            0
+Edge Cuts:                      0            0            0
+Hypercube Hops:                 0            0            0
+Boundary Vertices:              0            0            0
+Boundary Vertex Hops:           0            0            0
+Adjacent Sets:                  0            0            0
+Internal Vertices:            400          400            0
+
+Size of all sets:
+400 0 0 0 0 0 0 0 
+
+
+Total time: 0.00395 sec.
+  input 0.000248
+  reformatting 1.8e-05
+  checking input 3.3e-05
+  partitioning 0.001524
+  evaluation 4.4e-05
+  printing assignment file 0.000259
+
+KL time: 0.000267 sec.
+  initialization 1.6e-05
+  nway refinement 0.000229
+    bucket sorting 0.000163
+
+Coarsening 0.000124 sec.
+  maxmatch 2.2e-05
+  makecgraph 8.7e-05
+
+Lanczos time: 0.000252 sec.
+~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~
+	current host percentage after partitioning: 1200
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+<Entering input_graph>
+~~~~~time 2: current switch capacity~~~~~~~  52790
+~~~~~time 2: current switch capacity~~~~~~~  0
+~~~~~time 2: current switch capacity~~~~~~~  0
+~~~~~time 2: current switch capacity~~~~~~~  0
+~~~~~time 2: current switch capacity~~~~~~~  0
+~~~~~time 2: current switch capacity~~~~~~~  0
+~~~~~time 2: current switch capacity~~~~~~~  0
+~~~~~time 2: current switch capacity~~~~~~~  0
+<Entering interface>
+Siyuan: vwgt_sum: 400.000000, nsets_tot: 8
+Siyuan: Total capacity: 52790.000000
+ Set goals:
+	goal[0]: 400.000000
+	goal[1]: 0.000000
+	goal[2]: 0.000000
+	goal[3]: 0.000000
+	goal[4]: 0.000000
+	goal[5]: 0.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+11
+22
+<Entering submain>
+<Entering check_input>
+<Entering reflect_input>
+
+
+           Input and Parameter Values
+
+Graph file: `grid20x20.graph', # vertices = 400, # edges = 760
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 50
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Assignment output file: `grid20x20.output' (normal format)
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+  DEBUG_TRACE = 2
+
+
+
+Starting to partition ...
+
+<Entering balance>
+About to call divide with nvtxs = 400, nedges = 760, ndims = 0
+<Entering divide, nvtxs = 400, nedges = 760>
+<Entering coarsen_kl, step=0, nvtxs=400, nedges=760, vmax=50>
+<Entering coarsen_kl, step=1, nvtxs=201, nedges=399, vmax=50>
+<Entering coarsen_kl, step=2, nvtxs=101, nedges=195, vmax=50>
+<Entering coarsen_kl, step=3, nvtxs=52, nedges=114, vmax=50>
+<Entering coarsen_kl, step=4, nvtxs=27, nedges=57, vmax=50>
+<Entering eigensolve, nvtxs = 27, nedges = 57>
+<Entering lanczos_so>
+<Leaving eigensolve>
+<Entering assign, nvtxs = 27, ndims = 3>
+<Entering klspiff, nvtxs = 27>
+<Entering klspiff, nvtxs = 101>
+<Entering klspiff, nvtxs = 400>
+
+
+                     Partitioning Results
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                     400          400            0
+Edge Cuts:                      0            0            0
+Hypercube Hops:                 0            0            0
+Boundary Vertices:              0            0            0
+Boundary Vertex Hops:           0            0            0
+Adjacent Sets:                  0            0            0
+Internal Vertices:            400          400            0
+
+Size of all sets:
+400 0 0 0 0 0 0 0 
+
+
+Total time: 0.007275 sec.
+  input 0.000248
+  reformatting 2.3e-05
+  checking input 4.6e-05
+  partitioning 0.002104
+  evaluation 6.2e-05
+  printing assignment file 0.000359
+
+KL time: 0.000373 sec.
+  initialization 1.9e-05
+  nway refinement 0.000322
+    bucket sorting 0.000228
+
+Coarsening 0.000171 sec.
+  maxmatch 3.2e-05
+  makecgraph 0.00012
+
+Lanczos time: 0.00035 sec.
+~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~
+	current host percentage after partitioning: 1200
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+	current host percentage after partitioning: 0
+
+Run Another Problem? <Leaving main>

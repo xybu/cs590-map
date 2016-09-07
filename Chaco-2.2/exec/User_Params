@@ -1,0 +1,8 @@
+% Put run-time parameter changes here.
+%
+% PARAMETER = value
+
+RANDOM_SEED = 7654321L
+OUTPUT_ASSIGN = TRUE  % Write assignments to file? (TRUE/FALSE)
+DEBUG_TRACE = 2	% Trace main execution path (0..2)
+

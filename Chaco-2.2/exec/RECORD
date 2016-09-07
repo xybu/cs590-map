@@ -1,0 +1,4 @@
+4/8/2016
+So far, there is still one problem in code: when we set one goal to zero, eventually the result maybe a bit larger than zero (because of partitioning imbalance). This is unacceptable because we actually don't have that PM. This problem *may* be avoided by choosing bisection as partitioning dimension but can't assure.
+Also we need to know how Chaco can do uneven partitioning using Multi-level KL with spectral algorithm.
+

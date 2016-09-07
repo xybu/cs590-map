@@ -1,0 +1,454 @@
+./assign/assign.c:		           active, mediantype, goal, vwgt_max)
+./assign/assign.c:double   *goal;			/* desired set sizes */
+./assign/assign.c:	       mediantype, goal, vwgt_max);
+./assign/assign.c:	       mediantype, goal, vwgt_max);
+./assign/assign.c:	       mediantype, goal, vwgt_max);
+./assign/rec_median.c:		                 goal, using_vwgts, assign, top)
+./assign/rec_median.c:double   *goal;			/* desired sizes for sets */
+./assign/rec_median.c:    double    merged_goal[MAXSETS / 2];	/* combined goal values */
+./assign/rec_median.c:    void      median(), make_subgoal(), make_subvector();
+./assign/rec_median.c:	    merged_goal[i] = 0;
+./assign/rec_median.c:		merged_goal[i] += goal[j];
+./assign/rec_median.c:	merged_goal[0] = merged_goal[1] = 0;
+./assign/rec_median.c:	    merged_goal[0] += goal[i];
+./assign/rec_median.c:	    merged_goal[1] += goal[i];
+./assign/rec_median.c:    median(graph, vals, nvtxs, active, merged_goal, using_vwgts, assign);
+./assign/rec_median.c:		make_subgoal(goal, merged_goal, 2, cube_or_mesh, nsets, mesh_dims,
+./assign/rec_median.c:			     sub_nsets, merged_goal, using_vwgts,
+./assign/rec_median.c:		                 goal, using_vwgts, assign)
+./assign/rec_median.c:double   *goal;			/* desired sizes for sets */
+./assign/rec_median.c:    double    merged_goal[MAXSETS / 2];	/* combined goal values */
+./assign/rec_median.c:    void      median(), make_subgoal(), make_subvector(), make_maps2();
+./assign/rec_median.c:	merged_goal[i] = 0;
+./assign/rec_median.c:	    merged_goal[i] += goal[j];
+./assign/rec_median.c:    median(graph, vals[1], nvtxs, active, merged_goal, using_vwgts, assign);
+./assign/rec_median.c:	    make_subgoal(goal, merged_goal, 2, cube_or_mesh, nsets, mesh_dims,
+./assign/rec_median.c:			 cube_or_mesh, merged_goal, using_vwgts,
+Binary file ./assign/rec_median.o matches
+./assign/mapper.c:		           mediantype, goal, vwgt_max)
+./assign/mapper.c:double   *goal;			/* desired set sizes */
+./assign/mapper.c:    double    temp_goal[2];	/* combined set goals if using option 1. */
+./assign/mapper.c:	    temp_goal[0] = temp_goal[1] = 0;
+./assign/mapper.c:		    temp_goal[1] += goal[j];
+./assign/mapper.c:		    temp_goal[0] += goal[j];
+./assign/mapper.c:	    median_assign(graph, xvecs[i], nvtxs, temp_goal, using_vwgts, temp_sets,
+./assign/mapper.c:	    map2d(graph, xvecs, nvtxs, sets, goal, vwgt_max);
+./assign/mapper.c:	    map3d(graph, xvecs, nvtxs, sets, goal, vwgt_max);
+./assign/mapper.c:	rec_median_k(graph, xvecs, nvtxs, active, ndims, cube_or_mesh, goal,
+./assign/mapper.c:	    temp_goal[0] = temp_goal[1] = 0;
+./assign/mapper.c:		    temp_goal[1] += goal[j];
+./assign/mapper.c:		    temp_goal[0] += goal[j];
+./assign/mapper.c:	    median(graph, xvecs[i], nvtxs, active, temp_goal, using_vwgts, temp_sets);
+./assign/mapper.c:		     goal, using_vwgts, sets, TRUE);
+./assign/median.c:void      median(graph, vals, nvtxs, active, goal, using_vwgts, sets)
+./assign/median.c:double   *goal;			/* desired sizes for sets */
+./assign/median.c:    lweight = goal[0];
+./assign/median.c:    uweight = goal[1];
+./assign/median.c:    median_assign(graph, vals, nvtxs, goal, using_vwgts, sets, wlow, whigh, guess);
+./assign/median.c:void      median_assign(graph, vals, nvtxs, goal, using_vwgts, sets,
+./assign/median.c:double   *goal;			/* desired sizes for sets */
+./assign/median.c:	    if (goal[0] - wlow > goal[1] - whigh) {
+./bpmatch/movevtxs.c:		             size, goal, vwgt_max)
+./bpmatch/movevtxs.c:double   *goal;			/* desired set sizes */
+./bpmatch/movevtxs.c:	if (size[i] - goal[i] > largest) {
+./bpmatch/movevtxs.c:	    largest = size[i] - goal[i];
+./bpmatch/movevtxs.c:	else if (goal[i] - size[i] > smallest) {
+./bpmatch/movevtxs.c:	    smallest = goal[i] - size[i];
+./bpmatch/movevtxs.c:		if (size[to] + weight - goal[to] < largest) {
+./bpmatch/movevtxs.c:		if (goal[from] - (size[from] - weight) < smallest) {
+./bpmatch/movevtxs.c:	    if (size[i] - goal[i] > largest) {
+./bpmatch/movevtxs.c:		largest = size[i] - goal[i];
+./bpmatch/movevtxs.c:	    else if (goal[i] - size[i] > smallest) {
+./bpmatch/movevtxs.c:		smallest = goal[i] - size[i];
+./bpmatch/map2d.c:void      map2d(graph, xvecs, nvtxs, sets, goal, vwgt_max)
+./bpmatch/map2d.c:double   *goal;			/* desired set sizes */
+./bpmatch/map2d.c:	     goal, vwgt_max);
+./bpmatch/map3d.c:void      map3d(graph, xvecs, nvtxs, sets, goal, vwgt_max)
+./bpmatch/map3d.c:double   *goal;			/* desired set sizes */
+./bpmatch/map3d.c:	     goal, vwgt_max);
+./coarsen/coarsen.c:    double    goal[MAXSETS];	/* needed for convergence mode = 1 */
+./coarsen/coarsen.c:	    goal[i] = total_vwgt / nsets;
+./coarsen/coarsen.c:		   yvecs, evals, 0, space, goal,
+./coarsen/coarsen.c:	    goal[i] = total_vwgt / nsets;
+./coarsen/coarsen.c:		0, nsets, space, morespace, 3, goal, vwgt_max, ndims);
+./coarsen/coarsen.c:	    w1 = goal[0];
+./coarsen/coarsen.c:	    w2 = goal[1];
+./coarsen/coarsen.c:	        0, nsets, space, morespace, 3, goal, vwgt_max, ndims);
+./eigen/lanczos_SO_float.c:               cube_or_mesh, nsets, assignment, active, mediantype, goal, vwgt_max)
+./eigen/lanczos_SO_float.c:double   *goal;			/* desired set sizes */
+./eigen/lanczos_SO_float.c:			       active, mediantype, goal, vwgt_max);
+./eigen/lanczos_SO_float.c:			   active, mediantype, goal, vwgt_max);
+./eigen/eigensolve.c:		               yvecs, evals, architecture, assignment, goal,
+./eigen/eigensolve.c:double   *goal;			/* desired set sizes */
+./eigen/eigensolve.c:	w1 = goal[0];
+./eigen/eigensolve.c:	w2 = goal[1];
+./eigen/eigensolve.c:			assignment, active, mediantype, goal, vwgt_max);
+./eigen/eigensolve.c:			assignment, active, mediantype, goal, vwgt_max);
+./eigen/eigensolve.c:			assignment, active, mediantype, goal, vwgt_max);
+./eigen/eigensolve.c:			assignment, active, mediantype, goal, vwgt_max);
+./eigen/rqi.c:	      goal, vwgt_max, ndims)
+./eigen/rqi.c:double   *goal;			/* desired set sizes */
+./eigen/rqi.c:		       active, mediantype, goal, vwgt_max);
+./eigen/rqi.c:		       active, mediantype, goal, vwgt_max);
+./eigen/lanczos_SO.c:               cube_or_mesh, nsets, assignment, active, mediantype, goal, vwgt_max)
+./eigen/lanczos_SO.c:double   *goal;			/* desired set sizes */
+./eigen/lanczos_SO.c:			       active, mediantype, goal, vwgt_max);
+./eigen/lanczos_SO.c:			   active, mediantype, goal, vwgt_max);
+./inertial/inertial.c:		             goal, using_vwgts)
+./inertial/inertial.c:double   *goal;			/* desired set sizes */
+./inertial/inertial.c:		   coords[0], sets, goal, using_vwgts);
+./inertial/inertial.c:		   coords[0], coords[1], sets, goal, using_vwgts);
+./inertial/inertial.c:	       coords[0], coords[1], coords[2], sets, goal, using_vwgts);
+./inertial/inertial1d.c:void      inertial1d(graph, nvtxs, cube_or_mesh, nsets, x, sets, goal,
+./inertial/inertial1d.c:double   *goal;			/* desired set sizes */
+./inertial/inertial1d.c:    rec_median_1(graph, value, nvtxs, space, cube_or_mesh, nsets, goal,
+./inertial/inertial2d.c:void      inertial2d(graph, nvtxs, cube_or_mesh, nsets, x, y, sets, goal,
+./inertial/inertial2d.c:double   *goal;			/* desired set sizes */
+./inertial/inertial2d.c:    rec_median_1(graph, value, nvtxs, space, cube_or_mesh, nsets, goal,
+./inertial/inertial3d.c:void      inertial3d(graph, nvtxs, cube_or_mesh, nsets, x, y, z, sets, goal,
+./inertial/inertial3d.c:double   *goal;			/* desired set sizes */
+./inertial/inertial3d.c:    rec_median_1(graph, value, nvtxs, space, cube_or_mesh, nsets, goal,
+Binary file ./input/check_input.o matches
+./input/check_input.c:		         graphname, assignment, goal,
+./input/check_input.c:double   *goal;			/* desired sizes of different sets */
+./input/check_input.c:    double    vwgt_sum, vwgt_sum2;	/* sums of values in vwgts and goals */
+./input/check_input.c:    /* Now check for consistency in the goal array. */
+./input/check_input.c:	if (goal[i] < 0) {
+./input/check_input.c:	    printf("goal[%d] is %g, but should be nonnegative.\n", i, goal[i]);
+./input/check_input.c:	vwgt_sum2 += goal[i];
+./input/check_input.c:	printf("Sum of values in goal (%g) not equal to sum of vertex weights (%g).\n",
+./internal/improve_internal.c:int       improve_internal(graph, nvtxs, assign, goal, int_list, set_list,
+./internal/improve_internal.c:double   *goal;			/* desired set sizes */
+./internal/improve_internal.c:		     (goal[set1] + goal[set2]);
+./internal/improve_internal.c:	    balanced = (total_vwgt[set1] - goal[set1]*ratio +
+./internal/improve_internal.c:	                goal[set2]*ratio - total_vwgt[set2]) <= vwgt_max;
+./internal/improve_internal.c:	        balanced = total_vwgt[set1] - goal[set1] +
+./internal/improve_internal.c:		           goal[set2] - total_vwgt[set2] <= vwgt_max;
+./internal/force_internal.c:void      force_internal(graph, nvtxs, using_ewgts, assign, goal, nsets_tot,
+./internal/force_internal.c:double   *goal;			/* desired set sizes */
+./internal/force_internal.c:	    progress = improve_internal(graph, nvtxs, assign, goal, int_list, set_list,
+./klspiff/klspiff.c:void      klspiff(graph, nvtxs, sets, nsets, hops, goal, term_wgts, max_dev,
+./klspiff/klspiff.c:double   *goal;			/* desired set sizes */
+./klspiff/klspiff.c:	        maxdval, nsets, goal, term_wgts, hops, max_dev, using_ewgts,
+./klspiff/coarsen_kl.c:		     igeom, coords, vwgt_max, assignment, goal, architecture, hops,
+./klspiff/coarsen_kl.c:double   *goal;			/* desired set sizes */
+./klspiff/coarsen_kl.c:    double    new_goal[MAXSETS];/* new goal if not using vertex weights */
+./klspiff/coarsen_kl.c:    double   *real_goal;	/* chooses between goal and new_goal */
+./klspiff/coarsen_kl.c:    double    goal_weight;	/* total weight of vertices in goal */
+./klspiff/coarsen_kl.c:    double    temp_goal[2];     /* goal to simulate bisection while striping */
+./klspiff/coarsen_kl.c:    double   *fake_goal;        /* either goal or temp_goal */
+./klspiff/coarsen_kl.c:	if (!COARSEN_VWGTS && step != 0) {	/* Construct new goal */
+./klspiff/coarsen_kl.c:	    goal_weight = 0;
+./klspiff/coarsen_kl.c:		goal_weight += goal[i];
+./klspiff/coarsen_kl.c:		new_goal[i] = goal[i] * (nvtxs / goal_weight);
+./klspiff/coarsen_kl.c:	    real_goal = new_goal;
+./klspiff/coarsen_kl.c:	    real_goal = goal;
+./klspiff/coarsen_kl.c:	    temp_goal[0] = temp_goal[1] = 0;
+./klspiff/coarsen_kl.c:		 temp_goal[0] += real_goal[i];
+./klspiff/coarsen_kl.c:		 temp_goal[1] += real_goal[nsets - 1 - i];
+./klspiff/coarsen_kl.c:		temp_goal[0] += .5 * real_goal[i];
+./klspiff/coarsen_kl.c:		temp_goal[1] += .5 * real_goal[i];
+./klspiff/coarsen_kl.c:	    fake_goal = temp_goal;
+./klspiff/coarsen_kl.c:	    fake_goal = real_goal;
+./klspiff/coarsen_kl.c:		   yvecs, evals, architecture, assignment, fake_goal,
+./klspiff/coarsen_kl.c:	       active, mediantype, real_goal, vwgt_max);
+./klspiff/coarsen_kl.c:simple_part(graph, nvtxs, assignment, nsets, 1, real_goal);
+./klspiff/coarsen_kl.c:	    goal_weight = 0;
+./klspiff/coarsen_kl.c:		goal_weight += real_goal[i];
+./klspiff/coarsen_kl.c:	    goal_weight *= KL_IMBALANCE / nsets;
+./klspiff/coarsen_kl.c:	    if (goal_weight > max_dev) {
+./klspiff/coarsen_kl.c:		max_dev = goal_weight;
+./klspiff/coarsen_kl.c:	    klspiff(graph, nvtxs, assignment, nsets, hops, real_goal,
+./klspiff/coarsen_kl.c:	       igeom, ccoords, cvwgt_max, cassignment, goal, architecture, hops,
+./klspiff/coarsen_kl.c:	if (!COARSEN_VWGTS && step != 0) {	/* Construct new goal */
+./klspiff/coarsen_kl.c:	    goal_weight = 0;
+./klspiff/coarsen_kl.c:		goal_weight += goal[i];
+./klspiff/coarsen_kl.c:		new_goal[i] = goal[i] * (nvtxs / goal_weight);
+./klspiff/coarsen_kl.c:	    real_goal = new_goal;
+./klspiff/coarsen_kl.c:	    real_goal = goal;
+./klspiff/coarsen_kl.c:	goal_weight = 0;
+./klspiff/coarsen_kl.c:	    goal_weight += real_goal[i];
+./klspiff/coarsen_kl.c:	goal_weight *= KL_IMBALANCE / nsets;
+./klspiff/coarsen_kl.c:	if (goal_weight > max_dev) {
+./klspiff/coarsen_kl.c:	    max_dev = goal_weight;
+./klspiff/coarsen_kl.c:	klspiff(graph, nvtxs, assignment, nsets, hops, real_goal,
+./klspiff/nway_kl.c:	          maxdval, nsets, goal, term_wgts, hops, max_dev,
+./klspiff/nway_kl.c:double   *goal;			/* desired set sizes */
+./klspiff/nway_kl.c:    double    deltaplus;	/* largest negative deviation from goal size */
+./klspiff/nway_kl.c:    double    deltaminus;	/* largest negative deviation from goal size */
+./klspiff/nway_kl.c:	if (startweight[i] - goal[i] > deltaplus) {
+./klspiff/nway_kl.c:	    deltaplus = startweight[i] - goal[i];
+./klspiff/nway_kl.c:	else if (goal[i] - startweight[i] > deltaminus) {
+./klspiff/nway_kl.c:	    deltaminus = goal[i] - startweight[i];
+./klspiff/nway_kl.c:	    balance_best += goal[i];
+./klspiff/nway_kl.c:				  weightsum[i] >= goal[i] && weightsum[j] <= goal[j] &&
+./klspiff/nway_kl.c:				  weightsum[i] - goal[i] - (weightsum[j] - goal[j]) >
+./klspiff/nway_kl.c:				  weightsum[i] >= goal[i] && weightsum[j] <= goal[j]) ||
+./klspiff/nway_kl.c:			    weightsum[i] - vweight - goal[i] > -(max_dev + 1) / 2 &&
+./klspiff/nway_kl.c:			    weightsum[j] + vweight - goal[j] < (max_dev + 1) / 2)) {
+./klspiff/nway_kl.c:				    bestdelta = fabs(weightsum[i] - vweight - goal[i]) +
+./klspiff/nway_kl.c:				                fabs(weightsum[j] + vweight - goal[j]);
+./klspiff/nway_kl.c:				    beststuck1 = min(loose[i], goal[j] - locked[j]);
+./klspiff/nway_kl.c:				    beststuck2 = max(loose[i], goal[j] - locked[j]);
+./klspiff/nway_kl.c:				    stuck1st = min(loose[i], goal[j] - locked[j]);
+./klspiff/nway_kl.c:				    stuck2nd = max(loose[i], goal[j] - locked[j]);
+./klspiff/nway_kl.c:				    delta = fabs(weightsum[i] - vweight - goal[i]) +
+./klspiff/nway_kl.c:				            fabs(weightsum[j] + vweight - goal[j]);
+./klspiff/nway_kl.c:		    if (weightsum[i] - goal[i] > deltaplus) {
+./klspiff/nway_kl.c:			deltaplus = weightsum[i] - goal[i];
+./klspiff/nway_kl.c:		    else if (goal[i] - weightsum[i] > deltaminus) {
+./klspiff/nway_kl.c:			deltaminus = goal[i] - weightsum[i];
+./klspiff/nway_kl.c:		if (startweight[i] - goal[i] > deltaplus) {
+./klspiff/nway_kl.c:		    deltaplus = startweight[i] - goal[i];
+./klspiff/nway_kl.c:		else if (goal[i] - startweight[i] > deltaminus) {
+./klspiff/nway_kl.c:		    deltaminus = goal[i] - startweight[i];
+./klspiff/nway_kl.old:	          maxdval, nsets, goal, term_wgts, hops, max_dev,
+./klspiff/nway_kl.old:double   *goal;			/* desired set sizes */
+./klspiff/nway_kl.old:    double    deltaplus;	/* largest negative deviation from goal size */
+./klspiff/nway_kl.old:    double    deltaminus;	/* largest negative deviation from goal size */
+./klspiff/nway_kl.old:	if (startweight[i] - goal[i] > deltaplus) {
+./klspiff/nway_kl.old:	    deltaplus = startweight[i] - goal[i];
+./klspiff/nway_kl.old:	else if (goal[i] - startweight[i] > deltaminus) {
+./klspiff/nway_kl.old:	    deltaminus = goal[i] - startweight[i];
+./klspiff/nway_kl.old:				  weightsum[i] >= goal[i] && weightsum[j] <= goal[j] &&
+./klspiff/nway_kl.old:				  weightsum[i] - goal[i] - (weightsum[j] - goal[j]) >=
+./klspiff/nway_kl.old:				  weightsum[i] >= goal[i] && weightsum[j] <= goal[j]) ||
+./klspiff/nway_kl.old:			    weightsum[i] - vweight - goal[i] > -(max_dev + 1) / 2 &&
+./klspiff/nway_kl.old:			    weightsum[j] + vweight - goal[j] < (max_dev + 1) / 2)) {
+./klspiff/nway_kl.old:			            gap = weightsum[i] - goal[i] - (weightsum[j] - goal[j]);
+./klspiff/nway_kl.old:				    bestdelta = fabs(weightsum[i] - vweight - goal[i]) +
+./klspiff/nway_kl.old:				                fabs(weightsum[j] + vweight - goal[j]);
+./klspiff/nway_kl.old:				    beststuck1 = min(loose[i], goal[j] - locked[j]);
+./klspiff/nway_kl.old:				    beststuck2 = max(loose[i], goal[j] - locked[j]);
+./klspiff/nway_kl.old:				    stuck1st = min(loose[i], goal[j] - locked[j]);
+./klspiff/nway_kl.old:				    stuck2nd = max(loose[i], goal[j] - locked[j]);
+./klspiff/nway_kl.old:				    delta = fabs(weightsum[i] - vweight - goal[i]) +
+./klspiff/nway_kl.old:				            fabs(weightsum[j] + vweight - goal[j]);
+./klspiff/nway_kl.old:		    if (weightsum[i] - goal[i] > deltaplus) {
+./klspiff/nway_kl.old:			deltaplus = weightsum[i] - goal[i];
+./klspiff/nway_kl.old:		    else if (goal[i] - weightsum[i] > deltaminus) {
+./klspiff/nway_kl.old:			deltaminus = goal[i] - weightsum[i];
+./klspiff/nway_kl.old:		if (startweight[i] - goal[i] > deltaplus) {
+./klspiff/nway_kl.old:		    deltaplus = startweight[i] - goal[i];
+./klspiff/nway_kl.old:		else if (goal[i] - startweight[i] > deltaminus) {
+./klspiff/nway_kl.old:		    deltaminus = goal[i] - startweight[i];
+./klvspiff/coarsen_klv.c:		      igeom, coords, vwgt_max, assignment, goal, architecture, hops,
+./klvspiff/coarsen_klv.c:double   *goal;			/* desired set sizes */
+./klvspiff/coarsen_klv.c:    double    new_goal[MAXSETS];/* new goal if not using vertex weights */
+./klvspiff/coarsen_klv.c:    double   *real_goal;	/* chooses between goal and new_goal */
+./klvspiff/coarsen_klv.c:    double    goal_weight;	/* total weight of vertices in goal */
+./klvspiff/coarsen_klv.c:		   yvecs, evals, architecture, assignment, goal,
+./klvspiff/coarsen_klv.c:	if (!COARSEN_VWGTS && step != 0) {	/* Construct new goal */
+./klvspiff/coarsen_klv.c:	    goal_weight = 0;
+./klvspiff/coarsen_klv.c:		goal_weight += goal[i];
+./klvspiff/coarsen_klv.c:		new_goal[i] = goal[i] * (nvtxs / goal_weight);
+./klvspiff/coarsen_klv.c:	    real_goal = new_goal;
+./klvspiff/coarsen_klv.c:	    real_goal = goal;
+./klvspiff/coarsen_klv.c:	       active, mediantype, real_goal, vwgt_max);
+./klvspiff/coarsen_klv.c:	    goal_weight = 0;
+./klvspiff/coarsen_klv.c:		goal_weight += real_goal[i];
+./klvspiff/coarsen_klv.c:	    goal_weight *= KL_IMBALANCE / nsets;
+./klvspiff/coarsen_klv.c:	    if (goal_weight > max_dev) {
+./klvspiff/coarsen_klv.c:		max_dev = goal_weight;
+./klvspiff/coarsen_klv.c:		klvspiff(graph, nvtxs, assignment, real_goal,
+./klvspiff/coarsen_klv.c:		bpm_improve(graph, assignment, real_goal, max_dev, &bndy_list,
+./klvspiff/coarsen_klv.c:	real_goal = goal;
+./klvspiff/coarsen_klv.c:	real_goal = goal; 
+./klvspiff/coarsen_klv.c:        simple_part(graph, nvtxs, assignment, nsets, 1, real_goal);
+./klvspiff/coarsen_klv.c:        goal_weight = 0;
+./klvspiff/coarsen_klv.c:            goal_weight += real_goal[i];
+./klvspiff/coarsen_klv.c:        goal_weight *= KL_IMBALANCE / nsets;
+./klvspiff/coarsen_klv.c:        if (goal_weight > max_dev)
+./klvspiff/coarsen_klv.c:            max_dev = goal_weight;
+./klvspiff/coarsen_klv.c:            klvspiff(graph, nvtxs, assignment, real_goal,
+./klvspiff/coarsen_klv.c:	    bpm_improve(graph, assignment, real_goal, max_dev, &bndy_list,
+./klvspiff/coarsen_klv.c:		igeom, ccoords, cvwgt_max, cassignment, goal, architecture, hops,
+./klvspiff/coarsen_klv.c:	if (!COARSEN_VWGTS && step != 0) {	/* Construct new goal */
+./klvspiff/coarsen_klv.c:	    goal_weight = 0;
+./klvspiff/coarsen_klv.c:		goal_weight += goal[i];
+./klvspiff/coarsen_klv.c:		new_goal[i] = goal[i] * (nvtxs / goal_weight);
+./klvspiff/coarsen_klv.c:	    real_goal = new_goal;
+./klvspiff/coarsen_klv.c:	    real_goal = goal;
+./klvspiff/coarsen_klv.c:	goal_weight = 0;
+./klvspiff/coarsen_klv.c:	    goal_weight += real_goal[i];
+./klvspiff/coarsen_klv.c:	goal_weight *= KL_IMBALANCE / nsets;
+./klvspiff/coarsen_klv.c:	if (goal_weight > max_dev) {
+./klvspiff/coarsen_klv.c:	    max_dev = goal_weight;
+./klvspiff/coarsen_klv.c:	    klvspiff(graph, nvtxs, assignment, real_goal,
+./klvspiff/coarsen_klv.c:	    bpm_improve(graph, assignment, real_goal, max_dev, &bndy_list,
+./klvspiff/bpm_improve.c:void      bpm_improve(graph, sets, goal, max_dev, bndy_list, weights, using_vwgts)
+./klvspiff/bpm_improve.c:double   *goal;			/* desired set sizes */
+./klvspiff/bpm_improve.c:    ratio = (weights[0] + weights[1]) / (goal[0] + goal[1]);
+./klvspiff/bpm_improve.c:    deltaplus = fabs(weights[0] - goal[0] * ratio);
+./klvspiff/bpm_improve.c:    deltaminus = fabs(weights[1] - goal[1] * ratio);
+./klvspiff/bpm_improve.c:	if (goal[0] - weights[0] >= goal[1] - weights[1]) {
+./klvspiff/bpm_improve.c:			      goal, max_dev, &imbalance, &sep_size, &sep_weight,
+./klvspiff/bpm_improve.c:			set_big, goal, max_dev, &imbalance, &sep_size, &sep_weight,
+./klvspiff/bpm_improve.c:	              goal, max_dev, pimbalance, sep_size, sep_weight, using_vwgts,
+./klvspiff/bpm_improve.c:double   *goal;			/* desired set sizes */
+./klvspiff/bpm_improve.c:    ratio = (new_weights[0] + new_weights[1]) / (goal[0] + goal[1]);
+./klvspiff/bpm_improve.c:    deltaplus = fabs(new_weights[0] - goal[0] * ratio);
+./klvspiff/bpm_improve.c:    deltaminus = fabs(new_weights[1] - goal[1] * ratio);
+./klvspiff/flow.old:  These two goals can be achieved by keeping a list of all vtxs
+./klvspiff/klvspiff.c~:void      klvspiff(graph, nvtxs, sets, goal, max_dev,
+./klvspiff/klvspiff.c~:double   *goal;			/* desired set sizes */
+./klvspiff/klvspiff.c~:	        maxdval, goal, max_dev, bndy_list, weights);
+./klvspiff/klvspiff.c:void      klvspiff(graph, nvtxs, sets, goal, max_dev,
+./klvspiff/klvspiff.c:double   *goal;			/* desired set sizes */
+./klvspiff/klvspiff.c:	        maxdval, goal, max_dev, bndy_list, weights);
+./klvspiff/nway_klv.c:		           ldvals, rdvals, sets, maxdval, goal, max_dev, bndy_list,
+./klvspiff/nway_klv.c:double   *goal;			/* desired set sizes */
+./klvspiff/nway_klv.c:    double    delta0;		/* largest negative deviation from goal size */
+./klvspiff/nway_klv.c:    double    delta1;		/* largest negative deviation from goal size */
+./klvspiff/nway_klv.c:    total_weight = goal[0] + goal[1];
+./klvspiff/nway_klv.c:    delta0 = fabs(weightsum[0] - goal[0] * ratio);
+./klvspiff/nway_klv.c:    delta1 = fabs(weightsum[1] - goal[1] * ratio);
+./klvspiff/nway_klv.c:	    left_too_big = (weightsum[0] > (goal[0] + .5 * max_dev) * ratio);
+./klvspiff/nway_klv.c:	    right_too_big = (weightsum[1] > (goal[1] + .5 * max_dev) * ratio);
+./klvspiff/nway_klv.c:		left_imbalance = max(fabs(weightsum[0] + lweight - goal[0] * ratio),
+./klvspiff/nway_klv.c:				   fabs(weightsum[1] - rweight - goal[1] * ratio));
+./klvspiff/nway_klv.c:		right_imbalance = max(fabs(weightsum[0] - lweight - goal[0] * ratio),
+./klvspiff/nway_klv.c:				   fabs(weightsum[1] + rweight - goal[1] * ratio));
+./klvspiff/nway_klv.c:	    delta0 = fabs(weightsum[0] - goal[0] * ratio);
+./klvspiff/nway_klv.c:	    delta1 = fabs(weightsum[1] - goal[1] * ratio);
+./klvspiff/nway_klv.c:	delta0 = fabs(weightsum[0] - goal[0] * ratio);
+./klvspiff/nway_klv.c:	delta1 = fabs(weightsum[1] - goal[1] * ratio);
+./main/main.c~:    double   *goal;		/* desired set sizes */
+./main/main.c~:	goal = NULL;
+./main/main.c~:		  architecture, ndims_tot, mesh_dims, goal,
+./main/interface.c~:		              architecture, ndims_tot, mesh_dims, goal,
+./main/interface.c~:double   *goal;			/* desired set sizes for each set */
+./main/interface.c~:    int       default_goal;	/* using default goals? */
+./main/interface.c~:    if (goal == NULL) {	/* If not passed in, default goals have equal set sizes. */
+./main/interface.c~:	default_goal = TRUE;
+./main/interface.c~:	goal = (double *) smalloc_ret((unsigned) nsets_tot * sizeof(double));
+./main/interface.c~:	if (goal == NULL) {
+./main/interface.c~:	    strout("\nERROR: No room to make goals.\n");
+./main/interface.c~:	    	goal[i] = vwgt_sum * 1.2;
+./main/interface.c~:		else goal[i] = vwgt_sum * 0.8;
+./main/interface.c~:	    printf("goal[%d]: %f", i, goal[i]);
+./main/interface.c~:	default_goal = FALSE;
+./main/interface.c~:		   assignment, goal,
+./main/interface.c~:    if (default_goal)
+./main/interface.c~:	sfree((char *) goal);
+Binary file ./main/interface.o matches
+./main/interface.c:		              architecture, ndims_tot, mesh_dims, goal,
+./main/interface.c:double   *goal;			/* desired set sizes for each set */
+./main/interface.c:    int       default_goal;	/* using default goals? */
+./main/interface.c:    if (goal == NULL) {	/* If not passed in, default goals have equal set sizes. */
+./main/interface.c:	default_goal = TRUE;
+./main/interface.c:	goal = (double *) smalloc_ret((unsigned) nsets_tot * sizeof(double));
+./main/interface.c:	if (goal == NULL) {
+./main/interface.c:	    strout("\nERROR: No room to make goals.\n");
+./main/interface.c:	    	goal[i] = vwgt_sum * 1.2;
+./main/interface.c:		else goal[i] = vwgt_sum * 0.8;
+./main/interface.c:	    printf("goal[%d]: %f", i, goal[i]);
+./main/interface.c:	default_goal = FALSE;
+./main/interface.c:		   assignment, goal,
+./main/interface.c:    if (default_goal)
+./main/interface.c:	sfree((char *) goal);
+./main/main.c:    double   *goal;		/* desired set sizes */
+./main/main.c:	goal = NULL;
+./main/main.c:		  architecture, ndims_tot, mesh_dims, goal,
+./Makefile:		misc/divide_procs.c misc/merge_goals.c misc/make_term_props.c \
+./Makefile:		misc/countup_mesh.c misc/make_subgoal.c \
+./Makefile~:		misc/divide_procs.c misc/merge_goals.c misc/make_term_props.c \
+./Makefile~:		misc/countup_mesh.c misc/make_subgoal.c \
+./misc/sequence.c:    double    goal[2];		/* needed for eigen convergence mode = 1 */
+./misc/sequence.c:	goal[0] = goal[1] = total_vwgt / 2;
+./misc/sequence.c:		       yvecs, evals, 0, (short *) space, goal,
+Binary file ./misc/merge_goals.o matches
+./misc/merge_goals.c:/* Combine goals of collections of processors for next division. */
+./misc/merge_goals.c:void      merge_goals(goal, merged_goal, set_info, subsets, nsets,
+./misc/merge_goals.c:double   *goal;			/* desired set sizes */
+./misc/merge_goals.c:double   *merged_goal;		/* sizes of sets at this partition level */
+./misc/merge_goals.c:    double    total_goal;	/* total of desired goals */
+./misc/merge_goals.c:    total_goal = 0;
+./misc/merge_goals.c:	merged_goal[i] = 0;
+./misc/merge_goals.c:			merged_goal[i] += goal[index];
+./misc/merge_goals.c:		merged_goal[i] += goal[z];
+./misc/merge_goals.c:	total_goal += merged_goal[i];
+./misc/merge_goals.c:    /* Now scale goals to reflect actual weight of vertices available. */
+./misc/merge_goals.c:	merged_goal[i] = (merged_goal[i] / total_goal) * vwgt_sum;
+Binary file ./misc/make_subgoal.o matches
+./misc/simple_part.c:void      simple_part(graph, nvtxs, sets, nsets, simple_type, goal)
+./misc/simple_part.c:double   *goal;			/* desired set sizes */
+./misc/simple_part.c:    double    ratio;		/* weight/goal */
+./misc/simple_part.c:    double    best_ratio;	/* lowest ratio of weight/goal */
+./misc/simple_part.c:	        ratio = wgts[j] / goal[j];
+./misc/simple_part.c:	cutoff = goal[0];
+./misc/simple_part.c:		cutoff += goal[++set];
+./misc/simple_part.c:	cutoff = goal[0];
+./misc/simple_part.c:		cutoff += goal[++set];
+./misc/sequence.old:    double    goal[2];		/* needed for eigen convergence mode = 1 */
+./misc/sequence.old:	goal[0] = goal[1] = total_vwgt / 2;
+./misc/sequence.old:		   yvecs, evals, 0, (short *) space, goal,
+./misc/make_subgoal.c:/* Use same ratios as original goals, but adjust based on set sizes. */
+./misc/make_subgoal.c:void      make_subgoal(goal, subgoal, nsets, cube_or_mesh, nsets_tot,
+./misc/make_subgoal.c:double   *goal;			/* goals for sets */
+./misc/make_subgoal.c:double   *subgoal;		/* goals for subset of sets */
+./misc/make_subgoal.c:    double    tweight;		/* total weight among all subgoals */
+./misc/make_subgoal.c:	    subgoal[j] = goal[i];
+./misc/make_subgoal.c:	    tweight += goal[i];
+./misc/make_subgoal.c:	    subgoal[i] = goal[index++];
+./misc/make_subgoal.c:	    tweight += subgoal[i++];
+./misc/make_subgoal.c:	subgoal[i] *= ratio;
+./refine_part/refine_part.c:    ndims_tot, mesh_dims, goal)
+./refine_part/refine_part.c:double   *goal;			/* desired set sizes */
+./refine_part/refine_part.c:	    degrees, using_ewgts, hops, goal, sizes, term_wgts, architecture,
+./refine_part/kl_refine.c:    degrees, using_ewgts, hops, goal, sizes, term_wgts, architecture,
+./refine_part/kl_refine.c:double   *goal;			/* desired set sizes */
+./refine_part/kl_refine.c:    double    subgoal[2];	/* goal within two subgraphs */
+./refine_part/kl_refine.c:    double    ratio;		/* set sizes / goals */
+./refine_part/kl_refine.c:    /* Set up goals for this KL invocation. */
+./refine_part/kl_refine.c:    ratio = (vwgt_sum1 + vwgt_sum2) / (goal[set1] + goal[set2]);
+./refine_part/kl_refine.c:    subgoal[0] = ratio * goal[set1];
+./refine_part/kl_refine.c:    subgoal[1] = ratio * goal[set2];
+./refine_part/kl_refine.c:    ratio = (subgoal[0] + subgoal[1]) * KL_IMBALANCE / 2;
+./refine_part/kl_refine.c:    klspiff(subgraph, subnvtxs, sub_assign, 2, hops, subgoal,
+Binary file ./submain/balance.o matches
+./submain/balance.c:		            igeom, coords, assignment, goal,
+./submain/balance.c:double   *goal;			/* desired set sizes */
+./submain/balance.c:    double    merged_goal[MAXSETS];	/* sizes of sets at this partition level */
+./submain/balance.c:    void      merge_goals();
+./submain/balance.c:	    merge_goals(goal, merged_goal, set_info, subsets, nsets_real,
+./submain/balance.c:	    merge_goals(goal, merged_goal, set_info, subsets, nsets_real,
+./submain/balance.c:	       igeom, subcoords, subassign, merged_goal,
+./submain/divide.c:		           igeom, coords, assignment, goal,
+./submain/divide.c:double   *goal;			/* desired set sizes */
+./submain/divide.c:    double    temp_goal[2];	/* goal to simulate bisection while striping */
+./submain/divide.c:    double   *fake_goal;	/* either goal or temp_goal */
+./submain/divide.c:	temp_goal[0] = temp_goal[1] = 0;
+./submain/divide.c:	    temp_goal[0] += goal[i];
+./submain/divide.c:	    temp_goal[1] += goal[nsets - 1 - i];
+./submain/divide.c:	    temp_goal[0] += .5 * goal[i];
+./submain/divide.c:	    temp_goal[1] += .5 * goal[i];
+./submain/divide.c:	fake_goal = temp_goal;
+./submain/divide.c:	fake_goal = goal;
+./submain/divide.c:			vwgt_max, assignment, goal, architecture, hop_mtx,
+./submain/divide.c:		    total_weight += goal[i];
+./submain/divide.c:		bpm_improve(graph, assignment, goal, max_dev, &bndy_list,
+./submain/divide.c:		       igeom, coords, vwgt_max, assignment, goal, architecture, hop_mtx,
+./submain/divide.c:		    total_weight += goal[i];
+./submain/divide.c:		if (goal[0] - weights[0] <= goal[1] - weights[1])
+./submain/divide.c:		bpm_improve(graph, assignment, goal, max_dev, &bndy_list,
+./submain/divide.c:		   assignment, fake_goal,
+./submain/divide.c:	       assignment, active, mediantype, goal, vwgt_max);
+./submain/divide.c:		 goal, using_vwgts);
+./submain/divide.c:	simple_part(graph, nvtxs, assignment, nsets, simple_type, goal);
+./submain/divide.c:	simple_part(graph, nvtxs, assignment, nsets, simple_type, goal);
+./submain/divide.c:	simple_part(graph, nvtxs, assignment, nsets, simple_type, goal);
+./submain/divide.c:	    total_weight += goal[i];
+./submain/divide.c:	    klvspiff(graph, nvtxs, assignment, goal,
+./submain/divide.c:		bpm_improve(graph, assignment, goal, max_dev, &bndy_list,
+./submain/divide.c:	    klspiff(graph, nvtxs, assignment, nsets, hop_mtx, goal, term_wgts,
+./submain/divide.c:		if (goal[0] - weights[0] <= goal[1] - weights[1])
+./submain/divide.c:		bpm_improve(graph, assignment, goal, max_dev, &bndy_list,
+./submain/divide.c:	    total_weight += goal[i];
+./submain/divide.c:	bpm_improve(graph, assignment, goal, max_dev, &bndy_list, weights, 
+./submain/submain.c:		            assignment, goal,
+./submain/submain.c:double   *goal;			/* desired sizes for each set */
+./submain/submain.c:			   graphname, assignment, goal,
+./submain/submain.c:	    igeom, coords, assignment, goal,
+./submain/submain.c:		ndims_tot, mesh_dims, goal);
+./submain/submain.c:	    force_internal(graph, nvtxs, using_ewgts, assignment, goal, nsets_tot,
