@@ -6,6 +6,30 @@
 #include "defs.h"
 #include "params.h"
 
+void _print_int_array(const char *varname, int *array, int size) {
+  int i;
+  const int NUMS_PER_LINE = 5;
+  fprintf(stdout, "%s: {\n", varname);
+  for (i = 0; i < size; ++i) {
+    if (i % NUMS_PER_LINE == 0) fputc(' ', stdout);
+    fprintf(stdout, "%2d: %2d%s", i, array[i], (i < size - 1) ? ",   " : "");
+    if ((i + 1) % NUMS_PER_LINE == 0 && i != size - 1) fputc('\n', stdout);
+  }
+  fprintf(stdout, "\n}\n\n");
+}
+
+void _print_short_array(const char *varname, short *array, int size) {
+  int i;
+  const int NUMS_PER_LINE = 5;
+  fprintf(stdout, "%s: {\n", varname);
+  for (i = 0; i < size; ++i) {
+    if (i % NUMS_PER_LINE == 0) fputc(' ', stdout);
+    fprintf(stdout, "%2d: %2d%s", i, array[i], (i < size - 1) ? ", " : "");
+    if ((i + 1) % NUMS_PER_LINE == 0 && i != size - 1) fputc('\n', stdout);
+  }
+  fprintf(stdout, "\n}\n\n");
+}
+
 int main() {
   extern int Using_Main;            /* is main routine being called? */
   extern char *Graph_File_Name;     /* name of graph input file */
@@ -104,6 +128,9 @@ int main() {
       // printf("-------- %d, %d\n", i,u[i]);
     }
 
+    _print_int_array("usage", usage, 20);
+    _print_int_array("host_usage", host_usage, 20);
+
     read_params(params_file);
 
     input_queries(&fin, &fin_host, &fingeom, &finassign, graphname, hostname,
@@ -148,6 +175,7 @@ int main() {
       fscanf(fin_host, "%d", &host_percent[j]);
       // printf("----%d: %d-----",j, host_percent[j]); //////
     }
+    _print_int_array("host_percent (fscanf)", host_percent, nvtxs);
     /***************************************/
 
     if (global_method == 7) {
@@ -155,6 +183,8 @@ int main() {
       if (flag) goto skip;
       Assign_In_File_Name = inassignname;
     }
+
+    _print_short_array("assignment (input_assign)", assignment, nvtxs);
 
     if (global_method == 3 ||
         (MATCH_TYPE == 5 &&
@@ -199,10 +229,12 @@ int main() {
                                   ((double)(usage[cur])) +
                               (double)(set_capa_func[cur][0]) / 10000);
       }
-      for (cur = 0; cur < nprocs; cur++) {
-        printf("~~~~~time %d: current switch capacity~~~~~~~  %d\n", n,
-               set_capa[cur]);
-      }
+      _print_int_array("set_capa (switch capacity)", set_capa, nprocs);
+
+      // for (cur = 0; cur < nprocs; cur++) {
+      //   printf("~~~~~time %d: current switch capacity~~~~~~~  %d\n", n,
+      //          set_capa[cur]);
+      // }
 
       // one partitioning
       interface(nvtxs, start, adjacency, vwgts, ewgts, x, y, z, outassignptr,
@@ -210,6 +242,11 @@ int main() {
                 set_capa, goal, global_method, local_method, rqi_flag, vmax,
                 ndims, eigtol, seed);
       printf("~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~\n");
+
+      _print_int_array("host_percent (after partition)", host_percent, nvtxs);
+
+      _print_short_array("assignment (after partition)", assignment, nvtxs);
+
       /*
       for (j = 0; j < nvtxs; j++) {
               //fscanf(fin_host,"%d", &host_percent[j] );
@@ -220,17 +257,20 @@ int main() {
       for (i = 0; i < 20; i++) {
         host_usage[i] = 0;
       }
+
       for (j = 0; j < nvtxs; j++) {
         int cur_set = assignment[j];
         host_usage[cur_set] += host_percent[j];
       }
 
+      _print_int_array("host_usage (updated)", host_usage, 20);
+
       int sati = 1;
       for (cur = 0; cur < nprocs; cur++) {
-        printf(
-            "\tcurrent host percentage after partitioning %d: %d\t old switch "
-            "usage percentage: %d\n",
-            cur, host_usage[cur], usage[cur]);
+        // printf(
+        //     "\tcurrent host percentage after partitioning %d: %d\t old switch "
+        //     "usage percentage: %d\n",
+        //     cur, host_usage[cur], usage[cur]);
 
         // compute if all u's have: 95<= u <= 105. if does, stop the loops
         int total_usage = host_usage[cur] + usage[cur];
@@ -243,6 +283,8 @@ int main() {
           usage[cur] = 90;
         }
       }
+
+      _print_int_array("usage (updated)", usage, nprocs);
 
       if (sati == 1) {
         printf("********End earlier because of good total usage!********\n");
