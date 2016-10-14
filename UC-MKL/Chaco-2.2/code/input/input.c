@@ -247,7 +247,7 @@ int      *ndims;		/* number of divisions at each stage */
 	nprocs = 1 << (*ndims_tot);
 
 	////// ADD /////////
-	*set_capa = (int *) smalloc_ret((unsigned) nprocs * sizeof(int));
+	*set_capa = (int *) malloc((unsigned) nprocs * sizeof(int));
 	int cur = 0;
 	for (; cur<nprocs; cur++) {
 		printf("Enter Capacity function for PM%d: \n", cur+1);
@@ -258,9 +258,14 @@ int      *ndims;		/* number of divisions at each stage */
 		}
 		printf("Capacity function for PM%d: %f u^2 + %f u + %f\n", cur+1, (double)(set_capa_func[cur][0])/10000, (double)(set_capa_func[cur][1])/10000, (float)set_capa_func[cur][2]/10000);
 
-		(*set_capa)[cur] = (int)((double)(set_capa_func[cur][0])/10000 * (usage[cur])*((double)(usage[cur]))
-					+ (double)(set_capa_func[cur][1])/10000 * ((double)(usage[cur]))
-					+ (double)(set_capa_func[cur][0])/10000);
+		double capa_0 = set_capa_func[cur][2];
+		double capa_1 = set_capa_func[cur][1] * usage[cur];
+		double capa_2 = set_capa_func[cur][0] * usage[cur] * usage[cur];
+		(*set_capa)[cur] = (int)((capa_0 + capa_1 + capa_2) / 10000);
+
+		// (*set_capa)[cur] = (int)((double)(set_capa_func[cur][0])/10000 * (usage[cur])*((double)(usage[cur]))
+		// 			+ (double)(set_capa_func[cur][1])/10000 * ((double)(usage[cur]))
+		// 			+ (double)(set_capa_func[cur][2])/10000);
 	}
 	//qsort(*set_capa, nprocs,sizeof((*set_capa)[0]),cmp);
 	

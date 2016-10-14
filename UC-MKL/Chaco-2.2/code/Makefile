@@ -2,8 +2,8 @@ DEST_DIR = 	../exec
 DEST=		${DEST_DIR}/chaco
 CC = 		gcc
 IFLAG =		-Imain
-CFLAGS =	-O2 
-OFLAGS =	-O2 
+CFLAGS =	-O0 -g
+OFLAGS =	-O0 -g
 
 FILES.c=	main/user_params.c main/interface.c main/main.c \
 		submain/balance.c submain/divide.c submain/submain.c \
