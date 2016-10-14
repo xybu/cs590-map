@@ -17,6 +17,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 
+NODE_DEFAULT_WEIGHT = 50
 NODE_WEIGHT_KEY = 'weight'
 SUPPORTED_SAVE_FORMAT = ('pdf', 'png', 'svg')
 
@@ -96,7 +97,10 @@ def main():
     max_degree = max(degrees)
     # The larger the degree, the darker the node.
     degrees = [max_degree - v for v in degrees]
-    weights = [n[1][NODE_WEIGHT_KEY] for n in graph.nodes(data=True)]
+    try:
+    	weights = [n[1][NODE_WEIGHT_KEY] for n in graph.nodes(data=True)]
+    except KeyError:
+    	weights = NODE_DEFAULT_WEIGHT
     plt.figure(figsize=(12, 9))
     plt.title("Visualization of \"%s\"" % args.path, {'fontweight': 'bold'})
     plt.axis('off')
