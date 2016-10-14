@@ -1,8 +1,24 @@
 #!/usr/bin/python3
 
+"""
+visualize_chaco.py
+
+Parse a Chaco graph file to a Networkx object, visualize it using matplotlib,
+and optionally save it to a PNG/PDF/SVG file.
+
+In the graph, darker color indicates higher degree and larger circle
+indicates larger weight.
+
+@author	Xiangyu Bu <bu1@purdue.edu>
+"""
+
 import argparse
 import networkx as nx
 import matplotlib.pyplot as plt
+
+
+NODE_WEIGHT_KEY = 'weight'
+SUPPORTED_SAVE_FORMAT = ('pdf', 'png', 'svg')
 
 
 def line_is_comment(line):
@@ -52,7 +68,7 @@ def parse_chaco_input(file_path):
                 this_node = row[0]
                 neighbor_starts_at = 1
             if nodes_weighted:
-                G.node[this_node]['weight'] = row[neighbor_starts_at]
+                G.node[this_node][NODE_WEIGHT_KEY] = row[neighbor_starts_at]
                 neighbor_starts_at += 1
             if not edges_weighted:
                 G.add_edges_from([(this_node, node)
@@ -72,21 +88,21 @@ def main():
     parser.add_argument('--save', metavar='format', type=str, default=None,
     	help='Save the image in the specified format (png, svg, pdf). Do not save if not specified.')
     args = parser.parse_args()
+    if args.save is not None and args.save.lower() not in SUPPORTED_SAVE_FORMAT:
+    	raise Exception('Error: unsupported save format "%s".' % args.save)
     graph = parse_chaco_input(args.path)
     print(graph.degree())
     degrees = list(graph.degree().values())
     max_degree = max(degrees)
     # The larger the degree, the darker the node.
     degrees = [max_degree - v for v in degrees]
-    weights = [n[1]['weight'] for n in graph.nodes(data=True)]
+    weights = [n[1][NODE_WEIGHT_KEY] for n in graph.nodes(data=True)]
     plt.figure(figsize=(12, 9))
     plt.title("Visualization of \"%s\"" % args.path, {'fontweight': 'bold'})
     plt.axis('off')
     nx.draw(graph, with_labels=False, node_color=degrees,
             node_size=weights, cmap=plt.get_cmap('viridis'))
     if args.save is not None:
-        if args.save not in ('pdf', 'png', 'svg'):
-            print('Error: unsupported save format "%s". Plot will not be saved.' % args.save)
         plt.savefig(args.path + '.' + args.save, transparent=True, bbox_inches='tight', format=args.save)
     plt.show()
 
