@@ -9,7 +9,7 @@ and optionally save it to a PNG/PDF/SVG file.
 In the graph, darker color indicates higher degree and larger circle
 indicates larger weight.
 
-@author	Xiangyu Bu <bu1@purdue.edu>
+@author Xiangyu Bu <bu1@purdue.edu>
 """
 
 import argparse
@@ -60,7 +60,6 @@ def parse_chaco_input(file_path):
             if line_is_comment(line):
                 continue
             row = [to_num(v) for v in line.split()]
-            print(row)
             if not read_node_numbers:
                 this_node = i
                 neighbor_starts_at = 0
@@ -85,29 +84,44 @@ def parse_chaco_input(file_path):
 def main():
     parser = argparse.ArgumentParser(
         description='Parse a graph input of Chaco format and visualize it.')
-    parser.add_argument('path', metavar='path', type=str, help='Path to the Chaco graph input.')
+    parser.add_argument(
+        'path', metavar='path', type=str, help='Path to the Chaco graph input.')
     parser.add_argument('--save', metavar='format', type=str, default=None,
-    	help='Save the image in the specified format (png, svg, pdf). Do not save if not specified.')
+                        help='Save the image in the specified format (png, svg, pdf). Do not save if not specified.')
     args = parser.parse_args()
     if args.save is not None and args.save.lower() not in SUPPORTED_SAVE_FORMAT:
-    	raise Exception('Error: unsupported save format "%s".' % args.save)
+        raise Exception('Error: unsupported save format "%s".' % args.save)
     graph = parse_chaco_input(args.path)
     print(graph.degree())
     degrees = list(graph.degree().values())
     max_degree = max(degrees)
     # The larger the degree, the darker the node.
     degrees = [max_degree - v for v in degrees]
+
     try:
-    	weights = [n[1][NODE_WEIGHT_KEY] for n in graph.nodes(data=True)]
+        weights = [n[1][NODE_WEIGHT_KEY] for n in graph.nodes(data=True)]
     except KeyError:
-    	weights = NODE_DEFAULT_WEIGHT
+        weights = NODE_DEFAULT_WEIGHT
+
+    try:
+        edge_weights = [w/10+0.1 for (u, v, w) in graph.edges(data='weight')]
+        print(edge_weights)
+    except:
+        edge_weights = 1
+
     plt.figure(figsize=(12, 9))
     plt.title("Visualization of \"%s\"" % args.path, {'fontweight': 'bold'})
     plt.axis('off')
-    nx.draw(graph, with_labels=False, node_color=degrees,
-            node_size=weights, cmap=plt.get_cmap('viridis'))
+    pos = nx.nx_agraph.graphviz_layout(graph)
+
+    nx.draw_networkx_nodes(graph, pos,
+        node_size=weights, node_color=degrees, cmap=plt.get_cmap('viridis'), alpha=0.95)
+    nx.draw_networkx_edges(graph, pos, width=edge_weights, alpha=0.7)
+
+    # nx.draw(graph, pos, with_labels=False, node_color=degrees, node_size=weights, cmap=plt.get_cmap('viridis'))
     if args.save is not None:
-        plt.savefig(args.path + '.' + args.save, transparent=True, bbox_inches='tight', format=args.save)
+        plt.savefig(args.path + '.' + args.save, transparent=True,
+                    bbox_inches='tight', format=args.save)
     plt.show()
 
 

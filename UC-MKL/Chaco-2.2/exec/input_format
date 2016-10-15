@@ -11,6 +11,6 @@ PM 4 -- 0 17600 -235200
 PM 5 -- 0 17600 -235200
 PM 6 -- 200 53800 -210100 
 PM 7 -- 0 17600 -235200
-PM 8 -- 200 53800 -210100
+PM 8 -- 200 53800 -210100 // The program hard coded 8 PMs.
 Partitioning dimension -- 1=Bi, 2=Quad, 3=Oct
 Run another program? -- yYnNqQxX
