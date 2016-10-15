@@ -1,0 +1,16 @@
+Chaco graph file
+Host CPU requirement file
+Assignment output file
+Global partitioning method -- 1=MKL, 2=Spectral, 5=Linear, ...
+Number of vertices coarsen down to
+Total number of target hypercube dimensions
+PM 1 -- 0 17600 -235200
+PM 2 -- 200 53800 -210100  
+PM 3 -- 0 37600 6000
+PM 4 -- 0 17600 -235200
+PM 5 -- 0 17600 -235200
+PM 6 -- 200 53800 -210100 
+PM 7 -- 0 17600 -235200
+PM 8 -- 200 53800 -210100
+Partitioning dimension -- 1=Bi, 2=Quad, 3=Oct
+Run another program? -- yYnNqQxX
