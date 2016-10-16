@@ -11,15 +11,16 @@ def main():
     # print(sum(graph.degree().values()))
     assignment = dict()
     for i in range(1, graph.number_of_nodes() + 1):
-        if degree_of_nodes[i] < 10:
-            assignment[i] = 1
-        elif degree_of_nodes[i] < 25:
-            assignment[i] = 3
-        elif degree_of_nodes[i] < 40:
-            assignment[i] = 5
-        else:
-            assignment[i] = 7
-        print(assignment[i])
+        # if degree_of_nodes[i] < 10:
+        #     assignment[i] = 1
+        # elif degree_of_nodes[i] < 25:
+        #     assignment[i] = 3
+        # elif degree_of_nodes[i] < 40:
+        #     assignment[i] = 5
+        # else:
+        #     assignment[i] = 7
+        assignment[i] = int(degree_of_nodes[i] / 2)
+        print(degree_of_nodes[i])
     # print(sum(assignment.values()))
 
 

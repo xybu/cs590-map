@@ -6,6 +6,26 @@
 #include "defs.h"
 #include "structs.h"
 
+void save_goals_array(double *goal, double sum, int size) {
+  int i;
+  static int nth_save = 0;
+
+  FILE *f;
+  if (nth_save == 0) {
+    f = fopen("goal_hist.txt", "w");
+  } else {
+    f = fopen("goal_hist.txt", "a");
+  }
+
+  fprintf(f, "%d, %lf", nth_save, sum);
+  for (i = 0; i < size; ++i)
+    fprintf(f, ", %lf", goal[i]);
+  fputc('\n', f);
+
+  fclose(f);
+  nth_save++;
+}
+
 int       Using_Main = FALSE;	/* Is main routine being called? */
 
 int       interface(nvtxs, start, adjacency, vwgts, ewgts, x, y, z,
@@ -169,9 +189,12 @@ long      seed;			/* for random graph mutations */
 			}
 		}		
 	}
-	for (i = 0; i < nsets_tot; i++) {
-    	printf("\tgoal[%d]: %f\n", i, goal[i]);
-	}
+
+
+    for (i = 0; i < nsets_tot; i++) {
+        printf("\tgoal[%d]: %f\n", i, goal[i]);
+    }
+    save_goals_array(goal, capa_sum, nsets_tot);
 	
 	// REVISED //
 
