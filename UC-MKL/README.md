@@ -26,7 +26,7 @@ Run another program? -- yYnNqQxX (i.e., 'n')
 
 ## Known Issues
 
-1. # of PMs is hardcoded to be 8.
+1. Number of PMs is hardcoded to be 8.
 
 2. Program writes to output file only if it ends early.
 
