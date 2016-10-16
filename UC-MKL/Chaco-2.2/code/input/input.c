@@ -247,7 +247,9 @@ int      *ndims;		/* number of divisions at each stage */
 	nprocs = 1 << (*ndims_tot);
 
 	////// ADD /////////
-	*set_capa = (int *) malloc((unsigned) nprocs * sizeof(int));
+    if (*set_capa == NULL) {
+	   *set_capa = (int *)malloc(nprocs * sizeof(int));
+    }
 	int cur = 0;
 	for (; cur<nprocs; cur++) {
 		printf("Enter Capacity function for PM%d: \n", cur+1);

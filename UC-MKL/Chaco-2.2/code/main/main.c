@@ -3,12 +3,13 @@
  * contract DE-AC04-76DP00789 and is copyrighted by Sandia Corporation. */
 
 #include <stdio.h>
+#include <string.h>
 #include "defs.h"
 #include "params.h"
 
-void _print_int_array(const char *varname, int *array, int size) {
+void print_int_array(const char *varname, int *array, int size) {
   int i;
-  const int NUMS_PER_LINE = 5;
+  const int NUMS_PER_LINE = 8;
   fprintf(stdout, "%s: {\n", varname);
   for (i = 0; i < size; ++i) {
     if (i % NUMS_PER_LINE == 0) fputc(' ', stdout);
@@ -18,9 +19,9 @@ void _print_int_array(const char *varname, int *array, int size) {
   fprintf(stdout, "\n}\n\n");
 }
 
-void _print_short_array(const char *varname, short *array, int size) {
+void print_short_array(const char *varname, short *array, int size) {
   int i;
-  const int NUMS_PER_LINE = 5;
+  const int NUMS_PER_LINE = 8;
   fprintf(stdout, "%s: {\n", varname);
   for (i = 0; i < size; ++i) {
     if (i % NUMS_PER_LINE == 0) fputc(' ', stdout);
@@ -28,6 +29,86 @@ void _print_short_array(const char *varname, short *array, int size) {
     if ((i + 1) % NUMS_PER_LINE == 0 && i != size - 1) fputc('\n', stdout);
   }
   fprintf(stdout, "\n}\n\n");
+}
+
+void save_assignment_array(short *assignment, int size) {
+  int i;
+  static int nth_save = 0;
+
+  FILE *f;
+  if (nth_save == 0) {
+    f = fopen("assignment_hist.txt", "w");
+  } else {
+    f = fopen("assignment_hist.txt", "a");
+  }
+
+  fprintf(f, "%d", nth_save);
+  for (i = 0; i < size; ++i)
+    fprintf(f, ", %d", assignment[i]);
+  fputc('\n', f);
+
+  fclose(f);
+  nth_save++;
+}
+
+void save_switch_capacity_array(int *capa, int size) {
+  int i;
+  static int nth_save = 0;
+
+  FILE *f;
+  if (nth_save == 0) {
+    f = fopen("switch_capacity_hist.txt", "w");
+  } else {
+    f = fopen("switch_capacity_hist.txt", "a");
+  }
+
+  fprintf(f, "%d", nth_save);
+  for (i = 0; i < size; ++i)
+    fprintf(f, ", %d", capa[i]);
+  fputc('\n', f);
+
+  fclose(f);
+  nth_save++;
+}
+
+void save_host_usage_array(int *usage, int size) {
+  int i;
+  static int nth_save = 0;
+
+  FILE *f;
+  if (nth_save == 0) {
+    f = fopen("host_usage_hist.txt", "w");
+  } else {
+    f = fopen("host_usage_hist.txt", "a");
+  }
+
+  fprintf(f, "%d", nth_save);
+  for (i = 0; i < size; ++i)
+    fprintf(f, ", %d", usage[i]);
+  fputc('\n', f);
+
+  fclose(f);
+  nth_save++;
+}
+
+void save_usage_array(int *usage, int size) {
+  int i;
+  static int nth_save = 0;
+
+  FILE *f;
+  if (nth_save == 0) {
+    f = fopen("usage_hist.txt", "w");
+  } else {
+    f = fopen("usage_hist.txt", "a");
+  }
+
+  fprintf(f, "%d", nth_save);
+  for (i = 0; i < size; ++i)
+    fprintf(f, ", %d", usage[i]);
+  fputc('\n', f);
+
+  fclose(f);
+  nth_save++;
 }
 
 int main() {
@@ -70,7 +151,7 @@ int main() {
   int ndims;         /* dimension of recursive partitioning at each level */
   int architecture;  /* 0 => hypercube, d => d-dimensional mesh */
   int ndims_tot;     /* total number of cube dimensions to divide */
-  int *set_capa;     /* capacity of each PM ----------------ADD! */
+  int *set_capa = NULL;     /* capacity of each PM ----------------ADD! */
   int set_capa_func[20][3]; /* capacity function of each PM (up to 20
                                PMs)-------------ADD! */
   int usage[20]; /* capacity usage for switches (0~100)--------------ADD! */
@@ -128,8 +209,8 @@ int main() {
       // printf("-------- %d, %d\n", i,u[i]);
     }
 
-    _print_int_array("usage", usage, 20);
-    _print_int_array("host_usage", host_usage, 20);
+    print_int_array("usage", usage, 20);
+    print_int_array("host_usage", host_usage, 20);
 
     read_params(params_file);
 
@@ -175,7 +256,7 @@ int main() {
       fscanf(fin_host, "%d", &host_percent[j]);
       // printf("----%d: %d-----",j, host_percent[j]); //////
     }
-    _print_int_array("host_percent (fscanf)", host_percent, nvtxs);
+    print_int_array("host_percent (fscanf)", host_percent, nvtxs);
     /***************************************/
 
     if (global_method == 7) {
@@ -184,7 +265,7 @@ int main() {
       Assign_In_File_Name = inassignname;
     }
 
-    _print_short_array("assignment (input_assign)", assignment, nvtxs);
+    print_short_array("assignment (input_assign)", assignment, nvtxs);
 
     if (global_method == 3 ||
         (MATCH_TYPE == 5 &&
@@ -206,9 +287,8 @@ int main() {
     int nprocs = 1 << ndims_tot; /* number of processors being divided into */
     printf("# of PMs: %d\n", nprocs);  ////////////
 
-    int n = 0;
-    for (n = 0; n < 1000;
-         n++) {  ///////// can modify the number of times!!!!! Siyuan
+    int n;
+    for (n = 0; n < 1000; n++) {  ///////// can modify the number of times!!!!! Siyuan
 
       flag = input_graph(fin, graphname, &start, &adjacency, &nvtxs, &vwgts,
                          &ewgts);  // ADD!
@@ -223,13 +303,13 @@ int main() {
       // compute current switch capacity
       int cur = 0;
       for (cur = 0; cur < nprocs; cur++) {
-        set_capa[cur] = (int)((double)(set_capa_func[cur][0]) / 10000 *
-                                  (usage[cur]) * ((double)(usage[cur])) +
-                              (double)(set_capa_func[cur][1]) / 10000 *
-                                  ((double)(usage[cur])) +
-                              (double)(set_capa_func[cur][0]) / 10000);
+        double capa_0 = set_capa_func[cur][2];
+        double capa_1 = set_capa_func[cur][1] * usage[cur];
+        double capa_2 = set_capa_func[cur][0] * usage[cur] * usage[cur];
+        set_capa[cur] = (int)((capa_2 + capa_1 + capa_0) / 10000);
       }
-      _print_int_array("set_capa (switch capacity)", set_capa, nprocs);
+      print_int_array("set_capa (switch capacity)", set_capa, nprocs);
+      save_switch_capacity_array(set_capa, nprocs);
 
       // for (cur = 0; cur < nprocs; cur++) {
       //   printf("~~~~~time %d: current switch capacity~~~~~~~  %d\n", n,
@@ -243,9 +323,10 @@ int main() {
                 ndims, eigtol, seed);
       printf("~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~\n");
 
-      _print_int_array("host_percent (after partition)", host_percent, nvtxs);
+      print_int_array("host_percent (after partition)", host_percent, nvtxs);
 
-      _print_short_array("assignment (after partition)", assignment, nvtxs);
+      print_short_array("assignment (after partition)", assignment, nvtxs);
+      save_assignment_array(assignment, nvtxs);
 
       /*
       for (j = 0; j < nvtxs; j++) {
@@ -254,16 +335,18 @@ int main() {
       }*/
 
       // recompute u values according to the assignment results
-      for (i = 0; i < 20; i++) {
-        host_usage[i] = 0;
-      }
+      memset(host_usage, 0, sizeof(host_usage));
+      // for (i = 0; i < 20; i++) {
+      //   host_usage[i] = 0;
+      // }
 
       for (j = 0; j < nvtxs; j++) {
         int cur_set = assignment[j];
         host_usage[cur_set] += host_percent[j];
       }
 
-      _print_int_array("host_usage (updated)", host_usage, 20);
+      print_int_array("host_usage (updated)", host_usage, 20);
+      save_host_usage_array(host_usage, 20);
 
       int sati = 1;
       for (cur = 0; cur < nprocs; cur++) {
@@ -284,7 +367,8 @@ int main() {
         }
       }
 
-      _print_int_array("usage (updated)", usage, nprocs);
+      print_int_array("usage (updated)", usage, nprocs);
+      save_usage_array(usage, nprocs);
 
       if (sati == 1) {
         printf("********End earlier because of good total usage!********\n");
