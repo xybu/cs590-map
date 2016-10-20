@@ -1,0 +1,15 @@
+Double check the validity of those capacity functions.
+
+In the code K' is not computed. Compute it and change the sati loop.
+
+ -- Make a test case where some PM can be redundant and therefore eliminated.
+
+ -- K'-1
+
+Check convergence. If an assignment appears twice there is no need to continue.
+
+What if we don't have the moving avg part?
+
+Manipulate host weight and link bandwidth (edge weight).
+
+
