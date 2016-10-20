@@ -7,105 +7,49 @@
 #include "defs.h"
 #include "params.h"
 
-void print_int_array(const char *varname, int *array, int size) {
-  int i;
-  const int NUMS_PER_LINE = 8;
-  fprintf(stdout, "%s: {\n", varname);
-  for (i = 0; i < size; ++i) {
-    if (i % NUMS_PER_LINE == 0) fputc(' ', stdout);
-    fprintf(stdout, "%2d: %2d%s", i, array[i], (i < size - 1) ? ",   " : "");
-    if ((i + 1) % NUMS_PER_LINE == 0 && i != size - 1) fputc('\n', stdout);
-  }
-  fprintf(stdout, "\n}\n\n");
-}
+#define define_print_array_func(func_name, array_type, print_fmt_str) \
+  void func_name(const char *varname, array_type array, int size) {   \
+    int i;                                                            \
+    const int NUMS_PER_LINE = 8;                                      \
+    fprintf(stdout, "%s: {\n", varname);                              \
+    for (i = 0; i < size; ++i) {                                      \
+      if (i % NUMS_PER_LINE == 0)                                     \
+        fputc(' ', stdout);                                           \
+      fprintf(stdout, "%2d: " print_fmt_str "%s",                     \
+              i, array[i], (i < size - 1) ? ", " : "");               \
+      if ((i + 1) % NUMS_PER_LINE == 0 && i != size - 1)              \
+        fputc('\n', stdout);                                          \
+    }                                                                 \
+    fprintf(stdout, "\n}\n\n");                                       \
+  }                                                                   \
 
-void print_short_array(const char *varname, short *array, int size) {
-  int i;
-  const int NUMS_PER_LINE = 8;
-  fprintf(stdout, "%s: {\n", varname);
-  for (i = 0; i < size; ++i) {
-    if (i % NUMS_PER_LINE == 0) fputc(' ', stdout);
-    fprintf(stdout, "%2d: %2d%s", i, array[i], (i < size - 1) ? ", " : "");
-    if ((i + 1) % NUMS_PER_LINE == 0 && i != size - 1) fputc('\n', stdout);
-  }
-  fprintf(stdout, "\n}\n\n");
-}
-
-void save_assignment_array(short *assignment, int size) {
-  int i;
-  static int nth_save = 0;
-
-  FILE *f;
-  if (nth_save == 0) {
-    f = fopen("assignment_hist.txt", "w");
-  } else {
-    f = fopen("assignment_hist.txt", "a");
-  }
-
-  fprintf(f, "%d", nth_save);
-  for (i = 0; i < size; ++i) fprintf(f, ", %d", assignment[i]);
-  fputc('\n', f);
-
-  fclose(f);
-  nth_save++;
-}
-
-void save_switch_capacity_array(int *capa, int size) {
-  int i;
-  static int nth_save = 0;
-
-  FILE *f;
-  if (nth_save == 0) {
-    f = fopen("switch_capacity_hist.txt", "w");
-  } else {
-    f = fopen("switch_capacity_hist.txt", "a");
+#define define_save_array_func(func_name, array_type, file_name)  \
+  void func_name(array_type array, int size) {                    \
+    int i;                                                        \
+    static int nth_save = 0;                                      \
+                                                                  \
+    FILE *f;                                                      \
+    if (nth_save == 0) {                                          \
+      f = fopen(file_name, "w");                                  \
+    } else {                                                      \
+      f = fopen(file_name, "a");                                  \
+    }                                                             \
+                                                                  \
+    fprintf(f, "%d", nth_save);                                   \
+    for (i = 0; i < size; ++i) fprintf(f, ", %d", array[i]);      \
+    fputc('\n', f);                                               \
+                                                                  \
+    fclose(f);                                                    \
+    nth_save++;                                                   \
   }
 
-  fprintf(f, "%d", nth_save);
-  for (i = 0; i < size; ++i) fprintf(f, ", %d", capa[i]);
-  fputc('\n', f);
+define_print_array_func(print_int_array, int *, "%2d");
+define_print_array_func(print_short_array, short *, "%2d");
 
-  fclose(f);
-  nth_save++;
-}
-
-void save_host_usage_array(int *usage, int size) {
-  int i;
-  static int nth_save = 0;
-
-  FILE *f;
-  if (nth_save == 0) {
-    f = fopen("host_usage_hist.txt", "w");
-  } else {
-    f = fopen("host_usage_hist.txt", "a");
-  }
-
-  fprintf(f, "%d", nth_save);
-  for (i = 0; i < size; ++i) fprintf(f, ", %d", usage[i]);
-  fputc('\n', f);
-
-  fclose(f);
-  nth_save++;
-}
-
-void save_usage_array(int *usage, int size) {
-  int i;
-  static int nth_save = 0;
-
-  FILE *f;
-  if (nth_save == 0) {
-    f = fopen("usage_hist.txt", "w");
-  } else {
-    f = fopen("usage_hist.txt", "a");
-  }
-
-  fprintf(f, "%d", nth_save);
-  for (i = 0; i < size; ++i) fprintf(f, ", %d", usage[i]);
-  fputc('\n', f);
-
-  fclose(f);
-  nth_save++;
-}
+define_save_array_func(save_assignment_array, short *, "assignment_hist.txt");
+define_save_array_func(save_switch_capacity_array, int *, "switch_capacity_hist.txt");
+define_save_array_func(save_host_usage_array, int *, "host_usage_hist.txt");
+define_save_array_func(save_usage_array, int *, "usage_hist.txt");
 
 int main() {
   extern int Using_Main;            /* is main routine being called? */

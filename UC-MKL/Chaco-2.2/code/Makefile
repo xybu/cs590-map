@@ -101,7 +101,7 @@ alint:
 		alint ${IFLAG} ${FILES.c} -lm
 
 clean:
-		rm -f */*.o ${DEST_DIR}/core
+		rm -f */*.o ${DEST_DIR}/chaco
 
 .c.o:
 		${CC} -c ${IFLAG} ${CFLAGS} -o $*.o $*.c
