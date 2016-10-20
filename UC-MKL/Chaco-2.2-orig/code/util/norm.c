@@ -5,23 +5,21 @@
 #include <math.h>
 
 /* Returns 2-norm of a double n-vector over range. */
-double    norm(vec, beg, end)
-double   *vec;
-int       beg, end;
+double norm(vec, beg, end) double *vec;
+int beg, end;
 {
-    double    dot();
+  double dot();
 
-    return (sqrt(dot(vec, beg, end, vec)));
+  return (sqrt(dot(vec, beg, end, vec)));
 }
 
 /* Returns 2-norm of a float n-vector over range. */
-double    norm_float(vec, beg, end)
-float    *vec;
-int       beg, end;
+double norm_float(vec, beg, end) float *vec;
+int beg, end;
 {
-    double    temp;
-    double    dot_float();
+  double temp;
+  double dot_float();
 
-    temp = sqrt(dot_float(vec, beg, end, vec));
-    return (temp);
+  temp = sqrt(dot_float(vec, beg, end, vec));
+  return (temp);
 }

@@ -7,23 +7,22 @@
 #include "structs.h"
 
 /* Check an eigenpair of A by direct multiplication.  */
-double    checkeig(err, A, y, n, lambda, vwsqrt, work)
-double   *err;
+double checkeig(err, A, y, n, lambda, vwsqrt, work) double *err;
 struct vtx_data **A;
-double   *y;
-int       n;
-double    lambda;
-double   *vwsqrt;
-double   *work;
+double *y;
+int n;
+double lambda;
+double *vwsqrt;
+double *work;
 {
-    double    resid;
-    double    normy;
-    double    norm();
-    void      splarax(), scadd();
+  double resid;
+  double normy;
+  double norm();
+  void splarax(), scadd();
 
-    splarax(err, A, n, y, vwsqrt, work);
-    scadd(err, 1, n, -lambda, y);
-    normy = norm(y, 1, n);
-    resid = norm(err, 1, n) / normy;
-    return (resid);
+  splarax(err, A, n, y, vwsqrt, work);
+  scadd(err, 1, n, -lambda, y);
+  normy = norm(y, 1, n);
+  resid = norm(err, 1, n) / normy;
+  return (resid);
 }

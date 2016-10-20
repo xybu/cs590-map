@@ -4,39 +4,38 @@
 
 #include "structs.h"
 
-int       msolve_(lnvtxs, x, y, dA, vwsqrt, work)
-long     *lnvtxs;
-double   *x;
-double   *y;
-double   *dA;
-double   *vwsqrt;
-double   *work;
+int msolve_(lnvtxs, x, y, dA, vwsqrt, work) long *lnvtxs;
+double *x;
+double *y;
+double *dA;
+double *vwsqrt;
+double *work;
 {
-    struct vtx_data **A;
-    int       nvtxs;
-    int       i;
+  struct vtx_data **A;
+  int nvtxs;
+  int i;
 
-    A = (struct vtx_data **) dA;
-    nvtxs = (int) *lnvtxs;
+  A = (struct vtx_data **)dA;
+  nvtxs = (int)*lnvtxs;
 
-    /* to placate alint */
-    A = A;
-    vwsqrt = vwsqrt;
+  /* to placate alint */
+  A = A;
+  vwsqrt = vwsqrt;
 
-    /* Offset arrays for our C numbering. */
-    x -= 1;
-    y -= 1;
-    work -= 1;
+  /* Offset arrays for our C numbering. */
+  x -= 1;
+  y -= 1;
+  work -= 1;
 
-    /* Just do a copy for now. */
-    for (i = nvtxs; i; i--) {
-	y[i] = x[i];
-    }
+  /* Just do a copy for now. */
+  for (i = nvtxs; i; i--) {
+    y[i] = x[i];
+  }
 
-    /* Restore arrays to Fortran numbering. */
-    x -= 1;
-    y -= 1;
-    work -= 1;
+  /* Restore arrays to Fortran numbering. */
+  x -= 1;
+  y -= 1;
+  work -= 1;
 
-    return (0);
+  return (0);
 }

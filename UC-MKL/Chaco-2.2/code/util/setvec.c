@@ -3,29 +3,27 @@
  * contract DE-AC04-76DP00789 and is copyrighted by Sandia Corporation. */
 
 /* Set a double precision vector to constant over range. */
-void      setvec(vec, beg, end, setval)
-double    vec[];
-int       beg, end;
-double    setval;
+void setvec(vec, beg, end, setval) double vec[];
+int beg, end;
+double setval;
 {
-    int       i;
+  int i;
 
-    vec = vec + beg;
-    for (i = end - beg + 1; i; i--) {
-	(*vec++) = setval;
-    }
+  vec = vec + beg;
+  for (i = end - beg + 1; i; i--) {
+    (*vec++) = setval;
+  }
 }
 
 /* Set a float precision vector to constant over range. */
-void      setvec_float(vec, beg, end, setval)
-float     vec[];
-int       beg, end;
-float     setval;
+void setvec_float(vec, beg, end, setval) float vec[];
+int beg, end;
+float setval;
 {
-    int       i;
+  int i;
 
-    vec = vec + beg;
-    for (i = end - beg + 1; i; i--) {
-	(*vec++) = setval;
-    }
+  vec = vec + beg;
+  for (i = end - beg + 1; i; i--) {
+    (*vec++) = setval;
+  }
 }

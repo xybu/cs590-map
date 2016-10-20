@@ -6,21 +6,19 @@
 #include "structs.h"
 
 /* Allocate space for new orthlink, double version. */
-struct orthlink *makeorthlnk()
-{
-    struct orthlink *newlnk;
-    double   *smalloc();
+struct orthlink *makeorthlnk() {
+  struct orthlink *newlnk;
+  double *smalloc();
 
-    newlnk = (struct orthlink *) smalloc(sizeof(struct orthlink));
-    return (newlnk);
+  newlnk = (struct orthlink *)smalloc(sizeof(struct orthlink));
+  return (newlnk);
 }
 
 /* Allocate space for new orthlink, float version. */
-struct orthlink_float *makeorthlnk_float()
-{
-    struct orthlink_float *newlnk;
-    double   *smalloc();
+struct orthlink_float *makeorthlnk_float() {
+  struct orthlink_float *newlnk;
+  double *smalloc();
 
-    newlnk = (struct orthlink_float *) smalloc(sizeof(struct orthlink_float));
-    return (newlnk);
+  newlnk = (struct orthlink_float *)smalloc(sizeof(struct orthlink_float));
+  return (newlnk);
 }

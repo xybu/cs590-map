@@ -3,12 +3,8 @@
  * contract DE-AC04-76DP00789 and is copyrighted by Sandia Corporation. */
 
 /* Compute the binary reflected Gray code of a value. */
-int       gray(i)
-int       i;
-{
-    return ((i >> 1) ^ i);
-}
-
+int gray(i) int i;
+{ return ((i >> 1) ^ i); }
 
 /* Compute the inverse of the binary reflected Gray code of a value. */
 /*
@@ -19,8 +15,8 @@ int       i;
 
     k = i;
     while (k) {
-	k >>= 1;
-	i ^= k;
+        k >>= 1;
+        i ^= k;
     }
     return (i);
 }

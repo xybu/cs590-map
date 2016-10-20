@@ -4,10 +4,9 @@
 
 #include "f2c.h"
 
-double    pow_dd(ap, bp)
-doublereal *ap, *bp;
+double pow_dd(ap, bp) doublereal *ap, *bp;
 {
-    double    pow();
+  double pow();
 
-    return (pow(*ap, *bp));
+  return (pow(*ap, *bp));
 }

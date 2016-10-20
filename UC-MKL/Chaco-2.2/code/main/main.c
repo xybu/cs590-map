@@ -43,8 +43,7 @@ void save_assignment_array(short *assignment, int size) {
   }
 
   fprintf(f, "%d", nth_save);
-  for (i = 0; i < size; ++i)
-    fprintf(f, ", %d", assignment[i]);
+  for (i = 0; i < size; ++i) fprintf(f, ", %d", assignment[i]);
   fputc('\n', f);
 
   fclose(f);
@@ -63,8 +62,7 @@ void save_switch_capacity_array(int *capa, int size) {
   }
 
   fprintf(f, "%d", nth_save);
-  for (i = 0; i < size; ++i)
-    fprintf(f, ", %d", capa[i]);
+  for (i = 0; i < size; ++i) fprintf(f, ", %d", capa[i]);
   fputc('\n', f);
 
   fclose(f);
@@ -83,8 +81,7 @@ void save_host_usage_array(int *usage, int size) {
   }
 
   fprintf(f, "%d", nth_save);
-  for (i = 0; i < size; ++i)
-    fprintf(f, ", %d", usage[i]);
+  for (i = 0; i < size; ++i) fprintf(f, ", %d", usage[i]);
   fputc('\n', f);
 
   fclose(f);
@@ -103,8 +100,7 @@ void save_usage_array(int *usage, int size) {
   }
 
   fprintf(f, "%d", nth_save);
-  for (i = 0; i < size; ++i)
-    fprintf(f, ", %d", usage[i]);
+  for (i = 0; i < size; ++i) fprintf(f, ", %d", usage[i]);
   fputc('\n', f);
 
   fclose(f);
@@ -288,7 +284,8 @@ int main() {
     printf("# of PMs: %d\n", nprocs);  ////////////
 
     int n;
-    for (n = 0; n < 1000; n++) {  ///////// can modify the number of times!!!!! Siyuan
+    for (n = 0; n < 1000;
+         n++) {  ///////// can modify the number of times!!!!! Siyuan
 
       flag = input_graph(fin, graphname, &start, &adjacency, &nvtxs, &vwgts,
                          &ewgts);  // ADD!
@@ -351,7 +348,8 @@ int main() {
       int sati = 1;
       for (cur = 0; cur < nprocs; cur++) {
         // printf(
-        //     "\tcurrent host percentage after partitioning %d: %d\t old switch "
+        //     "\tcurrent host percentage after partitioning %d: %d\t old switch
+        //     "
         //     "usage percentage: %d\n",
         //     cur, host_usage[cur], usage[cur]);
 
