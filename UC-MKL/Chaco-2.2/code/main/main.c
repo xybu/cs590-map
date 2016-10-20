@@ -51,6 +51,15 @@ define_save_array_func(save_switch_capacity_array, int *, "switch_capacity_hist.
 define_save_array_func(save_host_usage_array, int *, "host_usage_hist.txt");
 define_save_array_func(save_usage_array, int *, "usage_hist.txt");
 
+// A PM is considered under-utilized if its CPU usage is below this limit.
+const int UNDER_UTILIZATION_THRESHOLD = 90;
+
+// A PM is considered over-utilized if its CPU usage is above this limit.
+const int OVER_UTILIZATION_THRESHOLD = 110;
+
+// Allow the last host to be under-utilized.
+const int MAX_UNDER_UTILIZED_HOST = 1;
+
 int main() {
   extern int Using_Main;            /* is main routine being called? */
   extern char *Graph_File_Name;     /* name of graph input file */
@@ -289,7 +298,9 @@ int main() {
       print_int_array("host_usage (updated)", host_usage, 20);
       save_host_usage_array(host_usage, 20);
 
-      int sati = 1;
+      int num_under_utilized_host = 0;
+      int num_over_utilized_host = 0;
+
       for (cur = 0; cur < nprocs; cur++) {
         // printf(
         //     "\tcurrent host percentage after partitioning %d: %d\t old switch
@@ -299,7 +310,11 @@ int main() {
 
         // compute if all u's have: 95<= u <= 105. if does, stop the loops
         int total_usage = host_usage[cur] + usage[cur];
-        if (total_usage < 90 || total_usage > 110) sati = 0;
+        if (total_usage < UNDER_UTILIZATION_THRESHOLD) {
+          num_under_utilized_host++;
+        } else if (total_usage > OVER_UTILIZATION_THRESHOLD) {
+          num_over_utilized_host++;
+        }
 
         usage[cur] = (usage[cur] + (100 - host_usage[cur])) / 2;
         if (usage[cur] < 50) {
@@ -312,7 +327,8 @@ int main() {
       print_int_array("usage (updated)", usage, nprocs);
       save_usage_array(usage, nprocs);
 
-      if (sati == 1) {
+      if (num_over_utilized_host == 0 &&
+          num_under_utilized_host <= MAX_UNDER_UTILIZED_HOST) {
         printf("********End earlier because of good total usage!********\n");
         break;
       }
