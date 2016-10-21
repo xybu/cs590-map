@@ -3,51 +3,51 @@
  * contract DE-AC04-76DP00789 and is copyrighted by Sandia Corporation. */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "defs.h"
 #include "params.h"
 
-#define define_print_array_func(func_name, array_type, print_fmt_str) \
-  void func_name(const char *varname, array_type array, int size) {   \
-    int i;                                                            \
-    const int NUMS_PER_LINE = 8;                                      \
-    fprintf(stdout, "%s: {\n", varname);                              \
-    for (i = 0; i < size; ++i) {                                      \
-      if (i % NUMS_PER_LINE == 0)                                     \
-        fputc(' ', stdout);                                           \
-      fprintf(stdout, "%2d: " print_fmt_str "%s",                     \
-              i, array[i], (i < size - 1) ? ", " : "");               \
-      if ((i + 1) % NUMS_PER_LINE == 0 && i != size - 1)              \
-        fputc('\n', stdout);                                          \
-    }                                                                 \
-    fprintf(stdout, "\n}\n\n");                                       \
-  }                                                                   \
+#define define_print_array_func(func_name, array_type, print_fmt_str)         \
+  void func_name(const char *varname, array_type array, int size) {           \
+    int i;                                                                    \
+    const int NUMS_PER_LINE = 8;                                              \
+    fprintf(stdout, "%s: {\n", varname);                                      \
+    for (i = 0; i < size; ++i) {                                              \
+      if (i % NUMS_PER_LINE == 0) fputc(' ', stdout);                         \
+      fprintf(stdout, "%2d: " print_fmt_str "%s", i, array[i],                \
+              (i < size - 1) ? ", " : "");                                    \
+      if ((i + 1) % NUMS_PER_LINE == 0 && i != size - 1) fputc('\n', stdout); \
+    }                                                                         \
+    fprintf(stdout, "\n}\n\n");                                               \
+  }
 
-#define define_save_array_func(func_name, array_type, file_name)  \
-  void func_name(array_type array, int size) {                    \
-    int i;                                                        \
-    static int nth_save = 0;                                      \
-                                                                  \
-    FILE *f;                                                      \
-    if (nth_save == 0) {                                          \
-      f = fopen(file_name, "w");                                  \
-    } else {                                                      \
-      f = fopen(file_name, "a");                                  \
-    }                                                             \
-                                                                  \
-    fprintf(f, "%d", nth_save);                                   \
-    for (i = 0; i < size; ++i) fprintf(f, ", %d", array[i]);      \
-    fputc('\n', f);                                               \
-                                                                  \
-    fclose(f);                                                    \
-    nth_save++;                                                   \
+#define define_save_array_func(func_name, array_type, file_name) \
+  void func_name(array_type array, int size) {                   \
+    int i;                                                       \
+    static int nth_save = 0;                                     \
+                                                                 \
+    FILE *f;                                                     \
+    if (nth_save == 0) {                                         \
+      f = fopen(file_name, "w");                                 \
+    } else {                                                     \
+      f = fopen(file_name, "a");                                 \
+    }                                                            \
+                                                                 \
+    fprintf(f, "%d", nth_save);                                  \
+    for (i = 0; i < size; ++i) fprintf(f, ", %d", array[i]);     \
+    fputc('\n', f);                                              \
+                                                                 \
+    fclose(f);                                                   \
+    nth_save++;                                                  \
   }
 
 define_print_array_func(print_int_array, int *, "%2d");
 define_print_array_func(print_short_array, short *, "%2d");
 
 define_save_array_func(save_assignment_array, short *, "assignment_hist.txt");
-define_save_array_func(save_switch_capacity_array, int *, "switch_capacity_hist.txt");
+define_save_array_func(save_switch_capacity_array, int *,
+                       "switch_capacity_hist.txt");
 define_save_array_func(save_host_usage_array, int *, "host_usage_hist.txt");
 define_save_array_func(save_usage_array, int *, "usage_hist.txt");
 
@@ -58,7 +58,14 @@ const int UNDER_UTILIZATION_THRESHOLD = 90;
 const int OVER_UTILIZATION_THRESHOLD = 110;
 
 // Allow the last host to be under-utilized.
-const int MAX_UNDER_UTILIZED_HOST = 1;
+const int MAX_UNDER_UTILIZED_HOST_COUNT = 1;
+
+// Range of CPU Usage.
+const int MIN_CPU_PERCENT = 0;
+const int MAX_CPU_PERCENT = 100;
+
+// Max number of rounds allowed.
+const int MAX_ITERATIONS = 1000;
 
 int main() {
   extern int Using_Main;            /* is main routine being called? */
@@ -127,6 +134,10 @@ int main() {
   int input_graph(), input_assign(), input_geom();
   void input_queries(), smalloc_stats(), read_params(), clear_timing();
 
+  int i, j, n;
+  short *assignment_history[MAX_ITERATIONS];
+  memset(assignment_history, 0, MAX_ITERATIONS * sizeof(short *));
+
   if (DEBUG_TRACE > 0) {
     printf("<Entering main>\n");
   }
@@ -151,8 +162,7 @@ int main() {
     goal = NULL;
     assignment = NULL;
     /*  ADD  */
-    int i = 0;
-    for (; i < 20; i++) {
+    for (i = 0; i < 20; i++) {
       usage[i] = 90;
       host_usage[i] = 0;
       // printf("-------- %d, %d\n", i,u[i]);
@@ -196,12 +206,12 @@ int main() {
 
     Graph_File_Name = graphname;
 
-    assignment = (short *)smalloc((unsigned)nvtxs * sizeof(short));
+    assignment = (short *)malloc((unsigned)nvtxs * sizeof(short));
     host_percent = (int *)smalloc((unsigned)nvtxs * sizeof(int));  // ADD!
     /****** read the host file here! *******/
     // printf("length!!!!!! %d", nvtxs);
-    int j = 0;
-    for (; j < nvtxs; j++) {
+    
+    for (j = 0; j < nvtxs; j++) {
       fscanf(fin_host, "%d", &host_percent[j]);
       // printf("----%d: %d-----",j, host_percent[j]); //////
     }
@@ -237,8 +247,7 @@ int main() {
     printf("# of PMs: %d\n", nprocs);  ////////////
 
     int n;
-    for (n = 0; n < 1000;
-         n++) {  ///////// can modify the number of times!!!!! Siyuan
+    for (n = 0; n < MAX_ITERATIONS; n++) {
 
       flag = input_graph(fin, graphname, &start, &adjacency, &nvtxs, &vwgts,
                          &ewgts);  // ADD!
@@ -312,26 +321,49 @@ int main() {
         int total_usage = host_usage[cur] + usage[cur];
         if (total_usage < UNDER_UTILIZATION_THRESHOLD) {
           num_under_utilized_host++;
+          printf("PM %d is under-utilized. Its CPU usage is %d+%d=%d.\n", cur,
+                 host_usage[cur], usage[cur], total_usage);
         } else if (total_usage > OVER_UTILIZATION_THRESHOLD) {
           num_over_utilized_host++;
+          printf("PM %d is over-utilized. Its CPU usage is %d+%d=%d.\n", cur,
+                 host_usage[cur], usage[cur], total_usage);
         }
 
-        usage[cur] = (usage[cur] + (100 - host_usage[cur])) / 2;
-        if (usage[cur] < 50) {
-          usage[cur] = 50;
-        } else if (usage[cur] > 90) {
-          usage[cur] = 90;
+        usage[cur] = MAX_CPU_PERCENT - host_usage[cur];
+        if (usage[cur] < MIN_CPU_PERCENT) {
+          usage[cur] = MIN_CPU_PERCENT;
         }
+
+        // usage[cur] = (usage[cur] + (100 - host_usage[cur])) / 2;
+        // if (usage[cur] < 50) {
+        //   usage[cur] = 50;
+        // } else if (usage[cur] > 90) {
+        //   usage[cur] = 90;
+        // }
       }
 
       print_int_array("usage (updated)", usage, nprocs);
       save_usage_array(usage, nprocs);
 
       if (num_over_utilized_host == 0 &&
-          num_under_utilized_host <= MAX_UNDER_UTILIZED_HOST) {
+          num_under_utilized_host <= MAX_UNDER_UTILIZED_HOST_COUNT) {
         printf("********End earlier because of good total usage!********\n");
-        break;
+        goto skip;
       }
+
+      assignment_history[n] = assignment;
+
+      // Check if the assignment appeared before.
+      for (cur = 0; cur < n; ++cur) {
+        if (!memcmp(assignment_history[cur], assignment, nvtxs * sizeof(short))) {
+          // When finding an assignment that is already attempted, terminate for now.
+          // There should be better policy though.
+          printf("Iteration %d gives same assignment as %d. Stop.\n", n, cur);
+          goto skip;
+        }
+      }
+
+      assignment = (short *)malloc((unsigned)nvtxs * sizeof(short));
     }
   /***************************/
 
@@ -341,7 +373,10 @@ int main() {
       if (y != NULL) sfree((char *)y);
       if (x != NULL) sfree((char *)x);
     }
-    sfree((char *)assignment);
+    
+    for (i = 0; i < n; ++i)
+      free(assignment_history[i]);
+
     sfree((char *)host_percent);
 
     if (DEBUG_MEMORY > 0) {

@@ -137,7 +137,7 @@ long seed;                     /* for random graph mutations */
       goal[i] = 0;
     }
 
-    printf("Siyuan: Total capacity: %f\n Set goals:\n", capa_sum);  // REVISED
+    printf("Siyuan: Total capacity: %lf\n Set goals:\n", capa_sum);  // REVISED
     if (capa_sum < vwgt_sum) {
       double tmp_total = 0;
       for (i = 0; i < nsets_tot; i++) {
