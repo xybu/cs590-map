@@ -17,7 +17,7 @@ int OUTPUT_ASSIGN = FALSE;  /* Write assignments to file? (TRUE/FALSE) */
 int OUT_ASSIGN_INV = FALSE; /* If so, use inverse form? (TRUE/FALSE) */
 int IN_ASSIGN_INV = FALSE;  /* Input file in inverse form? (TRUE/FALSE) */
 int PROMPT = TRUE;          /* Prompt for input? (TRUE/FALSE) */
-int PRINT_HEADERS = TRUE;   /* Print pretty output headers (TRUE/FALSE) */
+int PRINT_HEADERS = FALSE;   /* Print pretty output headers (TRUE/FALSE) */
 
 /* Eigenvector calculation parameters */
 

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 #include "defs.h"
 #include "params.h"
 
@@ -61,11 +62,65 @@ const int OVER_UTILIZATION_THRESHOLD = 110;
 const int MAX_UNDER_UTILIZED_HOST_COUNT = 1;
 
 // Range of CPU Usage.
-const int MIN_CPU_PERCENT = 0;
+const int MIN_CPU_PERCENT = 10;
 const int MAX_CPU_PERCENT = 100;
 
 // Max number of rounds allowed.
 const int MAX_ITERATIONS = 1000;
+
+// Initial CPU share for packet processing.
+const int INIT_CPU_PERCENT_FOR_SWITCH = 50;
+
+// Usage decay coefficient. Should be a value in (0, 1].
+const double CURRENT_USAGE_WEIGHT = 0.6;
+
+void update_host_usage(int nhosts, int *host_cpu_percent, short *assignment,
+                       int npms, int *pm_host_usage) {
+  int i;
+  short assigned_pm;
+  for (i = 0; i < nhosts; ++i) {
+    assigned_pm = assignment[i];
+    if (assigned_pm < 0 || assigned_pm >= npms) {
+      printf("Error: host %d is assigned to PM #%d which does not exist!\n", i,
+             assigned_pm);
+      exit(1);
+    }
+    pm_host_usage[assigned_pm] += host_cpu_percent[i];
+  }
+}
+
+int find_most_under_utilized_pm(int npms, int *pm_host_usage, char *is_pm_disabled) {
+  int i, min_index = -1, min_usage = INT_MAX;
+  for (i = 0; i < npms; ++i) {
+    if (is_pm_disabled[i]) continue;
+    if (min_usage > pm_host_usage[i]) {
+      min_index = i;
+      min_usage = pm_host_usage[i];
+    }
+  }
+  return min_index;
+}
+
+void clear_disabled_pm_mapping(int nhosts,
+                               int *host_cpu_percent,
+                               short *assignment,
+                               int npms,
+                               int *pm_host_usage,
+                               char *is_pm_disabled) {
+  int i;
+  short assigned_pm, pm;
+  for (i = 0; i < nhosts; ++i) {
+    assigned_pm = assignment[i];
+    if (is_pm_disabled[assigned_pm]) {
+      // This host is assigned to a PM that is disabled.
+      pm = find_most_under_utilized_pm(npms, pm_host_usage, is_pm_disabled);
+      assignment[i] = pm;
+      pm_host_usage[pm] += host_cpu_percent[i];
+      pm_host_usage[assigned_pm] -= host_cpu_percent[i];
+      printf("Warning: host %d is assigned to disabled PM #%d. Move it to %d.\n", i, assigned_pm, pm);
+    }
+  }
+}
 
 int main() {
   extern int Using_Main;            /* is main routine being called? */
@@ -135,7 +190,10 @@ int main() {
   void input_queries(), smalloc_stats(), read_params(), clear_timing();
 
   int i, j, n;
+  int disabled_pm_count = 0;
   short *assignment_history[MAX_ITERATIONS];
+  char is_pm_disabled[20];
+
   memset(assignment_history, 0, MAX_ITERATIONS * sizeof(short *));
 
   if (DEBUG_TRACE > 0) {
@@ -162,11 +220,13 @@ int main() {
     goal = NULL;
     assignment = NULL;
     /*  ADD  */
-    for (i = 0; i < 20; i++) {
-      usage[i] = 90;
-      host_usage[i] = 0;
-      // printf("-------- %d, %d\n", i,u[i]);
-    }
+    memset(usage, 0, sizeof(usage));
+    memset(host_usage, 0, sizeof(host_usage));
+    // for (i = 0; i < 20; i++) {
+    //   usage[i] = 0;
+    //   host_usage[i] = 0;
+    //   // printf("-------- %d, %d\n", i,u[i]);
+    // }
 
     print_int_array("usage", usage, 20);
     print_int_array("host_usage", host_usage, 20);
@@ -207,15 +267,19 @@ int main() {
     Graph_File_Name = graphname;
 
     assignment = (short *)malloc((unsigned)nvtxs * sizeof(short));
+    memset(assignment, 0, nvtxs * sizeof(short));
     host_percent = (int *)smalloc((unsigned)nvtxs * sizeof(int));  // ADD!
     /****** read the host file here! *******/
     // printf("length!!!!!! %d", nvtxs);
-    
+
+    size_t host_percent_sum = 0;
     for (j = 0; j < nvtxs; j++) {
       fscanf(fin_host, "%d", &host_percent[j]);
+      host_percent_sum += host_percent[j];
       // printf("----%d: %d-----",j, host_percent[j]); //////
     }
     print_int_array("host_percent (fscanf)", host_percent, nvtxs);
+
     /***************************************/
 
     if (global_method == 7) {
@@ -246,9 +310,25 @@ int main() {
     int nprocs = 1 << ndims_tot; /* number of processors being divided into */
     printf("# of PMs: %d\n", nprocs);  ////////////
 
+    for (i = 0; i < nprocs; i++) {
+      if (set_capa_func[i][2] + set_capa_func[i][1] + set_capa_func[i][0] == 0) {
+        is_pm_disabled[i] = 1;
+        disabled_pm_count++;
+      } else {
+        is_pm_disabled[i] = 0;
+      }
+    }
+    printf("# of disabled PMs: %d.\n", disabled_pm_count);
+
+    int average_host_usage = host_percent_sum / (nprocs - disabled_pm_count);
+
+    for (i = 0; i < nprocs; ++i) {
+      usage[i] = MIN_CPU_PERCENT * 2;  // MAX_CPU_PERCENT - average_host_usage
+    }
+    print_int_array("usage (averaged)", usage, nprocs);
+
     int n;
     for (n = 0; n < MAX_ITERATIONS; n++) {
-
       flag = input_graph(fin, graphname, &start, &adjacency, &nvtxs, &vwgts,
                          &ewgts);  // ADD!
       if (flag) {
@@ -299,10 +379,13 @@ int main() {
       //   host_usage[i] = 0;
       // }
 
-      for (j = 0; j < nvtxs; j++) {
-        int cur_set = assignment[j];
-        host_usage[cur_set] += host_percent[j];
-      }
+      // for (j = 0; j < nvtxs; j++) {
+      //   int cur_set = assignment[j];
+      //   host_usage[cur_set] += host_percent[j];
+      // }
+      update_host_usage(nvtxs, host_percent, assignment, nprocs, host_usage);
+
+      clear_disabled_pm_mapping(nvtxs, host_percent, assignment, nprocs, host_usage, is_pm_disabled);
 
       print_int_array("host_usage (updated)", host_usage, 20);
       save_host_usage_array(host_usage, 20);
@@ -321,18 +404,29 @@ int main() {
         int total_usage = host_usage[cur] + usage[cur];
         if (total_usage < UNDER_UTILIZATION_THRESHOLD) {
           num_under_utilized_host++;
-          printf("PM %d is under-utilized. Its CPU usage is %d+%d=%d.\n", cur,
-                 host_usage[cur], usage[cur], total_usage);
+          printf("PM %d is under-utilized. Its CPU usage is %d + %d = %d.\n",
+                 cur, host_usage[cur], usage[cur], total_usage);
         } else if (total_usage > OVER_UTILIZATION_THRESHOLD) {
           num_over_utilized_host++;
-          printf("PM %d is over-utilized. Its CPU usage is %d+%d=%d.\n", cur,
+          printf("PM %d is over-utilized. Its CPU usage is %d + %d = %d.\n",
+                 cur, host_usage[cur], usage[cur], total_usage);
+        } else {
+          printf("PM %d seems fine. Its CPU usage is %d + %d = %d.\n", cur,
                  host_usage[cur], usage[cur], total_usage);
         }
 
-        usage[cur] = MAX_CPU_PERCENT - host_usage[cur];
-        if (usage[cur] < MIN_CPU_PERCENT) {
-          usage[cur] = MIN_CPU_PERCENT;
+        double current_usage = MAX_CPU_PERCENT - host_usage[cur];
+        if (current_usage < MIN_CPU_PERCENT) {
+          current_usage = MIN_CPU_PERCENT;
         }
+
+        double old_usage = usage[cur];
+
+        usage[cur] = (int)((1 - CURRENT_USAGE_WEIGHT) * (old_usage) +
+                           (CURRENT_USAGE_WEIGHT) * (current_usage));
+
+        printf("  |- Accum. usage=%.2lf | New usage=%.2lf | Next usage=%d.\n\n",
+               old_usage, current_usage, usage[cur]);
 
         // usage[cur] = (usage[cur] + (100 - host_usage[cur])) / 2;
         // if (usage[cur] < 50) {
@@ -355,8 +449,10 @@ int main() {
 
       // Check if the assignment appeared before.
       for (cur = 0; cur < n; ++cur) {
-        if (!memcmp(assignment_history[cur], assignment, nvtxs * sizeof(short))) {
-          // When finding an assignment that is already attempted, terminate for now.
+        if (!memcmp(assignment_history[cur], assignment,
+                    nvtxs * sizeof(short))) {
+          // When finding an assignment that is already attempted, terminate for
+          // now.
           // There should be better policy though.
           printf("Iteration %d gives same assignment as %d. Stop.\n", n, cur);
           goto skip;
@@ -373,9 +469,8 @@ int main() {
       if (y != NULL) sfree((char *)y);
       if (x != NULL) sfree((char *)x);
     }
-    
-    for (i = 0; i < n; ++i)
-      free(assignment_history[i]);
+
+    for (i = 0; i < n; ++i) free(assignment_history[i]);
 
     sfree((char *)host_percent);
 
@@ -393,6 +488,8 @@ int main() {
       clear_timing();
       printf("\n------------------------------------------------\n\n");
       fflush(stdout);
+    } else {
+      putc('\n');
     }
   }
   if (params_file != NULL) fclose(params_file);
