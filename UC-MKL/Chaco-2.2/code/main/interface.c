@@ -173,6 +173,7 @@ long seed;                     /* for random graph mutations */
           goal[max_index] = 0;
           continue;
         }
+        // TODO: this goal calculation may be refined.
         if (vwgt_sum > set_capa[max_index]) {
           goal[max_index] = set_capa[max_index];
           vwgt_sum -= set_capa[max_index];

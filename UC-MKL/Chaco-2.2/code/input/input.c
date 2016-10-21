@@ -247,10 +247,10 @@ int *ndims;         /* number of divisions at each stage */
              (double)(set_capa_func[cur][1]) / 10000,
              (float)set_capa_func[cur][2] / 10000);
 
-      double capa_0 = set_capa_func[cur][2];
-      double capa_1 = set_capa_func[cur][1] * usage[cur];
-      double capa_2 = set_capa_func[cur][0] * usage[cur] * usage[cur];
-      (*set_capa)[cur] = (int)((capa_0 + capa_1 + capa_2) / 10000);
+      // double capa_0 = set_capa_func[cur][2];
+      // double capa_1 = set_capa_func[cur][1] * usage[cur];
+      // double capa_2 = set_capa_func[cur][0] * usage[cur] * usage[cur];
+      //(*set_capa)[cur] = (int)((capa_0 + capa_1 + capa_2) / 10000);
 
       // (*set_capa)[cur] = (int)((double)(set_capa_func[cur][0])/10000 *
       // (usage[cur])*((double)(usage[cur]))
@@ -260,9 +260,9 @@ int *ndims;         /* number of divisions at each stage */
     }
     // qsort(*set_capa, nprocs,sizeof((*set_capa)[0]),cmp);
 
-    for (cur = 0; cur < nprocs; cur++) {
-      printf("Capacity value: %d\n", (*set_capa)[cur]);
-    }
+    // for (cur = 0; cur < nprocs; cur++) {
+    //   printf("Capacity value: %d\n", (*set_capa)[cur]);
+    // }
     ////////////////////
 
   }
