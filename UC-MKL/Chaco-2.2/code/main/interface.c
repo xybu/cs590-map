@@ -30,8 +30,8 @@ int Using_Main = FALSE; /* Is main routine being called? */
 int interface(nvtxs, start, adjacency, vwgts, ewgts, x, y, z, outassignname,
               outfilename, assignment, architecture, ndims_tot, mesh_dims,
               set_capa, goal, global_method, local_method, rqi_flag, vmax,
-              ndims, eigtol,
-              seed) int nvtxs; /* number of vertices in full graph */
+              ndims, eigtol, seed, is_pm_disabled)
+int nvtxs; /* number of vertices in full graph */
 int *start;                    /* start of edge list for each vertex */
 int *adjacency;                /* edge list data */
 int *vwgts;                    /* weights for all vertices */
@@ -52,6 +52,7 @@ int vmax;                      /* how many vertices to coarsen down to? */
 int ndims;                     /* number of eigenvectors (2^d sets) */
 double eigtol;                 /* tolerance on eigenvectors */
 long seed;                     /* for random graph mutations */
+char *is_pm_disabled;
 {
   extern char *PARAMS_FILENAME; /* name of file with parameter updates */
   extern int MAKE_VWGTS;        /* make vertex weights equal to degrees? */
@@ -186,6 +187,7 @@ long seed;                     /* for random graph mutations */
 
     for (i = 0; i < nsets_tot; i++) {
       printf("\tgoal[%d]: %f\n", i, goal[i]);
+      is_pm_disabled[i] = goal[i] < 0.1 ? 1 : 0;
     }
     save_goals_array(goal, capa_sum, nsets_tot);
 

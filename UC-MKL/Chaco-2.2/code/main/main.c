@@ -2,10 +2,10 @@
  * at Sandia National Laboratories under US Department of Energy        *
  * contract DE-AC04-76DP00789 and is copyrighted by Sandia Corporation. */
 
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <limits.h>
 #include "defs.h"
 #include "params.h"
 
@@ -45,6 +45,7 @@
 
 define_print_array_func(print_int_array, int *, "%2d");
 define_print_array_func(print_short_array, short *, "%2d");
+define_print_array_func(print_char_array, char *, "%2d");
 
 define_save_array_func(save_assignment_array, short *, "assignment_hist.txt");
 define_save_array_func(save_switch_capacity_array, int *,
@@ -68,12 +69,17 @@ const int MAX_CPU_PERCENT = 100;
 // Max number of rounds allowed.
 const int MAX_ITERATIONS = 1000;
 
-// Initial CPU share for packet processing.
-const int INIT_CPU_PERCENT_FOR_SWITCH = 50;
-
 // Usage decay coefficient. Should be a value in (0, 1].
 const double CURRENT_USAGE_WEIGHT = 0.6;
 
+/**
+ * Calculate the sum of CPU share of hosts assigned to each PM.
+ * @param nhosts Total number of hosts (nodes).
+ * @param host_cpu_percent CPU share required by each host.
+ * @param assignment Mapping from host to PM.
+ * @param npms Total number of PMs.
+ * @param pm_host_usage The array to store the sum of CPU share for each PM.
+ */
 void update_host_usage(int nhosts, int *host_cpu_percent, short *assignment,
                        int npms, int *pm_host_usage) {
   int i;
@@ -89,7 +95,16 @@ void update_host_usage(int nhosts, int *host_cpu_percent, short *assignment,
   }
 }
 
-int find_most_under_utilized_pm(int npms, int *pm_host_usage, char *is_pm_disabled) {
+/**
+ * Do a linear search to find the most under-utilized PM. Nodes assigned to
+ * disabled PMs may be moved to this PM.
+ * @param npms Total number of PMs.
+ * @param pm_host_usage Current CPU share used by hosts on each PM.
+ * @param is_pm_disabled An array that indicates if each PM is disabled.
+ * @return Index of the most under-utilized PM.
+ */
+int find_most_under_utilized_pm(int npms, int *pm_host_usage,
+                                char *is_pm_disabled) {
   int i, min_index = -1, min_usage = INT_MAX;
   for (i = 0; i < npms; ++i) {
     if (is_pm_disabled[i]) continue;
@@ -101,11 +116,22 @@ int find_most_under_utilized_pm(int npms, int *pm_host_usage, char *is_pm_disabl
   return min_index;
 }
 
-void clear_disabled_pm_mapping(int nhosts,
-                               int *host_cpu_percent,
-                               short *assignment,
-                               int npms,
-                               int *pm_host_usage,
+/**
+ * To deal with the case where MKL assigns nodes to disabled PMs, we do a
+ * post-assignment check in which we move such nodes to other PMs. Current
+ * policy is to move each node to the most under-utilized PM at the time when
+ * the PM CPU usages are checked.
+ * We observe that such nodes are usually "trivial" leaf nodes so moving them
+ * to any PM should work.
+ * @param nhosts Total number of hosts (nodes).
+ * @param host_cpu_percent CPU share required by each host.
+ * @param assignment Mapping from host to PM.
+ * @param npms Total number of PMs.
+ * @param pm_host_usage The array to store the sum of CPU share for each PM.
+ * @param is_pm_disabled An array that indicates if each PM is disabled.
+ */
+void clear_disabled_pm_mapping(int nhosts, int *host_cpu_percent,
+                               short *assignment, int npms, int *pm_host_usage,
                                char *is_pm_disabled) {
   int i;
   short assigned_pm, pm;
@@ -117,7 +143,9 @@ void clear_disabled_pm_mapping(int nhosts,
       assignment[i] = pm;
       pm_host_usage[pm] += host_cpu_percent[i];
       pm_host_usage[assigned_pm] -= host_cpu_percent[i];
-      printf("Warning: host %d is assigned to disabled PM #%d. Move it to %d.\n", i, assigned_pm, pm);
+      printf(
+          "Warning: host %d is assigned to disabled PM #%d. Move it to %d.\n",
+          i, assigned_pm, pm);
     }
   }
 }
@@ -190,7 +218,6 @@ int main() {
   void input_queries(), smalloc_stats(), read_params(), clear_timing();
 
   int i, j, n;
-  int disabled_pm_count = 0;
   short *assignment_history[MAX_ITERATIONS];
   char is_pm_disabled[20];
 
@@ -310,20 +337,8 @@ int main() {
     int nprocs = 1 << ndims_tot; /* number of processors being divided into */
     printf("# of PMs: %d\n", nprocs);  ////////////
 
-    for (i = 0; i < nprocs; i++) {
-      if (set_capa_func[i][2] + set_capa_func[i][1] + set_capa_func[i][0] == 0) {
-        is_pm_disabled[i] = 1;
-        disabled_pm_count++;
-      } else {
-        is_pm_disabled[i] = 0;
-      }
-    }
-    printf("# of disabled PMs: %d.\n", disabled_pm_count);
-
-    int average_host_usage = host_percent_sum / (nprocs - disabled_pm_count);
-
     for (i = 0; i < nprocs; ++i) {
-      usage[i] = MIN_CPU_PERCENT * 2;  // MAX_CPU_PERCENT - average_host_usage
+      usage[i] = MIN_CPU_PERCENT * 2;
     }
     print_int_array("usage (averaged)", usage, nprocs);
 
@@ -359,7 +374,7 @@ int main() {
       interface(nvtxs, start, adjacency, vwgts, ewgts, x, y, z, outassignptr,
                 outfileptr, assignment, architecture, ndims_tot, mesh_dims,
                 set_capa, goal, global_method, local_method, rqi_flag, vmax,
-                ndims, eigtol, seed);
+                ndims, eigtol, seed, is_pm_disabled);
       printf("~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~\n");
 
       print_int_array("host_percent (after partition)", host_percent, nvtxs);
@@ -367,25 +382,31 @@ int main() {
       print_short_array("assignment (after partition)", assignment, nvtxs);
       save_assignment_array(assignment, nvtxs);
 
-      /*
-      for (j = 0; j < nvtxs; j++) {
-              //fscanf(fin_host,"%d", &host_percent[j] );
-              printf("--%d: %d-----\n",j, assignment[j]);
-      }*/
+      if (architecture != 0) {
+        printf(
+            "Warning: routine to move nodes out of disabled PMs does not "
+            "support architecture %d. Will use all available PMs instead.\n\n",
+            architecture);
+        for (i = 0; i < nprocs; i++) {
+          int *coeff = set_capa_func[i];
+          if (coeff[2] + coeff[1] + coeff[0] == 0) {
+            is_pm_disabled[i] = 1;
+          } else {
+            is_pm_disabled[i] = 0;
+          }
+        }
+      }
+
+      print_char_array("is_pm_disabled (after partitioning)",
+                       is_pm_disabled, nprocs);
 
       // recompute u values according to the assignment results
       memset(host_usage, 0, sizeof(host_usage));
-      // for (i = 0; i < 20; i++) {
-      //   host_usage[i] = 0;
-      // }
 
-      // for (j = 0; j < nvtxs; j++) {
-      //   int cur_set = assignment[j];
-      //   host_usage[cur_set] += host_percent[j];
-      // }
       update_host_usage(nvtxs, host_percent, assignment, nprocs, host_usage);
 
-      clear_disabled_pm_mapping(nvtxs, host_percent, assignment, nprocs, host_usage, is_pm_disabled);
+      clear_disabled_pm_mapping(nvtxs, host_percent, assignment, nprocs,
+                                host_usage, is_pm_disabled);
 
       print_int_array("host_usage (updated)", host_usage, 20);
       save_host_usage_array(host_usage, 20);
@@ -394,13 +415,6 @@ int main() {
       int num_over_utilized_host = 0;
 
       for (cur = 0; cur < nprocs; cur++) {
-        // printf(
-        //     "\tcurrent host percentage after partitioning %d: %d\t old switch
-        //     "
-        //     "usage percentage: %d\n",
-        //     cur, host_usage[cur], usage[cur]);
-
-        // compute if all u's have: 95<= u <= 105. if does, stop the loops
         int total_usage = host_usage[cur] + usage[cur];
         if (total_usage < UNDER_UTILIZATION_THRESHOLD) {
           num_under_utilized_host++;
@@ -425,7 +439,7 @@ int main() {
         usage[cur] = (int)((1 - CURRENT_USAGE_WEIGHT) * (old_usage) +
                            (CURRENT_USAGE_WEIGHT) * (current_usage));
 
-        printf("  |- Accum. usage=%.2lf | New usage=%.2lf | Next usage=%d.\n\n",
+        printf("  |- Accum. usage=%.2lf, New usage=%.2lf, Next usage=%d.\n\n",
                old_usage, current_usage, usage[cur]);
 
         // usage[cur] = (usage[cur] + (100 - host_usage[cur])) / 2;
@@ -489,7 +503,7 @@ int main() {
       printf("\n------------------------------------------------\n\n");
       fflush(stdout);
     } else {
-      putc('\n');
+      putchar('\n');
     }
   }
   if (params_file != NULL) fclose(params_file);

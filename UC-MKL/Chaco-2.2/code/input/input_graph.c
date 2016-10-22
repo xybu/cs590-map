@@ -402,9 +402,7 @@ float **eweights;                    /* edge weight list data */
                 narcs, nedges);
       }
     }
-  }
-
-  else {
+  } else {
     /* Graph was empty => must be using inertial method. */
     sfree((char *)*start);
     if (*adjacency != NULL) sfree((char *)*adjacency);
