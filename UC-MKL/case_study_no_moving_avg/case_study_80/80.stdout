@@ -1,0 +1,1337 @@
+Parameter file `User_Params' not found; using default parameters.
+usage: {
+  0:  0,  1:  0,  2:  0,  3:  0,  4:  0,  5:  0,  6:  0,  7:  0, 
+  8:  0,  9:  0, 10:  0, 11:  0, 12:  0, 13:  0, 14:  0, 15:  0, 
+ 16:  0, 17:  0, 18:  0, 19:  0
+}
+
+host_usage: {
+  0:  0,  1:  0,  2:  0,  3:  0,  4:  0,  5:  0,  6:  0,  7:  0, 
+  8:  0,  9:  0, 10:  0, 11:  0, 12:  0, 13:  0, 14:  0, 15:  0, 
+ 16:  0, 17:  0, 18:  0, 19:  0
+}
+
+Graph input file: Host input file: Global partitioning method:
+  (1) Multilevel-KL
+  (2) Spectral
+  (3) Inertial
+  (4) Linear
+  (5) Random
+  (6) Scattered
+  (7) Read-from-file
+Global partitioning method:
+  (1) Multilevel-KL
+  (2) Spectral
+  (3) Inertial
+  (4) Linear
+  (5) Random
+  (6) Scattered
+  (7) Read-from-file
+Number of vertices to coarsen down to: Total number of target hypercube dimensions: Enter Capacity function for PM1: 
+Capacity function for PM1: 0.000000 u^2 + 1.760000 u + -23.520000
+Enter Capacity function for PM2: 
+Capacity function for PM2: 0.020000 u^2 + 5.380000 u + -21.010000
+Enter Capacity function for PM3: 
+Capacity function for PM3: 0.000000 u^2 + 3.760000 u + 0.600000
+Enter Capacity function for PM4: 
+Capacity function for PM4: 0.000000 u^2 + 1.760000 u + -23.520000
+Enter Capacity function for PM5: 
+Capacity function for PM5: 0.020000 u^2 + 5.380000 u + -21.010000
+Enter Capacity function for PM6: 
+Capacity function for PM6: 0.000000 u^2 + 10.000000 u + 0.000000
+Enter Capacity function for PM7: 
+Capacity function for PM7: 0.000000 u^2 + 0.000000 u + 0.000000
+Enter Capacity function for PM8: 
+Capacity function for PM8: 0.000000 u^2 + 0.000000 u + 0.000000
+Partitioning dimension: 
+  (1) Bisection
+  (2) Quadrisection
+  (3) Octasection
+host_percent (fscanf): {
+  0:  4,  1:  4,  2:  4,  3:  4,  4:  4,  5:  4,  6:  4,  7:  4, 
+  8:  4,  9:  4, 10:  4, 11:  4, 12:  4, 13:  4, 14:  4, 15:  4, 
+ 16:  4, 17:  4, 18:  4, 19:  4, 20:  6, 21:  6, 22:  6, 23:  6, 
+ 24:  6, 25:  6, 26:  6, 27:  6, 28:  6, 29:  6, 30:  6, 31:  6, 
+ 32:  6, 33:  6, 34:  6, 35:  6, 36:  6, 37:  6, 38:  6, 39:  6, 
+ 40:  2, 41:  2, 42:  2, 43:  2, 44:  2, 45:  2, 46:  2, 47:  2, 
+ 48:  2, 49:  2, 50:  2, 51:  2, 52:  2, 53:  2, 54:  2, 55:  2, 
+ 56:  2, 57:  2, 58:  2, 59:  2, 60:  2, 61:  2, 62:  2, 63:  2, 
+ 64:  2, 65:  2, 66:  2, 67:  2, 68:  2, 69:  2, 70:  2, 71:  2, 
+ 72:  2, 73:  2, 74:  2, 75:  2, 76:  2, 77:  2, 78:  2, 79:  2
+}
+
+assignment (input_assign): {
+  0:  0,  1:  0,  2:  0,  3:  0,  4:  0,  5:  0,  6:  0,  7:  0, 
+  8:  0,  9:  0, 10:  0, 11:  0, 12:  0, 13:  0, 14:  0, 15:  0, 
+ 16:  0, 17:  0, 18:  0, 19:  0, 20:  0, 21:  0, 22:  0, 23:  0, 
+ 24:  0, 25:  0, 26:  0, 27:  0, 28:  0, 29:  0, 30:  0, 31:  0, 
+ 32:  0, 33:  0, 34:  0, 35:  0, 36:  0, 37:  0, 38:  0, 39:  0, 
+ 40:  0, 41:  0, 42:  0, 43:  0, 44:  0, 45:  0, 46:  0, 47:  0, 
+ 48:  0, 49:  0, 50:  0, 51:  0, 52:  0, 53:  0, 54:  0, 55:  0, 
+ 56:  0, 57:  0, 58:  0, 59:  0, 60:  0, 61:  0, 62:  0, 63:  0, 
+ 64:  0, 65:  0, 66:  0, 67:  0, 68:  0, 69:  0, 70:  0, 71:  0, 
+ 72:  0, 73:  0, 74:  0, 75:  0, 76:  0, 77:  0, 78:  0, 79:  0
+}
+
+# of PMs: 8
+usage (averaged): {
+  0: 20,  1: 20,  2: 20,  3: 20,  4: 20,  5: 20,  6: 20,  7: 20
+}
+
+set_capa (switch capacity): {
+  0: 11,  1: 94,  2: 75,  3: 11,  4: 94,  5: 200,  6:  0,  7:  0
+}
+
+Siyuan: vwgt_sum: 6000.000000, nsets_tot: 8
+Siyuan: Total capacity: 485.000000
+ Set goals:
+	goal[0]: 139.000000
+	goal[1]: 1162.000000
+	goal[2]: 927.000000
+	goal[3]: 136.000000
+	goal[4]: 1162.000000
+	goal[5]: 2474.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+
+Graph file: `clos-80sw.graph', # vertices = 80, # edges = 280
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 32
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+
+WARNING: Coarsening not making enough progress, nvtxs = 80, cnvtxs = 60.
+         Recursive coarsening being stopped prematurely.
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                    6000         2470           30
+Edge Cuts:                   1370          720           20
+Hypercube Hops:              2140         1200           30
+Boundary Vertices:            143           37            2
+Boundary Vertex Hops:         201           52            3
+Adjacent Sets:                 32            6            2
+Internal Vertices:              0            0            0
+
+Size of all sets:
+140 1160 920 120 1130 2470 30 30 
+
+
+Total time: 0.004 sec.
+  partitioning 0.004
+
+KL time: 0.004 sec.
+  nway refinement 0.004
+~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~
+host_percent (after partition): {
+  0:  4,  1:  4,  2:  4,  3:  4,  4:  4,  5:  4,  6:  4,  7:  4, 
+  8:  4,  9:  4, 10:  4, 11:  4, 12:  4, 13:  4, 14:  4, 15:  4, 
+ 16:  4, 17:  4, 18:  4, 19:  4, 20:  6, 21:  6, 22:  6, 23:  6, 
+ 24:  6, 25:  6, 26:  6, 27:  6, 28:  6, 29:  6, 30:  6, 31:  6, 
+ 32:  6, 33:  6, 34:  6, 35:  6, 36:  6, 37:  6, 38:  6, 39:  6, 
+ 40:  2, 41:  2, 42:  2, 43:  2, 44:  2, 45:  2, 46:  2, 47:  2, 
+ 48:  2, 49:  2, 50:  2, 51:  2, 52:  2, 53:  2, 54:  2, 55:  2, 
+ 56:  2, 57:  2, 58:  2, 59:  2, 60:  2, 61:  2, 62:  2, 63:  2, 
+ 64:  2, 65:  2, 66:  2, 67:  2, 68:  2, 69:  2, 70:  2, 71:  2, 
+ 72:  2, 73:  2, 74:  2, 75:  2, 76:  2, 77:  2, 78:  2, 79:  2
+}
+
+assignment (after partition): {
+  0:  5,  1:  5,  2:  5,  3:  5,  4:  5,  5:  5,  6:  5,  7:  5, 
+  8:  5,  9:  5, 10:  2, 11:  4, 12:  4, 13:  2, 14:  4, 15:  2, 
+ 16:  2, 17:  2, 18:  4, 19:  4, 20:  5, 21:  4, 22:  5, 23:  1, 
+ 24:  5, 25:  4, 26:  5, 27:  1, 28:  5, 29:  2, 30:  5, 31:  2, 
+ 32:  1, 33:  2, 34:  5, 35:  0, 36:  5, 37:  4, 38:  5, 39:  1, 
+ 40:  4, 41:  5, 42:  5, 43:  4, 44:  1, 45:  1, 46:  1, 47:  1, 
+ 48:  5, 49:  7, 50:  1, 51:  4, 52:  1, 53:  1, 54:  1, 55:  1, 
+ 56:  1, 57:  1, 58:  6, 59:  3, 60:  4, 61:  3, 62:  3, 63:  4, 
+ 64:  3, 65:  1, 66:  1, 67:  1, 68:  4, 69:  1, 70:  1, 71:  5, 
+ 72:  1, 73:  1, 74:  1, 75:  4, 76:  5, 77:  5, 78:  1, 79:  5
+}
+
+is_pm_disabled (after partitioning): {
+  0:  0,  1:  0,  2:  0,  3:  0,  4:  0,  5:  0,  6:  1,  7:  1
+}
+
+Warning: host 49 is assigned to disabled PM #7. Move it to 0.
+Warning: host 58 is assigned to disabled PM #6. Move it to 0.
+host_usage (updated): {
+  0: 10,  1: 64,  2: 38,  3:  8,  4: 52,  5: 108,  6:  0,  7:  0, 
+  8:  0,  9:  0, 10:  0, 11:  0, 12:  0, 13:  0, 14:  0, 15:  0, 
+ 16:  0, 17:  0, 18:  0, 19:  0
+}
+
+PM 0 is under-utilized. Its CPU usage is 10 + 20 = 30.
+  |- Accum. usage=20.00, New usage=90.00, Next usage=62.
+
+PM 1 is under-utilized. Its CPU usage is 64 + 20 = 84.
+  |- Accum. usage=20.00, New usage=36.00, Next usage=29.
+
+PM 2 is under-utilized. Its CPU usage is 38 + 20 = 58.
+  |- Accum. usage=20.00, New usage=62.00, Next usage=45.
+
+PM 3 is under-utilized. Its CPU usage is 8 + 20 = 28.
+  |- Accum. usage=20.00, New usage=92.00, Next usage=63.
+
+PM 4 is under-utilized. Its CPU usage is 52 + 20 = 72.
+  |- Accum. usage=20.00, New usage=48.00, Next usage=36.
+
+PM 5 is over-utilized. Its CPU usage is 108 + 20 = 128.
+  |- Accum. usage=20.00, New usage=10.00, Next usage=14.
+
+PM 6 is under-utilized. Its CPU usage is 0 + 20 = 20.
+  |- Accum. usage=20.00, New usage=100.00, Next usage=68.
+
+PM 7 is under-utilized. Its CPU usage is 0 + 20 = 20.
+  |- Accum. usage=20.00, New usage=100.00, Next usage=68.
+
+usage (updated): {
+  0: 62,  1: 29,  2: 45,  3: 63,  4: 36,  5: 14,  6: 68,  7: 68
+}
+
+set_capa (switch capacity): {
+  0: 85,  1: 151,  2: 169,  3: 87,  4: 198,  5: 140,  6:  0,  7:  0
+}
+
+Siyuan: vwgt_sum: 6000.000000, nsets_tot: 8
+Siyuan: Total capacity: 830.000000
+ Set goals:
+	goal[0]: 617.000000
+	goal[1]: 1091.000000
+	goal[2]: 1221.000000
+	goal[3]: 628.000000
+	goal[4]: 1431.000000
+	goal[5]: 1012.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+
+Graph file: `clos-80sw.graph', # vertices = 80, # edges = 280
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 32
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+
+WARNING: Coarsening not making enough progress, nvtxs = 80, cnvtxs = 60.
+         Recursive coarsening being stopped prematurely.
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                    6000         1500            0
+Edge Cuts:                   1870          800            0
+Hypercube Hops:              2360         1110            0
+Boundary Vertices:            161           42            0
+Boundary Vertex Hops:         215           64            0
+Adjacent Sets:                 30            5            0
+Internal Vertices:            120          120            0
+
+Size of all sets:
+600 1040 1190 620 1500 1020 0 30 
+
+
+Total time: 0.012 sec.
+  partitioning 0.008
+
+KL time: 0.008 sec.
+  nway refinement 0.008
+~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~
+host_percent (after partition): {
+  0:  4,  1:  4,  2:  4,  3:  4,  4:  4,  5:  4,  6:  4,  7:  4, 
+  8:  4,  9:  4, 10:  4, 11:  4, 12:  4, 13:  4, 14:  4, 15:  4, 
+ 16:  4, 17:  4, 18:  4, 19:  4, 20:  6, 21:  6, 22:  6, 23:  6, 
+ 24:  6, 25:  6, 26:  6, 27:  6, 28:  6, 29:  6, 30:  6, 31:  6, 
+ 32:  6, 33:  6, 34:  6, 35:  6, 36:  6, 37:  6, 38:  6, 39:  6, 
+ 40:  2, 41:  2, 42:  2, 43:  2, 44:  2, 45:  2, 46:  2, 47:  2, 
+ 48:  2, 49:  2, 50:  2, 51:  2, 52:  2, 53:  2, 54:  2, 55:  2, 
+ 56:  2, 57:  2, 58:  2, 59:  2, 60:  2, 61:  2, 62:  2, 63:  2, 
+ 64:  2, 65:  2, 66:  2, 67:  2, 68:  2, 69:  2, 70:  2, 71:  2, 
+ 72:  2, 73:  2, 74:  2, 75:  2, 76:  2, 77:  2, 78:  2, 79:  2
+}
+
+assignment (after partition): {
+  0:  5,  1:  1,  2:  4,  3:  5,  4:  5,  5:  5,  6:  5,  7:  5, 
+  8:  1,  9:  4, 10:  0, 11:  2, 12:  2, 13:  0, 14:  2, 15:  2, 
+ 16:  2, 17:  2, 18:  3, 19:  3, 20:  5, 21:  3, 22:  5, 23:  2, 
+ 24:  1, 25:  3, 26:  4, 27:  0, 28:  4, 29:  2, 30:  1, 31:  1, 
+ 32:  4, 33:  3, 34:  4, 35:  2, 36:  4, 37:  2, 38:  5, 39:  0, 
+ 40:  7, 41:  1, 42:  1, 43:  1, 44:  0, 45:  0, 46:  4, 47:  4, 
+ 48:  1, 49:  1, 50:  1, 51:  1, 52:  4, 53:  4, 54:  4, 55:  4, 
+ 56:  4, 57:  4, 58:  0, 59:  4, 60:  1, 61:  1, 62:  1, 63:  1, 
+ 64:  1, 65:  1, 66:  4, 67:  2, 68:  4, 69:  0, 70:  4, 71:  4, 
+ 72:  4, 73:  4, 74:  4, 75:  4, 76:  4, 77:  1, 78:  4, 79:  4
+}
+
+is_pm_disabled (after partitioning): {
+  0:  0,  1:  0,  2:  0,  3:  0,  4:  0,  5:  0,  6:  1,  7:  1
+}
+
+Warning: host 40 is assigned to disabled PM #7. Move it to 3.
+host_usage (updated): {
+  0: 28,  1: 54,  2: 50,  3: 28,  4: 78,  5: 42,  6:  0,  7:  0, 
+  8:  0,  9:  0, 10:  0, 11:  0, 12:  0, 13:  0, 14:  0, 15:  0, 
+ 16:  0, 17:  0, 18:  0, 19:  0
+}
+
+PM 0 seems fine. Its CPU usage is 28 + 62 = 90.
+  |- Accum. usage=62.00, New usage=72.00, Next usage=68.
+
+PM 1 is under-utilized. Its CPU usage is 54 + 29 = 83.
+  |- Accum. usage=29.00, New usage=46.00, Next usage=39.
+
+PM 2 seems fine. Its CPU usage is 50 + 45 = 95.
+  |- Accum. usage=45.00, New usage=50.00, Next usage=48.
+
+PM 3 seems fine. Its CPU usage is 28 + 63 = 91.
+  |- Accum. usage=63.00, New usage=72.00, Next usage=68.
+
+PM 4 is over-utilized. Its CPU usage is 78 + 36 = 114.
+  |- Accum. usage=36.00, New usage=22.00, Next usage=27.
+
+PM 5 is under-utilized. Its CPU usage is 42 + 14 = 56.
+  |- Accum. usage=14.00, New usage=58.00, Next usage=40.
+
+PM 6 is under-utilized. Its CPU usage is 0 + 68 = 68.
+  |- Accum. usage=68.00, New usage=100.00, Next usage=87.
+
+PM 7 is under-utilized. Its CPU usage is 0 + 68 = 68.
+  |- Accum. usage=68.00, New usage=100.00, Next usage=87.
+
+usage (updated): {
+  0: 68,  1: 39,  2: 48,  3: 68,  4: 27,  5: 40,  6: 87,  7: 87
+}
+
+set_capa (switch capacity): {
+  0: 96,  1: 219,  2: 181,  3: 96,  4: 138,  5: 400,  6:  0,  7:  0
+}
+
+Siyuan: vwgt_sum: 6000.000000, nsets_tot: 8
+Siyuan: Total capacity: 1130.000000
+ Set goals:
+	goal[0]: 513.000000
+	goal[1]: 1162.000000
+	goal[2]: 961.000000
+	goal[3]: 509.000000
+	goal[4]: 732.000000
+	goal[5]: 2123.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+
+Graph file: `clos-80sw.graph', # vertices = 80, # edges = 280
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 32
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+
+WARNING: Coarsening not making enough progress, nvtxs = 80, cnvtxs = 60.
+         Recursive coarsening being stopped prematurely.
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                    6000         2150            0
+Edge Cuts:                   1660          760            0
+Hypercube Hops:              2000          950            0
+Boundary Vertices:            165           46            0
+Boundary Vertex Hops:         208           55            0
+Adjacent Sets:                 24            5            0
+Internal Vertices:              0            0            0
+
+Size of all sets:
+560 1150 980 430 730 2150 0 0 
+
+
+Total time: 0.02 sec.
+  partitioning 0.008
+  other 0.012
+
+KL time: 0.008 sec.
+  nway refinement 0.008
+~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~
+host_percent (after partition): {
+  0:  4,  1:  4,  2:  4,  3:  4,  4:  4,  5:  4,  6:  4,  7:  4, 
+  8:  4,  9:  4, 10:  4, 11:  4, 12:  4, 13:  4, 14:  4, 15:  4, 
+ 16:  4, 17:  4, 18:  4, 19:  4, 20:  6, 21:  6, 22:  6, 23:  6, 
+ 24:  6, 25:  6, 26:  6, 27:  6, 28:  6, 29:  6, 30:  6, 31:  6, 
+ 32:  6, 33:  6, 34:  6, 35:  6, 36:  6, 37:  6, 38:  6, 39:  6, 
+ 40:  2, 41:  2, 42:  2, 43:  2, 44:  2, 45:  2, 46:  2, 47:  2, 
+ 48:  2, 49:  2, 50:  2, 51:  2, 52:  2, 53:  2, 54:  2, 55:  2, 
+ 56:  2, 57:  2, 58:  2, 59:  2, 60:  2, 61:  2, 62:  2, 63:  2, 
+ 64:  2, 65:  2, 66:  2, 67:  2, 68:  2, 69:  2, 70:  2, 71:  2, 
+ 72:  2, 73:  2, 74:  2, 75:  2, 76:  2, 77:  2, 78:  2, 79:  2
+}
+
+assignment (after partition): {
+  0:  5,  1:  5,  2:  5,  3:  5,  4:  5,  5:  5,  6:  5,  7:  5, 
+  8:  5,  9:  5, 10:  2, 11:  2, 12:  2, 13:  2, 14:  1, 15:  2, 
+ 16:  2, 17:  2, 18:  1, 19:  1, 20:  5, 21:  0, 22:  5, 23:  0, 
+ 24:  5, 25:  1, 26:  5, 27:  0, 28:  4, 29:  0, 30:  5, 31:  3, 
+ 32:  1, 33:  3, 34:  5, 35:  2, 36:  5, 37:  4, 38:  5, 39:  2, 
+ 40:  4, 41:  1, 42:  1, 43:  1, 44:  5, 45:  4, 46:  4, 47:  4, 
+ 48:  3, 49:  1, 50:  1, 51:  1, 52:  1, 53:  1, 54:  1, 55:  1, 
+ 56:  4, 57:  4, 58:  4, 59:  4, 60:  1, 61:  1, 62:  3, 63:  1, 
+ 64:  1, 65:  1, 66:  1, 67:  1, 68:  3, 69:  3, 70:  4, 71:  4, 
+ 72:  4, 73:  4, 74:  4, 75:  4, 76:  1, 77:  4, 78:  3, 79:  1
+}
+
+is_pm_disabled (after partitioning): {
+  0:  0,  1:  0,  2:  0,  3:  0,  4:  0,  5:  0,  6:  1,  7:  1
+}
+
+host_usage (updated): {
+  0: 24,  1: 62,  2: 40,  3: 22,  4: 42,  5: 90,  6:  0,  7:  0, 
+  8:  0,  9:  0, 10:  0, 11:  0, 12:  0, 13:  0, 14:  0, 15:  0, 
+ 16:  0, 17:  0, 18:  0, 19:  0
+}
+
+PM 0 seems fine. Its CPU usage is 24 + 68 = 92.
+  |- Accum. usage=68.00, New usage=76.00, Next usage=72.
+
+PM 1 seems fine. Its CPU usage is 62 + 39 = 101.
+  |- Accum. usage=39.00, New usage=38.00, Next usage=38.
+
+PM 2 is under-utilized. Its CPU usage is 40 + 48 = 88.
+  |- Accum. usage=48.00, New usage=60.00, Next usage=55.
+
+PM 3 seems fine. Its CPU usage is 22 + 68 = 90.
+  |- Accum. usage=68.00, New usage=78.00, Next usage=74.
+
+PM 4 is under-utilized. Its CPU usage is 42 + 27 = 69.
+  |- Accum. usage=27.00, New usage=58.00, Next usage=45.
+
+PM 5 is over-utilized. Its CPU usage is 90 + 40 = 130.
+  |- Accum. usage=40.00, New usage=10.00, Next usage=22.
+
+PM 6 is under-utilized. Its CPU usage is 0 + 87 = 87.
+  |- Accum. usage=87.00, New usage=100.00, Next usage=94.
+
+PM 7 is under-utilized. Its CPU usage is 0 + 87 = 87.
+  |- Accum. usage=87.00, New usage=100.00, Next usage=94.
+
+usage (updated): {
+  0: 72,  1: 38,  2: 55,  3: 74,  4: 45,  5: 22,  6: 94,  7: 94
+}
+
+set_capa (switch capacity): {
+  0: 103,  1: 212,  2: 207,  3: 106,  4: 261,  5: 220,  6:  0,  7:  0
+}
+
+Siyuan: vwgt_sum: 6000.000000, nsets_tot: 8
+Siyuan: Total capacity: 1109.000000
+ Set goals:
+	goal[0]: 560.000000
+	goal[1]: 1146.000000
+	goal[2]: 1119.000000
+	goal[3]: 573.000000
+	goal[4]: 1412.000000
+	goal[5]: 1190.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+
+Graph file: `clos-80sw.graph', # vertices = 80, # edges = 280
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 32
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+
+WARNING: Coarsening not making enough progress, nvtxs = 80, cnvtxs = 60.
+         Recursive coarsening being stopped prematurely.
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                    6000         1370            0
+Edge Cuts:                   1870          780            0
+Hypercube Hops:              2380         1160            0
+Boundary Vertices:            156           47            0
+Boundary Vertex Hops:         214           70            0
+Adjacent Sets:                 24            5            0
+Internal Vertices:              0            0            0
+
+Size of all sets:
+620 1120 1120 580 1370 1190 0 0 
+
+
+Total time: 0.032 sec.
+  partitioning 0.008
+  other 0.024
+
+KL time: 0.008 sec.
+  nway refinement 0.008
+~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~
+host_percent (after partition): {
+  0:  4,  1:  4,  2:  4,  3:  4,  4:  4,  5:  4,  6:  4,  7:  4, 
+  8:  4,  9:  4, 10:  4, 11:  4, 12:  4, 13:  4, 14:  4, 15:  4, 
+ 16:  4, 17:  4, 18:  4, 19:  4, 20:  6, 21:  6, 22:  6, 23:  6, 
+ 24:  6, 25:  6, 26:  6, 27:  6, 28:  6, 29:  6, 30:  6, 31:  6, 
+ 32:  6, 33:  6, 34:  6, 35:  6, 36:  6, 37:  6, 38:  6, 39:  6, 
+ 40:  2, 41:  2, 42:  2, 43:  2, 44:  2, 45:  2, 46:  2, 47:  2, 
+ 48:  2, 49:  2, 50:  2, 51:  2, 52:  2, 53:  2, 54:  2, 55:  2, 
+ 56:  2, 57:  2, 58:  2, 59:  2, 60:  2, 61:  2, 62:  2, 63:  2, 
+ 64:  2, 65:  2, 66:  2, 67:  2, 68:  2, 69:  2, 70:  2, 71:  2, 
+ 72:  2, 73:  2, 74:  2, 75:  2, 76:  2, 77:  2, 78:  2, 79:  2
+}
+
+assignment (after partition): {
+  0:  5,  1:  1,  2:  5,  3:  5,  4:  1,  5:  5,  6:  1,  7:  5, 
+  8:  1,  9:  5, 10:  2, 11:  2, 12:  2, 13:  0, 14:  2, 15:  2, 
+ 16:  2, 17:  2, 18:  0, 19:  3, 20:  5, 21:  0, 22:  5, 23:  3, 
+ 24:  1, 25:  3, 26:  4, 27:  0, 28:  4, 29:  0, 30:  5, 31:  4, 
+ 32:  1, 33:  3, 34:  4, 35:  2, 36:  1, 37:  2, 38:  5, 39:  2, 
+ 40:  4, 41:  5, 42:  4, 43:  4, 44:  4, 45:  1, 46:  4, 47:  4, 
+ 48:  1, 49:  1, 50:  3, 51:  3, 52:  4, 53:  4, 54:  4, 55:  4, 
+ 56:  4, 57:  4, 58:  4, 59:  4, 60:  4, 61:  4, 62:  4, 63:  4, 
+ 64:  1, 65:  1, 66:  1, 67:  1, 68:  4, 69:  4, 70:  4, 71:  4, 
+ 72:  1, 73:  4, 74:  1, 75:  4, 76:  4, 77:  4, 78:  1, 79:  4
+}
+
+is_pm_disabled (after partitioning): {
+  0:  0,  1:  0,  2:  0,  3:  0,  4:  0,  5:  0,  6:  1,  7:  1
+}
+
+host_usage (updated): {
+  0: 26,  1: 54,  2: 46,  3: 26,  4: 78,  5: 50,  6:  0,  7:  0, 
+  8:  0,  9:  0, 10:  0, 11:  0, 12:  0, 13:  0, 14:  0, 15:  0, 
+ 16:  0, 17:  0, 18:  0, 19:  0
+}
+
+PM 0 seems fine. Its CPU usage is 26 + 72 = 98.
+  |- Accum. usage=72.00, New usage=74.00, Next usage=73.
+
+PM 1 seems fine. Its CPU usage is 54 + 38 = 92.
+  |- Accum. usage=38.00, New usage=46.00, Next usage=42.
+
+PM 2 seems fine. Its CPU usage is 46 + 55 = 101.
+  |- Accum. usage=55.00, New usage=54.00, Next usage=54.
+
+PM 3 seems fine. Its CPU usage is 26 + 74 = 100.
+  |- Accum. usage=74.00, New usage=74.00, Next usage=74.
+
+PM 4 is over-utilized. Its CPU usage is 78 + 45 = 123.
+  |- Accum. usage=45.00, New usage=22.00, Next usage=31.
+
+PM 5 is under-utilized. Its CPU usage is 50 + 22 = 72.
+  |- Accum. usage=22.00, New usage=50.00, Next usage=38.
+
+PM 6 seems fine. Its CPU usage is 0 + 94 = 94.
+  |- Accum. usage=94.00, New usage=100.00, Next usage=97.
+
+PM 7 seems fine. Its CPU usage is 0 + 94 = 94.
+  |- Accum. usage=94.00, New usage=100.00, Next usage=97.
+
+usage (updated): {
+  0: 73,  1: 42,  2: 54,  3: 74,  4: 31,  5: 38,  6: 97,  7: 97
+}
+
+set_capa (switch capacity): {
+  0: 104,  1: 240,  2: 203,  3: 106,  4: 164,  5: 380,  6:  0,  7:  0
+}
+
+Siyuan: vwgt_sum: 6000.000000, nsets_tot: 8
+Siyuan: Total capacity: 1197.000000
+ Set goals:
+	goal[0]: 523.000000
+	goal[1]: 1203.000000
+	goal[2]: 1017.000000
+	goal[3]: 531.000000
+	goal[4]: 822.000000
+	goal[5]: 1904.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+
+Graph file: `clos-80sw.graph', # vertices = 80, # edges = 280
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 32
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+
+WARNING: Coarsening not making enough progress, nvtxs = 80, cnvtxs = 60.
+         Recursive coarsening being stopped prematurely.
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                    6000         1980           30
+Edge Cuts:                   1630          680           20
+Hypercube Hops:              2080          900           30
+Boundary Vertices:            176           34            2
+Boundary Vertex Hops:         234           49            3
+Adjacent Sets:                 34            6            2
+Internal Vertices:              0            0            0
+
+Size of all sets:
+580 1140 960 520 760 1980 30 30 
+
+
+Total time: 0.052 sec.
+  partitioning 0.016
+  other 0.036
+
+KL time: 0.012 sec.
+  nway refinement 0.012
+    bucket sorting 0.004
+
+Lanczos time: 0.004 sec.
+~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~
+host_percent (after partition): {
+  0:  4,  1:  4,  2:  4,  3:  4,  4:  4,  5:  4,  6:  4,  7:  4, 
+  8:  4,  9:  4, 10:  4, 11:  4, 12:  4, 13:  4, 14:  4, 15:  4, 
+ 16:  4, 17:  4, 18:  4, 19:  4, 20:  6, 21:  6, 22:  6, 23:  6, 
+ 24:  6, 25:  6, 26:  6, 27:  6, 28:  6, 29:  6, 30:  6, 31:  6, 
+ 32:  6, 33:  6, 34:  6, 35:  6, 36:  6, 37:  6, 38:  6, 39:  6, 
+ 40:  2, 41:  2, 42:  2, 43:  2, 44:  2, 45:  2, 46:  2, 47:  2, 
+ 48:  2, 49:  2, 50:  2, 51:  2, 52:  2, 53:  2, 54:  2, 55:  2, 
+ 56:  2, 57:  2, 58:  2, 59:  2, 60:  2, 61:  2, 62:  2, 63:  2, 
+ 64:  2, 65:  2, 66:  2, 67:  2, 68:  2, 69:  2, 70:  2, 71:  2, 
+ 72:  2, 73:  2, 74:  2, 75:  2, 76:  2, 77:  2, 78:  2, 79:  2
+}
+
+assignment (after partition): {
+  0:  5,  1:  5,  2:  5,  3:  5,  4:  5,  5:  5,  6:  5,  7:  5, 
+  8:  5,  9:  5, 10:  0, 11:  2, 12:  1, 13:  3, 14:  2, 15:  2, 
+ 16:  3, 17:  0, 18:  2, 19:  0, 20:  4, 21:  0, 22:  5, 23:  2, 
+ 24:  5, 25:  4, 26:  5, 27:  1, 28:  5, 29:  0, 30:  1, 31:  2, 
+ 32:  1, 33:  3, 34:  5, 35:  2, 36:  5, 37:  1, 38:  5, 39:  2, 
+ 40:  4, 41:  4, 42:  4, 43:  4, 44:  3, 45:  4, 46:  6, 47:  4, 
+ 48:  4, 49:  4, 50:  4, 51:  4, 52:  1, 53:  1, 54:  1, 55:  1, 
+ 56:  4, 57:  4, 58:  4, 59:  3, 60:  1, 61:  3, 62:  3, 63:  1, 
+ 64:  1, 65:  1, 66:  1, 67:  1, 68:  3, 69:  3, 70:  4, 71:  7, 
+ 72:  1, 73:  1, 74:  1, 75:  4, 76:  1, 77:  1, 78:  4, 79:  1
+}
+
+is_pm_disabled (after partitioning): {
+  0:  0,  1:  0,  2:  0,  3:  0,  4:  0,  5:  0,  6:  1,  7:  1
+}
+
+Warning: host 46 is assigned to disabled PM #6. Move it to 0.
+Warning: host 71 is assigned to disabled PM #7. Move it to 0.
+host_usage (updated): {
+  0: 28,  1: 60,  2: 40,  3: 26,  4: 44,  5: 82,  6:  0,  7:  0, 
+  8:  0,  9:  0, 10:  0, 11:  0, 12:  0, 13:  0, 14:  0, 15:  0, 
+ 16:  0, 17:  0, 18:  0, 19:  0
+}
+
+PM 0 seems fine. Its CPU usage is 28 + 73 = 101.
+  |- Accum. usage=73.00, New usage=72.00, Next usage=72.
+
+PM 1 seems fine. Its CPU usage is 60 + 42 = 102.
+  |- Accum. usage=42.00, New usage=40.00, Next usage=40.
+
+PM 2 seems fine. Its CPU usage is 40 + 54 = 94.
+  |- Accum. usage=54.00, New usage=60.00, Next usage=57.
+
+PM 3 seems fine. Its CPU usage is 26 + 74 = 100.
+  |- Accum. usage=74.00, New usage=74.00, Next usage=74.
+
+PM 4 is under-utilized. Its CPU usage is 44 + 31 = 75.
+  |- Accum. usage=31.00, New usage=56.00, Next usage=46.
+
+PM 5 is over-utilized. Its CPU usage is 82 + 38 = 120.
+  |- Accum. usage=38.00, New usage=18.00, Next usage=26.
+
+PM 6 seems fine. Its CPU usage is 0 + 97 = 97.
+  |- Accum. usage=97.00, New usage=100.00, Next usage=98.
+
+PM 7 seems fine. Its CPU usage is 0 + 97 = 97.
+  |- Accum. usage=97.00, New usage=100.00, Next usage=98.
+
+usage (updated): {
+  0: 72,  1: 40,  2: 57,  3: 74,  4: 46,  5: 26,  6: 98,  7: 98
+}
+
+set_capa (switch capacity): {
+  0: 103,  1: 226,  2: 214,  3: 106,  4: 268,  5: 260,  6:  0,  7:  0
+}
+
+Siyuan: vwgt_sum: 6000.000000, nsets_tot: 8
+Siyuan: Total capacity: 1177.000000
+ Set goals:
+	goal[0]: 527.000000
+	goal[1]: 1152.000000
+	goal[2]: 1090.000000
+	goal[3]: 540.000000
+	goal[4]: 1366.000000
+	goal[5]: 1325.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+
+Graph file: `clos-80sw.graph', # vertices = 80, # edges = 280
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 32
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+
+WARNING: Coarsening not making enough progress, nvtxs = 80, cnvtxs = 60.
+         Recursive coarsening being stopped prematurely.
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                    6000         1400           30
+Edge Cuts:                   1900          800           20
+Hypercube Hops:              2400         1160           20
+Boundary Vertices:            166           38            2
+Boundary Vertex Hops:         227           56            2
+Adjacent Sets:                 32            5            2
+Internal Vertices:              0            0            0
+
+Size of all sets:
+520 1120 1120 520 1400 1260 30 30 
+
+
+Total time: 0.076 sec.
+  partitioning 0.02
+  other 0.056
+
+KL time: 0.016 sec.
+  nway refinement 0.016
+    bucket sorting 0.004
+
+Lanczos time: 0.004 sec.
+~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~
+host_percent (after partition): {
+  0:  4,  1:  4,  2:  4,  3:  4,  4:  4,  5:  4,  6:  4,  7:  4, 
+  8:  4,  9:  4, 10:  4, 11:  4, 12:  4, 13:  4, 14:  4, 15:  4, 
+ 16:  4, 17:  4, 18:  4, 19:  4, 20:  6, 21:  6, 22:  6, 23:  6, 
+ 24:  6, 25:  6, 26:  6, 27:  6, 28:  6, 29:  6, 30:  6, 31:  6, 
+ 32:  6, 33:  6, 34:  6, 35:  6, 36:  6, 37:  6, 38:  6, 39:  6, 
+ 40:  2, 41:  2, 42:  2, 43:  2, 44:  2, 45:  2, 46:  2, 47:  2, 
+ 48:  2, 49:  2, 50:  2, 51:  2, 52:  2, 53:  2, 54:  2, 55:  2, 
+ 56:  2, 57:  2, 58:  2, 59:  2, 60:  2, 61:  2, 62:  2, 63:  2, 
+ 64:  2, 65:  2, 66:  2, 67:  2, 68:  2, 69:  2, 70:  2, 71:  2, 
+ 72:  2, 73:  2, 74:  2, 75:  2, 76:  2, 77:  2, 78:  2, 79:  2
+}
+
+assignment (after partition): {
+  0:  5,  1:  1,  2:  4,  3:  5,  4:  5,  5:  5,  6:  5,  7:  5, 
+  8:  5,  9:  4, 10:  2, 11:  2, 12:  2, 13:  2, 14:  3, 15:  2, 
+ 16:  2, 17:  2, 18:  0, 19:  4, 20:  5, 21:  3, 22:  5, 23:  4, 
+ 24:  1, 25:  3, 26:  5, 27:  2, 28:  4, 29:  0, 30:  1, 31:  3, 
+ 32:  4, 33:  0, 34:  4, 35:  2, 36:  5, 37:  0, 38:  1, 39:  2, 
+ 40:  7, 41:  1, 42:  1, 43:  1, 44:  4, 45:  4, 46:  4, 47:  4, 
+ 48:  1, 49:  1, 50:  4, 51:  1, 52:  1, 53:  1, 54:  1, 55:  6, 
+ 56:  4, 57:  4, 58:  4, 59:  4, 60:  1, 61:  1, 62:  1, 63:  1, 
+ 64:  1, 65:  4, 66:  1, 67:  4, 68:  4, 69:  4, 70:  4, 71:  4, 
+ 72:  4, 73:  4, 74:  4, 75:  1, 76:  1, 77:  1, 78:  1, 79:  1
+}
+
+is_pm_disabled (after partitioning): {
+  0:  0,  1:  0,  2:  0,  3:  0,  4:  0,  5:  0,  6:  1,  7:  1
+}
+
+Warning: host 40 is assigned to disabled PM #7. Move it to 0.
+Warning: host 55 is assigned to disabled PM #6. Move it to 3.
+host_usage (updated): {
+  0: 24,  1: 62,  2: 46,  3: 24,  4: 72,  5: 52,  6:  0,  7:  0, 
+  8:  0,  9:  0, 10:  0, 11:  0, 12:  0, 13:  0, 14:  0, 15:  0, 
+ 16:  0, 17:  0, 18:  0, 19:  0
+}
+
+PM 0 seems fine. Its CPU usage is 24 + 72 = 96.
+  |- Accum. usage=72.00, New usage=76.00, Next usage=74.
+
+PM 1 seems fine. Its CPU usage is 62 + 40 = 102.
+  |- Accum. usage=40.00, New usage=38.00, Next usage=38.
+
+PM 2 seems fine. Its CPU usage is 46 + 57 = 103.
+  |- Accum. usage=57.00, New usage=54.00, Next usage=55.
+
+PM 3 seems fine. Its CPU usage is 24 + 74 = 98.
+  |- Accum. usage=74.00, New usage=76.00, Next usage=75.
+
+PM 4 is over-utilized. Its CPU usage is 72 + 46 = 118.
+  |- Accum. usage=46.00, New usage=28.00, Next usage=35.
+
+PM 5 is under-utilized. Its CPU usage is 52 + 26 = 78.
+  |- Accum. usage=26.00, New usage=48.00, Next usage=39.
+
+PM 6 seems fine. Its CPU usage is 0 + 98 = 98.
+  |- Accum. usage=98.00, New usage=100.00, Next usage=99.
+
+PM 7 seems fine. Its CPU usage is 0 + 98 = 98.
+  |- Accum. usage=98.00, New usage=100.00, Next usage=99.
+
+usage (updated): {
+  0: 74,  1: 38,  2: 55,  3: 75,  4: 35,  5: 39,  6: 99,  7: 99
+}
+
+set_capa (switch capacity): {
+  0: 106,  1: 212,  2: 207,  3: 108,  4: 191,  5: 390,  6:  0,  7:  0
+}
+
+Siyuan: vwgt_sum: 6000.000000, nsets_tot: 8
+Siyuan: Total capacity: 1214.000000
+ Set goals:
+	goal[0]: 527.000000
+	goal[1]: 1047.000000
+	goal[2]: 1023.000000
+	goal[3]: 533.000000
+	goal[4]: 943.000000
+	goal[5]: 1927.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+
+Graph file: `clos-80sw.graph', # vertices = 80, # edges = 280
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 32
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+
+WARNING: Coarsening not making enough progress, nvtxs = 80, cnvtxs = 60.
+         Recursive coarsening being stopped prematurely.
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                    6000         1880           30
+Edge Cuts:                   1690          700           20
+Hypercube Hops:              2080          940           20
+Boundary Vertices:            161           49            2
+Boundary Vertex Hops:         205           57            2
+Adjacent Sets:                 32            5            2
+Internal Vertices:              0            0            0
+
+Size of all sets:
+520 1110 1020 470 940 1880 30 30 
+
+
+Total time: 0.104 sec.
+  partitioning 0.024
+  other 0.08
+
+KL time: 0.02 sec.
+  nway refinement 0.02
+    bucket sorting 0.004
+
+Lanczos time: 0.004 sec.
+~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~
+host_percent (after partition): {
+  0:  4,  1:  4,  2:  4,  3:  4,  4:  4,  5:  4,  6:  4,  7:  4, 
+  8:  4,  9:  4, 10:  4, 11:  4, 12:  4, 13:  4, 14:  4, 15:  4, 
+ 16:  4, 17:  4, 18:  4, 19:  4, 20:  6, 21:  6, 22:  6, 23:  6, 
+ 24:  6, 25:  6, 26:  6, 27:  6, 28:  6, 29:  6, 30:  6, 31:  6, 
+ 32:  6, 33:  6, 34:  6, 35:  6, 36:  6, 37:  6, 38:  6, 39:  6, 
+ 40:  2, 41:  2, 42:  2, 43:  2, 44:  2, 45:  2, 46:  2, 47:  2, 
+ 48:  2, 49:  2, 50:  2, 51:  2, 52:  2, 53:  2, 54:  2, 55:  2, 
+ 56:  2, 57:  2, 58:  2, 59:  2, 60:  2, 61:  2, 62:  2, 63:  2, 
+ 64:  2, 65:  2, 66:  2, 67:  2, 68:  2, 69:  2, 70:  2, 71:  2, 
+ 72:  2, 73:  2, 74:  2, 75:  2, 76:  2, 77:  2, 78:  2, 79:  2
+}
+
+assignment (after partition): {
+  0:  5,  1:  4,  2:  5,  3:  5,  4:  5,  5:  5,  6:  5,  7:  5, 
+  8:  5,  9:  5, 10:  2, 11:  2, 12:  2, 13:  0, 14:  1, 15:  2, 
+ 16:  2, 17:  2, 18:  1, 19:  3, 20:  5, 21:  1, 22:  4, 23:  0, 
+ 24:  5, 25:  1, 26:  5, 27:  0, 28:  4, 29:  2, 30:  5, 31:  3, 
+ 32:  5, 33:  0, 34:  4, 35:  2, 36:  5, 37:  3, 38:  5, 39:  2, 
+ 40:  7, 41:  1, 42:  1, 43:  1, 44:  4, 45:  4, 46:  4, 47:  4, 
+ 48:  3, 49:  1, 50:  1, 51:  1, 52:  1, 53:  1, 54:  1, 55:  1, 
+ 56:  4, 57:  4, 58:  4, 59:  4, 60:  1, 61:  1, 62:  3, 63:  1, 
+ 64:  4, 65:  4, 66:  1, 67:  1, 68:  4, 69:  6, 70:  4, 71:  4, 
+ 72:  1, 73:  1, 74:  1, 75:  4, 76:  1, 77:  1, 78:  3, 79:  1
+}
+
+is_pm_disabled (after partitioning): {
+  0:  0,  1:  0,  2:  0,  3:  0,  4:  0,  5:  0,  6:  1,  7:  1
+}
+
+Warning: host 40 is assigned to disabled PM #7. Move it to 0.
+Warning: host 69 is assigned to disabled PM #6. Move it to 3.
+host_usage (updated): {
+  0: 24,  1: 62,  2: 42,  3: 24,  4: 50,  5: 78,  6:  0,  7:  0, 
+  8:  0,  9:  0, 10:  0, 11:  0, 12:  0, 13:  0, 14:  0, 15:  0, 
+ 16:  0, 17:  0, 18:  0, 19:  0
+}
+
+PM 0 seems fine. Its CPU usage is 24 + 74 = 98.
+  |- Accum. usage=74.00, New usage=76.00, Next usage=75.
+
+PM 1 seems fine. Its CPU usage is 62 + 38 = 100.
+  |- Accum. usage=38.00, New usage=38.00, Next usage=38.
+
+PM 2 seems fine. Its CPU usage is 42 + 55 = 97.
+  |- Accum. usage=55.00, New usage=58.00, Next usage=56.
+
+PM 3 seems fine. Its CPU usage is 24 + 75 = 99.
+  |- Accum. usage=75.00, New usage=76.00, Next usage=75.
+
+PM 4 is under-utilized. Its CPU usage is 50 + 35 = 85.
+  |- Accum. usage=35.00, New usage=50.00, Next usage=44.
+
+PM 5 is over-utilized. Its CPU usage is 78 + 39 = 117.
+  |- Accum. usage=39.00, New usage=22.00, Next usage=28.
+
+PM 6 seems fine. Its CPU usage is 0 + 99 = 99.
+  |- Accum. usage=99.00, New usage=100.00, Next usage=99.
+
+PM 7 seems fine. Its CPU usage is 0 + 99 = 99.
+  |- Accum. usage=99.00, New usage=100.00, Next usage=99.
+
+usage (updated): {
+  0: 75,  1: 38,  2: 56,  3: 75,  4: 44,  5: 28,  6: 99,  7: 99
+}
+
+set_capa (switch capacity): {
+  0: 108,  1: 212,  2: 211,  3: 108,  4: 254,  5: 280,  6:  0,  7:  0
+}
+
+Siyuan: vwgt_sum: 6000.000000, nsets_tot: 8
+Siyuan: Total capacity: 1173.000000
+ Set goals:
+	goal[0]: 554.000000
+	goal[1]: 1084.000000
+	goal[2]: 1079.000000
+	goal[3]: 552.000000
+	goal[4]: 1299.000000
+	goal[5]: 1432.000000
+	goal[6]: 0.000000
+	goal[7]: 0.000000
+
+Graph file: `clos-80sw.graph', # vertices = 80, # edges = 280
+Global method: Multilevel-KL
+Number of vertices to coarsen down to: 32
+Eigen tolerance: 0.001
+Local method: Kernighan-Lin
+Partitioning target: 3-dimensional hypercube
+Partitioning mode: Octasection
+Random seed: 7654321
+Active Parameters:
+  CHECK_INPUT = True
+  LANCZOS_TYPE:  Selective orthogonalization
+  EIGEN_TOLERANCE = 0.001
+  SRESTOL = -1 ... autoset to square of eigen tolerance
+  LANCZOS_MAXITNS = -1 ... autoset to twice # vertices
+  LANCZOS_SO_PRECISION = 2 ... double precision
+  LANCZOS_SO_INTERVAL = 10
+  LANCZOS_CONVERGENCE_MODE = 0 ... residual tolerance
+  BISECTION_SAFETY = 10
+  LANCZOS_TIME = 0 ... no detailed timing
+  WARNING_EVECS = 2
+  MAPPING_TYPE = 1 ... min-cost assignment
+  MAKE_CONNECTED = True
+  PERTURB = True
+    NPERTURB = 2
+    PERTURB_MAX = 0.003
+  OPT3D_NTRIES = 5
+  COARSEN_RATIO_MIN = 0.7
+  COARSE_NLEVEL_KL = 2
+  MATCH_TYPE = 1
+  HEAVY_MATCH = False
+  COARSE_KL_BOTTOM = True
+  COARSEN_VWGTS = True
+  COARSEN_EWGTS = True
+  KL_ONLY_BNDY = True
+  KL_RANDOM = True
+  KL_METRIC = Hops
+  KL_NTRIES_BAD = 1
+  KL_BAD_MOVES = 20
+  KL_UNDO_LIST = True
+  KL_IMBALANCE = 0
+  TERM_PROP = False
+  OUTPUT_METRICS = 2
+  MAKE_VWGTS = False
+  REFINE_MAP = False
+  REFINE_PARTITION = 0
+  INTERNAL_VERTICES = False
+  DEBUG_PARAMS = 2
+
+WARNING: Coarsening not making enough progress, nvtxs = 80, cnvtxs = 60.
+         Recursive coarsening being stopped prematurely.
+
+After level 1  (nsets = 8):
+
+                            Total      Max/Set      Min/Set
+                            -----      -------      -------
+Set Size:                    6000         1500           30
+Edge Cuts:                   1940          760           20
+Hypercube Hops:              2220          940           30
+Boundary Vertices:            158           38            2
+Boundary Vertex Hops:         195           45            3
+Adjacent Sets:                 32            6            2
+Internal Vertices:              0            0            0
+
+Size of all sets:
+560 1030 1080 510 1230 1500 60 30 
+
+
+Total time: 0.136 sec.
+  partitioning 0.028
+  other 0.108
+
+KL time: 0.024 sec.
+  nway refinement 0.024
+    bucket sorting 0.004
+
+Lanczos time: 0.004 sec.
+~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~
+host_percent (after partition): {
+  0:  4,  1:  4,  2:  4,  3:  4,  4:  4,  5:  4,  6:  4,  7:  4, 
+  8:  4,  9:  4, 10:  4, 11:  4, 12:  4, 13:  4, 14:  4, 15:  4, 
+ 16:  4, 17:  4, 18:  4, 19:  4, 20:  6, 21:  6, 22:  6, 23:  6, 
+ 24:  6, 25:  6, 26:  6, 27:  6, 28:  6, 29:  6, 30:  6, 31:  6, 
+ 32:  6, 33:  6, 34:  6, 35:  6, 36:  6, 37:  6, 38:  6, 39:  6, 
+ 40:  2, 41:  2, 42:  2, 43:  2, 44:  2, 45:  2, 46:  2, 47:  2, 
+ 48:  2, 49:  2, 50:  2, 51:  2, 52:  2, 53:  2, 54:  2, 55:  2, 
+ 56:  2, 57:  2, 58:  2, 59:  2, 60:  2, 61:  2, 62:  2, 63:  2, 
+ 64:  2, 65:  2, 66:  2, 67:  2, 68:  2, 69:  2, 70:  2, 71:  2, 
+ 72:  2, 73:  2, 74:  2, 75:  2, 76:  2, 77:  2, 78:  2, 79:  2
+}
+
+assignment (after partition): {
+  0:  5,  1:  1,  2:  4,  3:  5,  4:  5,  5:  5,  6:  5,  7:  5, 
+  8:  5,  9:  5, 10:  2, 11:  2, 12:  2, 13:  2, 14:  1, 15:  1, 
+ 16:  2, 17:  2, 18:  2, 19:  2, 20:  5, 21:  2, 22:  5, 23:  0, 
+ 24:  1, 25:  3, 26:  5, 27:  4, 28:  4, 29:  0, 30:  5, 31:  3, 
+ 32:  4, 33:  2, 34:  4, 35:  0, 36:  5, 37:  0, 38:  1, 39:  3, 
+ 40:  4, 41:  4, 42:  6, 43:  7, 44:  1, 45:  1, 46:  1, 47:  1, 
+ 48:  1, 49:  1, 50:  1, 51:  3, 52:  4, 53:  4, 54:  4, 55:  4, 
+ 56:  4, 57:  4, 58:  4, 59:  4, 60:  3, 61:  1, 62:  1, 63:  3, 
+ 64:  6, 65:  4, 66:  4, 67:  4, 68:  4, 69:  4, 70:  4, 71:  4, 
+ 72:  1, 73:  4, 74:  4, 75:  1, 76:  1, 77:  1, 78:  1, 79:  1
+}
+
+is_pm_disabled (after partitioning): {
+  0:  0,  1:  0,  2:  0,  3:  0,  4:  0,  5:  0,  6:  1,  7:  1
+}
+
+Warning: host 42 is assigned to disabled PM #6. Move it to 0.
+Warning: host 43 is assigned to disabled PM #7. Move it to 3.
+Warning: host 64 is assigned to disabled PM #6. Move it to 0.
+host_usage (updated): {
+  0: 28,  1: 54,  2: 44,  3: 26,  4: 66,  5: 62,  6:  0,  7:  0, 
+  8:  0,  9:  0, 10:  0, 11:  0, 12:  0, 13:  0, 14:  0, 15:  0, 
+ 16:  0, 17:  0, 18:  0, 19:  0
+}
+
+PM 0 seems fine. Its CPU usage is 28 + 75 = 103.
+  |- Accum. usage=75.00, New usage=72.00, Next usage=73.
+
+PM 1 seems fine. Its CPU usage is 54 + 38 = 92.
+  |- Accum. usage=38.00, New usage=46.00, Next usage=42.
+
+PM 2 seems fine. Its CPU usage is 44 + 56 = 100.
+  |- Accum. usage=56.00, New usage=56.00, Next usage=56.
+
+PM 3 seems fine. Its CPU usage is 26 + 75 = 101.
+  |- Accum. usage=75.00, New usage=74.00, Next usage=74.
+
+PM 4 seems fine. Its CPU usage is 66 + 44 = 110.
+  |- Accum. usage=44.00, New usage=34.00, Next usage=38.
+
+PM 5 seems fine. Its CPU usage is 62 + 28 = 90.
+  |- Accum. usage=28.00, New usage=38.00, Next usage=34.
+
+PM 6 seems fine. Its CPU usage is 0 + 99 = 99.
+  |- Accum. usage=99.00, New usage=100.00, Next usage=99.
+
+PM 7 seems fine. Its CPU usage is 0 + 99 = 99.
+  |- Accum. usage=99.00, New usage=100.00, Next usage=99.
+
+usage (updated): {
+  0: 73,  1: 42,  2: 56,  3: 74,  4: 38,  5: 34,  6: 99,  7: 99
+}
+
+********End earlier because of good total usage!********
+
+Run Another Problem? 
