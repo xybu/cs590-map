@@ -465,9 +465,8 @@ int main() {
       for (cur = 0; cur < n; ++cur) {
         if (!memcmp(assignment_history[cur], assignment,
                     nvtxs * sizeof(short))) {
-          // When finding an assignment that is already attempted, terminate for
-          // now.
-          // There should be better policy though.
+          // When finding an assignment that is already attempted, terminate
+          // for now. There should be better policy though.
           printf("Iteration %d gives same assignment as %d. Stop.\n", n, cur);
           goto skip;
         }
