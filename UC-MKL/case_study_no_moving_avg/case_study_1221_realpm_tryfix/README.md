@@ -1,7 +1,8 @@
 A follow-up to [case_study_1221_realpm](../case_study_1221_realpm). It changed the algorithm so that only the PMs involved 
 in current iteration will be updated.
 
-With this change, the program is able to allocate the topology to two PMs, but the result is still wrong.
+With this change, the program is able to allocate the topology to two PMs, but the result is still wrong. The program
+should pick up at least three PMs.
 
 ```
 PM 0 is disabled in this iteration.
