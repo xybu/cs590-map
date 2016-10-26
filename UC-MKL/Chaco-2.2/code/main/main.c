@@ -338,7 +338,7 @@ int main() {
     printf("# of PMs: %d\n", nprocs);  ////////////
 
     for (i = 0; i < nprocs; ++i) {
-      usage[i] = MIN_CPU_PERCENT * 2;
+      usage[i] = MIN_CPU_PERCENT;
     }
     print_int_array("usage (averaged)", usage, nprocs);
 
@@ -415,6 +415,13 @@ int main() {
       int num_over_utilized_host = 0;
 
       for (cur = 0; cur < nprocs; cur++) {
+        
+        // Update CPU usage for a PM iff it's involved in this iteration.
+        if (is_pm_disabled[cur]) {
+          printf("PM %d is disabled in this iteration.\n\n", cur);
+          continue;
+        }
+
         int total_usage = host_usage[cur] + usage[cur];
         if (total_usage < UNDER_UTILIZATION_THRESHOLD) {
           num_under_utilized_host++;
