@@ -21,3 +21,7 @@ Iteration 1 gives same assignment as 0. Stop.
 The program thinks that PM #2 and #3 can well address the topology because the sum of their capacity at 10% CPU share for packet processing exceeds sum of vhost weights but they can't. And it's a situation where the program cannot make progress.
 
 TODO: Start from the worst case and work towards better solution?
+
+ 1. Estimate min number of PMs needed then force the program to start there.
+
+ 2. Find a worst case value for goal -- min(worst_set_weight, capacity).
