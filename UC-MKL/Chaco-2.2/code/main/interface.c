@@ -3,6 +3,9 @@
  * contract DE-AC04-76DP00789 and is copyrighted by Sandia Corporation. */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 #include "defs.h"
 #include "structs.h"
 
@@ -23,6 +26,28 @@ void save_goals_array(double *goal, double sum, int size) {
 
   fclose(f);
   nth_save++;
+}
+
+int sum_of_ints(int *array, int size) {
+  int sum = 0;
+  while (size > 0) {
+    sum += *array;
+    array++;
+    size--;
+  }
+  return sum;
+}
+
+typedef struct int_index_pair {
+  int value;
+  int index;
+} IntIndexPair;
+
+int compare_int_index_pair_desc(const void * a, const void * b) {
+  // Just in case INT_MIN appears...
+  int v1 = ((IntIndexPair *)a)->value;
+  int v2 = ((IntIndexPair *)b)->value;
+  return -((v1 > v2) - (v1 < v2));
 }
 
 int Using_Main = FALSE; /* Is main routine being called? */
@@ -122,27 +147,27 @@ char *is_pm_disabled;
       for (i = nvtxs; i; i--) vwgt_sum += *(vptr++);
     }
     // REVISED //
-    printf("Siyuan: vwgt_sum: %f, nsets_tot: %d\n", vwgt_sum, nsets_tot);
-    // vwgt_sum /= nsets_tot;
+
+    double capa_sum = sum_of_ints(set_capa, nsets_tot);
+
+    printf("Sum of vertex weight (vwgt_sum): %lf.\n", vwgt_sum);
+    printf("Total capacity of PMs (capa_sum): %lf.\n", capa_sum);
+    printf("Total number of sets (nsets_tot): %d.\n", nsets_tot);
+    
     goal = (double *)smalloc_ret((unsigned)nsets_tot * sizeof(double));
     if (goal == NULL) {
       strout("\nERROR: No room to make goals.\n");
       flag = 1;
       goto skip;
     }
+    memset(goal, 0, (unsigned)nsets_tot * sizeof(double));
 
-    double capa_sum = 0;
-    for (i = 0; i < nsets_tot; i++) {
-      // printf("%d", i);
-      capa_sum += set_capa[i];
-      goal[i] = 0;
-    }
-
-    printf("Siyuan: Total capacity: %lf\n Set goals:\n", capa_sum);  // REVISED
     if (capa_sum < vwgt_sum) {
+      // When PM packet processing capacity is less than needed, scale
+      // up the capacity values proportionally.
       double tmp_total = 0;
       for (i = 0; i < nsets_tot; i++) {
-        goal[i] = (double)(int)(set_capa[i] * vwgt_sum / capa_sum);
+        goal[i] = ((double)set_capa[i]) * vwgt_sum / capa_sum;
         tmp_total += goal[i];
       }
       if (vwgt_sum - tmp_total > 0) {
@@ -154,6 +179,22 @@ char *is_pm_disabled;
         }
       }
     } else {
+
+      IntIndexPair pm_capacity[nsets_tot];
+      for (i = 0; i < nsets_tot; ++i) {
+        pm_capacity[i].value = set_capa[i];
+        pm_capacity[i].index = i;
+      }
+      puts("Sort PMs by capacity value.");
+      qsort_r(pm_capacity,
+            nsets_tot,
+            sizeof(IntIndexPair),
+            compare_int_index_pair_desc);
+      for (i = 0; i < nsets_tot; ++i) {
+        printf("Capacity of PM #%d: %d.\n", pm_capacity[i].index, pm_capacity[i].value);
+      }
+
+
       int flag_need_PM = 1;
       for (i = 0; i < nsets_tot; i++) {
         int j = 0;
