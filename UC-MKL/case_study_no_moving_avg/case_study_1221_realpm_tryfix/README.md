@@ -19,3 +19,5 @@ Iteration 1 gives same assignment as 0. Stop.
 ```
 
 The program thinks that PM #2 and #3 can well address the topology because the sum of their capacity at 10% CPU share for packet processing exceeds sum of vhost weights but they can't. And it's a situation where the program cannot make progress.
+
+TODO: Start from the worst case and work towards better solution?
