@@ -7,41 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "defs.h"
+#include "consts.h"
 #include "params.h"
-
-#define define_print_array_func(func_name, array_type, print_fmt_str)         \
-  void func_name(const char *varname, array_type array, int size) {           \
-    int i;                                                                    \
-    const int NUMS_PER_LINE = 8;                                              \
-    fprintf(stdout, "%s: {\n", varname);                                      \
-    for (i = 0; i < size; ++i) {                                              \
-      if (i % NUMS_PER_LINE == 0) fputc(' ', stdout);                         \
-      fprintf(stdout, "%2d: " print_fmt_str "%s", i, array[i],                \
-              (i < size - 1) ? ", " : "");                                    \
-      if ((i + 1) % NUMS_PER_LINE == 0 && i != size - 1) fputc('\n', stdout); \
-    }                                                                         \
-    fprintf(stdout, "\n}\n\n");                                               \
-  }
-
-#define define_save_array_func(func_name, array_type, file_name) \
-  void func_name(array_type array, int size) {                   \
-    int i;                                                       \
-    static int nth_save = 0;                                     \
-                                                                 \
-    FILE *f;                                                     \
-    if (nth_save == 0) {                                         \
-      f = fopen(file_name, "w");                                 \
-    } else {                                                     \
-      f = fopen(file_name, "a");                                 \
-    }                                                            \
-                                                                 \
-    fprintf(f, "%d", nth_save);                                  \
-    for (i = 0; i < size; ++i) fprintf(f, ", %d", array[i]);     \
-    fputc('\n', f);                                              \
-                                                                 \
-    fclose(f);                                                   \
-    nth_save++;                                                  \
-  }
 
 define_print_array_func(print_int_array, int *, "%2d");
 define_print_array_func(print_short_array, short *, "%2d");
@@ -52,25 +19,6 @@ define_save_array_func(save_switch_capacity_array, int *,
                        "switch_capacity_hist.txt");
 define_save_array_func(save_host_usage_array, int *, "host_usage_hist.txt");
 define_save_array_func(save_usage_array, int *, "usage_hist.txt");
-
-// A PM is considered under-utilized if its CPU usage is below this limit.
-const int UNDER_UTILIZATION_THRESHOLD = 90;
-
-// A PM is considered over-utilized if its CPU usage is above this limit.
-const int OVER_UTILIZATION_THRESHOLD = 110;
-
-// Allow the last host to be under-utilized.
-const int MAX_UNDER_UTILIZED_HOST_COUNT = 1;
-
-// Range of CPU Usage.
-const int MIN_CPU_PERCENT = 10;
-const int MAX_CPU_PERCENT = 100;
-
-// Max number of rounds allowed.
-const int MAX_ITERATIONS = 1000;
-
-// Usage decay coefficient. Should be a value in (0, 1].
-const double CURRENT_USAGE_WEIGHT = 0.6;
 
 /**
  * Calculate the sum of CPU share of hosts assigned to each PM.
@@ -190,7 +138,6 @@ int main() {
   int ndims;         /* dimension of recursive partitioning at each level */
   int architecture;  /* 0 => hypercube, d => d-dimensional mesh */
   int ndims_tot;     /* total number of cube dimensions to divide */
-  int *set_capa = NULL;     /* capacity of each PM ----------------ADD! */
   int set_capa_func[20][3]; /* capacity function of each PM (up to 20
                                PMs)-------------ADD! */
   int usage[20]; /* capacity usage for switches (0~100)--------------ADD! */
@@ -262,7 +209,7 @@ int main() {
 
     input_queries(&fin, &fin_host, &fingeom, &finassign, graphname, hostname,
                   geomname, inassignname, outassignname, outfilename,
-                  &architecture, &ndims_tot, &set_capa, set_capa_func, usage,
+                  &architecture, &ndims_tot, set_capa_func, usage,
                   mesh_dims, &global_method, &local_method, &rqi_flag, &vmax,
                   &ndims);  // ADD!
 
@@ -301,7 +248,7 @@ int main() {
 
     size_t host_percent_sum = 0;
     for (j = 0; j < nvtxs; j++) {
-      fscanf(fin_host, "%d", &host_percent[j]);
+      fscanf(fin_host, "%d", host_percent + j);
       host_percent_sum += host_percent[j];
       // printf("----%d: %d-----",j, host_percent[j]); //////
     }
@@ -354,16 +301,11 @@ int main() {
         goto skip;
       }
 
-      // compute current switch capacity
-      int cur = 0;
-      for (cur = 0; cur < nprocs; cur++) {
-        double capa_0 = set_capa_func[cur][2];
-        double capa_1 = set_capa_func[cur][1] * usage[cur];
-        double capa_2 = set_capa_func[cur][0] * usage[cur] * usage[cur];
-        set_capa[cur] = (int)((capa_2 + capa_1 + capa_0) / 10000);
+      FILE *f = fopen("vwgts.txt", "w");
+      for (i = 0; i < nvtxs; ++i) {
+        fprintf(f, "%d\n", vwgts[i]);
       }
-      print_int_array("set_capa (switch capacity)", set_capa, nprocs);
-      save_switch_capacity_array(set_capa, nprocs);
+      fclose(f);
 
       // for (cur = 0; cur < nprocs; cur++) {
       //   printf("~~~~~time %d: current switch capacity~~~~~~~  %d\n", n,
@@ -373,8 +315,8 @@ int main() {
       // one partitioning
       interface(nvtxs, start, adjacency, vwgts, ewgts, x, y, z, outassignptr,
                 outfileptr, assignment, architecture, ndims_tot, mesh_dims,
-                set_capa, goal, global_method, local_method, rqi_flag, vmax,
-                ndims, eigtol, seed, is_pm_disabled);
+                goal, global_method, local_method, rqi_flag, vmax,
+                ndims, eigtol, seed, host_percent, usage, set_capa_func, is_pm_disabled);
       printf("~~~~~~~~~~~~~~partitioning finished~~~~~~~~~~~~~~~~~~\n");
 
       print_int_array("host_percent (after partition)", host_percent, nvtxs);
@@ -414,40 +356,40 @@ int main() {
       int num_under_utilized_host = 0;
       int num_over_utilized_host = 0;
 
-      for (cur = 0; cur < nprocs; cur++) {
+      for (i = 0; i < nprocs; i++) {
         
         // Update CPU usage for a PM iff it's involved in this iteration.
-        if (is_pm_disabled[cur]) {
-          printf("PM %d is disabled in this iteration.\n\n", cur);
+        if (is_pm_disabled[i]) {
+          printf("PM %d is disabled in this iteration.\n\n", i);
           continue;
         }
 
-        int total_usage = host_usage[cur] + usage[cur];
+        int total_usage = host_usage[i] + usage[i];
         if (total_usage < UNDER_UTILIZATION_THRESHOLD) {
           num_under_utilized_host++;
           printf("PM %d is under-utilized. Its CPU usage is %d + %d = %d.\n",
-                 cur, host_usage[cur], usage[cur], total_usage);
+                 i, host_usage[i], usage[i], total_usage);
         } else if (total_usage > OVER_UTILIZATION_THRESHOLD) {
           num_over_utilized_host++;
           printf("PM %d is over-utilized. Its CPU usage is %d + %d = %d.\n",
-                 cur, host_usage[cur], usage[cur], total_usage);
+                 i, host_usage[i], usage[i], total_usage);
         } else {
-          printf("PM %d seems fine. Its CPU usage is %d + %d = %d.\n", cur,
-                 host_usage[cur], usage[cur], total_usage);
+          printf("PM %d seems fine. Its CPU usage is %d + %d = %d.\n", i,
+                 host_usage[i], usage[i], total_usage);
         }
 
-        double current_usage = MAX_CPU_PERCENT - host_usage[cur];
+        double current_usage = MAX_CPU_PERCENT - host_usage[i];
         if (current_usage < MIN_CPU_PERCENT) {
           current_usage = MIN_CPU_PERCENT;
         }
 
-        double old_usage = usage[cur];
+        double old_usage = usage[i];
 
-        usage[cur] = (int)((1 - CURRENT_USAGE_WEIGHT) * (old_usage) +
+        usage[i] = (int)((1 - CURRENT_USAGE_WEIGHT) * (old_usage) +
                            (CURRENT_USAGE_WEIGHT) * (current_usage));
 
         printf("  |- Accum. usage=%.2lf, New usage=%.2lf, Next usage=%d.\n\n",
-               old_usage, current_usage, usage[cur]);
+               old_usage, current_usage, usage[i]);
 
         // usage[cur] = (usage[cur] + (100 - host_usage[cur])) / 2;
         // if (usage[cur] < 50) {
@@ -469,12 +411,11 @@ int main() {
       assignment_history[n] = assignment;
 
       // Check if the assignment appeared before.
-      for (cur = 0; cur < n; ++cur) {
-        if (!memcmp(assignment_history[cur], assignment,
-                    nvtxs * sizeof(short))) {
+      for (i = 0; i < n; ++i) {
+        if (!memcmp(assignment_history[i], assignment, nvtxs * sizeof(short))) {
           // When finding an assignment that is already attempted, terminate
           // for now. There should be better policy though.
-          printf("Iteration %d gives same assignment as %d. Stop.\n", n, cur);
+          printf("Iteration %d gives same assignment as %d. Stop.\n", n, i);
           goto skip;
         }
       }

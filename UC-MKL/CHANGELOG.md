@@ -89,6 +89,23 @@ Based on observations so far, this situation happens when most sets are already
 "overflown" and happens to "trivial" leaf nodes. There could be a better PM
 to place such vhosts but using the least stressed PM should safely work.
 
+## Update Involved PMs Only
+
+The original UC-MKL updates CPU share for packet processing for all PMs 
+regardless of whether it is disabled / existent or not. That is, it will
+do
+
+```
+for each PM i:
+    next_round_CPU_share_for_switch = MAX_CPU_SHARE - sum_of_CPU_share_used_by_vhosts
+```
+
+for all PMs. This to some extent leads to the problem recorded in [case_study_1221_realpm](case_study_no_moving_avg/case_study_1221_realpm), where
+the program will in round `N` pick and overwhelm the most powerful PM and in round `N+1` pick and overwhelm the second most powerful PM and repeat `N` and
+`N+1` (if allowed to run forever).
+
+We changed it so that this update will skip PMs not chosen in this round (i.e., a PM not used in this round, or a PM that simply does not exist).
+
 ## Validate Capacity Functions?
 
 The capacity function "0 17600 -235200" is not valid because part of its

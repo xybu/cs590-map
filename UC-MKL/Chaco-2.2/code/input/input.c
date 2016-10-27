@@ -15,7 +15,7 @@ int cmp(const void *a, const void *b) {
 
 void input_queries(fin, fin_host, fingeom, finassign, inname, inname_host,
                    geomname, inassignname, outassignname, outfilename,
-                   architecture, ndims_tot, set_capa, set_capa_func, usage,
+                   architecture, ndims_tot, set_capa_func, usage,
                    mesh_dims, global_method, local_method, rqi_flag, vmax,
                    ndims) FILE **fin; /* input file */
 FILE **fin_host;   /* input host percentage  --------------------------- ADD! */
@@ -29,7 +29,6 @@ char *outassignname;      /* name of assignment output file */
 char *outfilename;        /* name of file for outputing run results */
 int *architecture;        /* 0=> hypercube, d=> d-dimensional mesh */
 int *ndims_tot;           /* target number of hypercube dimensions */
-int **set_capa;           /* capacity of each PM -------------ADD! */
 int set_capa_func[20][3]; /* capacity function of each PM -------------ADD! */
 int usage[20];      /* capacity usage for switches (0~100)--------------ADD! */
 int mesh_dims[3];   /* mesh dimensions */
@@ -231,9 +230,7 @@ int *ndims;         /* number of divisions at each stage */
     nprocs = 1 << (*ndims_tot);
 
     ////// ADD /////////
-    if (*set_capa == NULL) {
-      *set_capa = (int *)malloc(nprocs * sizeof(int));
-    }
+    
     int cur = 0;
     for (; cur < nprocs; cur++) {
       printf("Enter Capacity function for PM%d: \n", cur + 1);
@@ -242,29 +239,11 @@ int *ndims;         /* number of divisions at each stage */
         set_capa_func[cur][curr] = input_int();
         // printf("-----%d\n", set_capa[cur][curr]);
       }
-      printf("Capacity function for PM%d: %f u^2 + %f u + %f\n", cur + 1,
+      printf("Capacity function for PM #%d: %lf u^2 + %lf u + %lf\n", cur,
              (double)(set_capa_func[cur][0]) / 10000,
              (double)(set_capa_func[cur][1]) / 10000,
-             (float)set_capa_func[cur][2] / 10000);
-
-      // double capa_0 = set_capa_func[cur][2];
-      // double capa_1 = set_capa_func[cur][1] * usage[cur];
-      // double capa_2 = set_capa_func[cur][0] * usage[cur] * usage[cur];
-      //(*set_capa)[cur] = (int)((capa_0 + capa_1 + capa_2) / 10000);
-
-      // (*set_capa)[cur] = (int)((double)(set_capa_func[cur][0])/10000 *
-      // (usage[cur])*((double)(usage[cur]))
-      // 			+ (double)(set_capa_func[cur][1])/10000 *
-      // ((double)(usage[cur]))
-      // 			+ (double)(set_capa_func[cur][2])/10000);
+             (double)(set_capa_func[cur][2]) / 10000);
     }
-    // qsort(*set_capa, nprocs,sizeof((*set_capa)[0]),cmp);
-
-    // for (cur = 0; cur < nprocs; cur++) {
-    //   printf("Capacity value: %d\n", (*set_capa)[cur]);
-    // }
-    ////////////////////
-
   }
 
   else { /* Get dimensions of mesh. */

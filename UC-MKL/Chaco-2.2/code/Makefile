@@ -5,7 +5,7 @@ IFLAG =		-Imain
 CFLAGS =	-O0 -g
 OFLAGS =	-O0 -g
 
-FILES.c=	main/user_params.c main/interface.c main/main.c \
+FILES.c=	main/user_params.c main/interface.c main/knapsack.c main/main.c \
 		submain/balance.c submain/divide.c submain/submain.c \
 		input/input_assign.c \
 		input/check_input.c input/input.c input/input_geom.c \
