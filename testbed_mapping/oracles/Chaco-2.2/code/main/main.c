@@ -135,7 +135,7 @@ int main() {
     if (use_goal_file) {
       int i;
       int nsets_tot = calculate_nsets_total(architecture, ndims_tot, mesh_dims);
-      printf("INFO: Use external goal array. Expect %d doubles.\n", nsets_tot);
+      printf("\nINFO: Use external goal array. Expect %d doubles.\n", nsets_tot);
       FILE *gf = fopen(goalname, "r");
       if (!gf) {
         perror("fopen");
@@ -153,6 +153,7 @@ int main() {
             fclose(gf);
             break;
           }
+          printf("goal[%d] = %lf.\n", i, goal[i]);
         }
       }
     }
