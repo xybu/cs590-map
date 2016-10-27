@@ -56,6 +56,10 @@ rather than 2 PMs).
 
 ### Change underlying algorithm to a multi-constraint solver
 
+Some links:
+
+1. [A New Algorithm for Multi-objective Graph Partitioning](http://link.springer.com/chapter/10.1007/3-540-48311-X_42)
+
 ### Pessimistic Approach -- Start with K PMs, then K-1, K-2, ...
 
 Note that min number of PMs needed is ceiling(sum_of_cpu_req / 100). Force this and let the program start there.
