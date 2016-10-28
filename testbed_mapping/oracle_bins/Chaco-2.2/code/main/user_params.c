@@ -11,13 +11,13 @@
 
 int CHECK_INPUT = TRUE;     /* Check input for consistency? (TRUE/FALSE) */
 int ECHO = 2;               /* Print input/param options? to file? (-2..2) */
-int OUTPUT_METRICS = 2;     /* Controls displaying of results (-2..2) */
+int OUTPUT_METRICS = -2;     /* Controls displaying of results (-2..2) */
 int OUTPUT_TIME = 2;        /* At what level to display timings (0..2) */
 int OUTPUT_ASSIGN = TRUE;  /* Write assignments to file? (TRUE/FALSE) */
 int OUT_ASSIGN_INV = FALSE; /* If so, use inverse form? (TRUE/FALSE) */
 int IN_ASSIGN_INV = FALSE;  /* Input file in inverse form? (TRUE/FALSE) */
 int PROMPT = TRUE;          /* Prompt for input? (TRUE/FALSE) */
-int PRINT_HEADERS = TRUE;   /* Print pretty output headers (TRUE/FALSE) */
+int PRINT_HEADERS = FALSE;   /* Print pretty output headers (TRUE/FALSE) */
 
 /* Eigenvector calculation parameters */
 
@@ -53,10 +53,10 @@ int OPT3D_NTRIES = 5;        /* # local opts to look for global min in opt3d */
 
 /* Kernighan--Lin/Fiduccia--Mattheyses parameters */
 
-int KL_METRIC = 2;         /* KL interset cost: 1=>cuts, 2=>hops */
+int KL_METRIC = 1;         /* KL interset cost: 1=>cuts, 2=>hops */
 int KL_RANDOM = TRUE;      /* Use randomness in Kernighan-Lin? (TRUE/FALSE)*/
 int KL_BAD_MOVES = 20;     /* Number of unhelpful moves in a row allowed */
-int KL_NTRIES_BAD = 1;     /* # unhelpful passes before quitting KL */
+int KL_NTRIES_BAD = 2;     /* # unhelpful passes before quitting KL */
 int KL_UNDO_LIST = TRUE;   /* Only resort changed vtxs? (TRUE/FALSE) */
 double KL_IMBALANCE = 0.0; /* Fractional imbalance allowed by KL */
 
@@ -95,21 +95,21 @@ char *PARAMS_FILENAME = "User_Params"; /* File of parameter changes */
 
 /* Parameters that control debugging output */
 
-int DEBUG_EVECS = 0;       /* Debug flag for eigenvector generation (0..5) */
-int DEBUG_KL = 0;          /* Debug flag for Kernighan-Lin (0..3) */
-int DEBUG_INERTIAL = 0;    /* Debug flag for inertial method (0..1) */
-int DEBUG_CONNECTED = 0;   /* Debug flag for connected components (0..1) */
-int DEBUG_PERTURB = 0;     /* Debug flag for matrix perturbation (0..1) */
-int DEBUG_ASSIGN = 0;      /* Debug flag for assignment to sets (0..1) */
-int DEBUG_OPTIMIZE = 0;    /* Debug flag for optimization/rotation (0..2) */
-int DEBUG_BPMATCH = 0;     /* Debug flag for bipartite matching code (0..2) */
-int DEBUG_COARSEN = 0;     /* Debug flag for coarsening/uncoarsening (0..1) */
-int DEBUG_MEMORY = 0;      /* Debug flag for smalloc/sfree (0..3) */
-int DEBUG_INPUT = 0;       /* Debug flag for having read input files (0..1) */
-int DEBUG_PARAMS = 2;      /* Debug flag for reading parameter file (0..2) */
-int DEBUG_INTERNAL = 0;    /* Debug flag for internal vertices (0..2) */
+int DEBUG_EVECS = 0;     // 0 /* Debug flag for eigenvector generation (0..5) */
+int DEBUG_KL = 1;        /* Debug flag for Kernighan-Lin (0..3) */
+int DEBUG_INERTIAL = 0;  /* Debug flag for inertial method (0..1) */
+int DEBUG_CONNECTED = 0; /* Debug flag for connected components (0..1) */
+int DEBUG_PERTURB = 0;   /* Debug flag for matrix perturbation (0..1) */
+int DEBUG_ASSIGN = 1;    /* Debug flag for assignment to sets (0..1) */
+int DEBUG_OPTIMIZE = 1;  /* Debug flag for optimization/rotation (0..2) */
+int DEBUG_BPMATCH = 0;   /* Debug flag for bipartite matching code (0..2) */
+int DEBUG_COARSEN = 2;   /* Debug flag for coarsening/uncoarsening (0..1) */
+int DEBUG_MEMORY = 0;    /* Debug flag for smalloc/sfree (0..3) */
+int DEBUG_INPUT = 0;     /* Debug flag for having read input files (0..1) */
+int DEBUG_PARAMS = 2;    /* Debug flag for reading parameter file (0..2) */
+int DEBUG_INTERNAL = 0;  /* Debug flag for internal vertices (0..2) */
 int DEBUG_REFINE_PART = 0; /* Debug flag for refine partition (0..1) */
 int DEBUG_REFINE_MAP = 0;  /* Debug flag for refining mapping (0..1) */
 int DEBUG_SIMULATOR = 0;   /* Debug flag for comm simulator (0..2) */
-int DEBUG_TRACE = 0;       /* Trace main execution path (0..2) */
+int DEBUG_TRACE = 0;       // 0 /* Trace main execution path (0..2) */
 int DEBUG_MACH_PARAMS = 0; /* Print computed machine params? (0..1) */

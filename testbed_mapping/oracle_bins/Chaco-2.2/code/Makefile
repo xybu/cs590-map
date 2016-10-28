@@ -1,4 +1,4 @@
-DEST_DIR = 	../exec
+DEST_DIR = 	..
 DEST=		${DEST_DIR}/chaco
 CC = 		gcc
 IFLAG =		-Imain
