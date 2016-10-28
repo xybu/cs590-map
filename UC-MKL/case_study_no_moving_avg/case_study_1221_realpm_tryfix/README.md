@@ -50,6 +50,10 @@ but MKL can choose a few other nodes so that their weight sum is 450, but this c
 way above 3. As a result, this change only mitigates the issue (with this implementation the program now picks up 3 PMs
 rather than 2 PMs).
 
+#### Improvement
+
+Maybe it works better on coarsened graph?
+
 ### Converting CPU requirement to capacity requirement
 
 ### Reduce MAX_CPU for PMs dynamically
