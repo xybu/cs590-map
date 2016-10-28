@@ -7,11 +7,14 @@ import tempfile
 
 from parse_input import to_num
 from parse_chaco import parse_chaco_input
+from parse_chaco import NODE_WEIGHT_KEY
 
 
 SUPPORTED_ORACLES = {
     'chaco': os.path.dirname(__file__) + '/oracle_bins/Chaco-2.2/chaco'
 }
+
+NODE_CPU_KEY = 'cpu'
 
 
 class ChacoOracle:
@@ -39,6 +42,17 @@ class ChacoOracle:
         self.graph_file_path = graph_file_path
         self.graph = parse_chaco_input(graph_file_path)
 
+    def update_vhost_cpu_req(self, vhost_cpu_req):
+        if isinstance(vhost_cpu_req, list):
+            assert(len(vhost_cpu_req) == self.graph.number_of_nodes())
+            for i, v in enumerate(vhost_cpu_req):
+                self.graph.node[i + 1][NODE_CPU_KEY] = v
+        elif isinstance(vhost_cpu_req, dict):
+            for k, v in vhost_cpu_req.items():
+                self.graph.node[k][NODE_CPU_KEY] = v
+        else:
+            raise ValueError('Type of vhost_cpu_req is not recognized.')
+
     def get_assignment(self, goals):
         hypercube_dimension = math.ceil(math.log(len(goals), 2))
         num_nodes_coarsened_to = 2 ** hypercube_dimension
@@ -60,7 +74,6 @@ class ChacoOracle:
             print(oracle_input, file=inf)
         with open(self.work_dir + '/input', 'r') as inf:
             subprocess.check_call([SUPPORTED_ORACLES['chaco']], stdin=inf, timeout=10)
-        # subp = subprocess.Popen([SUPPORTED_ORACLES['chaco']], stdin=subprocess.PIPE, stderr=subprocess.STDOUT)
-        # subp.communicate(oracle_input)
+            print()
         with open(self.work_dir + '/output', 'r') as outf:
             return [to_num(v) for v in outf.readlines()]

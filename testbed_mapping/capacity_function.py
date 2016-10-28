@@ -25,3 +25,7 @@ class CapacityFunction:
       result = result + a * multiplier
       multiplier = multiplier * x
     return result
+
+  def __str__(self):
+    highest_order = len(self.coefficients) - 1
+    return 'f(u) = ' + ' + '.join('%.4lf u^%d' % (c, highest_order - d) for d, c in enumerate(self.coefficients[::-1]))

@@ -17,15 +17,19 @@ def to_num(str):
 
 
 def parse_pms(filepath, high_order_first=True):
-    pms = []
+    result = []
+    print('Parsing PMs from file "%s"...' % filepath)
     with open(filepath, 'r') as f:
         for line in f:
             line = line.strip()
             if not line_is_comment(line):
                 coefficients = [to_num(v) for v in line.split()]
                 capacity_func = capacity_function.CapacityFunction(coefficients, high_order_first)
-                pms.append(pms.PhysicalMachine(capacity_func))
-    return pms
+                pm = pms.PhysicalMachine(pm_id=len(result), capacity_func=capacity_func)
+                result.append(pm)
+                print('  ' + str(pm))
+    print()
+    return result
 
 
 def read_flat_ints(filepath):
