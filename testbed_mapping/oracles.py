@@ -73,7 +73,7 @@ class ChacoOracle:
         with open(self.work_dir + '/input', 'w') as inf:
             print(oracle_input, file=inf)
         with open(self.work_dir + '/input', 'r') as inf:
-            subprocess.check_call([SUPPORTED_ORACLES['chaco']], stdin=inf, timeout=10)
-            print()
+            o = subprocess.check_output([SUPPORTED_ORACLES['chaco']], stdin=inf, timeout=10, universal_newlines=True, stderr=subprocess.STDOUT)
+            print(o + '\n')
         with open(self.work_dir + '/output', 'r') as outf:
             return [to_num(v) for v in outf.readlines()]

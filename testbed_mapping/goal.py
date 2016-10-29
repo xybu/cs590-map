@@ -10,11 +10,14 @@ SUPPORTED_CORRECT_GOAL_APPROACH_SCALE = 0
 # Use the k largest values (and reduce the kth largest one if necessary) to fit the target sum.
 SUPPORTED_CORRECT_GOAL_APPROACH_REDUCE = 1
 
+INITIAL_CPU_PERCENT = 15
 MIN_CPU_PERCENT = 10
 MAX_CPU_PERCENT = 100
 
 UNDER_UTILIZED_CPU_THRESHOLD = 90
 OVER_UTILIZED_CPU_THRESHOLD = 110
+
+UNDER_UTILIZED_PM_ALLOWED = 1
 
 USE_KNAPSACK_LIMIT = True
 USE_CORRECT_GOAL_APPROACH = SUPPORTED_CORRECT_GOAL_APPROACH_REDUCE
@@ -68,21 +71,37 @@ class GoalCalculator:
                 self._vhost_weight.append(node_weight)
             self.sum_of_node_weight += node_weight
             self.sum_of_node_cpu += node_cpu
+        if USE_KNAPSACK_LIMIT:
+            self.knapsack_limits = {}
+            for i in range(MIN_CPU_PERCENT, MAX_CPU_PERCENT):
+                self.get_knapsack_limit(i)
+
+    def get_knapsack_limit(self, cap):
+        if cap not in self.knapsack_limits:
+            self.knapsack_limits[cap] = knapsack_max_value(knapsack(self._vhost_weight, self._vhost_cpu_req, cap))
+            print('Added knapsack cache ks[%d] = %lf.' % (cap, self.knapsack_limits[cap]))
+        return self.knapsack_limits[cap]
 
     def get_next_goal(self, switch_cpu_dist, vhost_cpu_dist):
         print('Calculating goal for round %d...' % len(self.goal_hist))
-        self.switch_cpu_hist.append(switch_cpu_dist.copy())
-        self.vhost_cpu_hist.append(vhost_cpu_dist.copy())
         pm_capacity = []
         for i, pm in enumerate(self.pms):
+            if not pm.is_enabled:
+                pm_capacity.append(0)
+                print('  PM #%d: does not exist.' % i)
+                continue
             func_cap = pm.capacity_func.eval(switch_cpu_dist[i])
+            while func_cap < 0:
+                switch_cpu_dist[i] += 1
+                func_cap = pm.capacity_func.eval(switch_cpu_dist[i])
             if USE_KNAPSACK_LIMIT:
-                ks_cap = knapsack_max_value(knapsack(self._vhost_weight, self._vhost_cpu_req, vhost_cpu_dist[i]))
+                ks_cap = self.get_knapsack_limit(vhost_cpu_dist[i])
                 cap = min(func_cap, ks_cap)
-                print("  PM #%d: func_cap=%lf, ks_cap=%lf. Choose %lf." % (pm.pm_id, func_cap, ks_cap, cap))
                 pm_capacity.append(cap)
+                print('  PM #%d: sw_cpu=%d, func_cap=%lf, ks_cap=%lf. Use %lf.' % (pm.pm_id, switch_cpu_dist[i], func_cap, ks_cap, cap))
             else:
-                print("  PM #%d: Use func_cap=%lf." % (pm.pm_id, func_cap))
+                pm_capacity.append(func_cap)
+                print('  PM #%d: Use func_cap=%lf.' % (pm.pm_id, func_cap))
         if sum(pm_capacity) < self.sum_of_node_weight:
             # Max possible capacity is less than node weight, scale the values up proportionally.
             pm_capacity = scale_array_to_target_sum(pm_capacity, self.sum_of_node_weight)
@@ -98,5 +117,7 @@ class GoalCalculator:
         for i, c in enumerate(pm_capacity):
             print('  goal[%d] = %lf' % (i, c))
         print()
+        self.switch_cpu_hist.append(switch_cpu_dist.copy())
+        self.vhost_cpu_hist.append(vhost_cpu_dist.copy())
         self.goal_hist.append(pm_capacity.copy())
         return pm_capacity

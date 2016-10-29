@@ -39,7 +39,7 @@ def move_vhosts_out_of_disabled_pms(graph, assignment, num_pms, goal_values, swi
 
 def main_loop(oracle, physical_machines):
     assignment_history = []
-    switch_cpu_dist = [goal.MIN_CPU_PERCENT] * len(physical_machines)
+    switch_cpu_dist = [goal.INITIAL_CPU_PERCENT] * len(physical_machines)
     vhost_cpu_dist = [goal.MAX_CPU_PERCENT - v for v in switch_cpu_dist]
     goal_calc = goal.GoalCalculator(oracle.graph, physical_machines)
     while True:
@@ -48,21 +48,40 @@ def main_loop(oracle, physical_machines):
         assignment = oracle.get_assignment(goal_values)
         new_vhost_cpu_dist = calculate_vhost_cpu_dist(oracle.graph, assignment, len(physical_machines))
         move_vhosts_out_of_disabled_pms(oracle.graph, assignment, len(physical_machines), goal_values, switch_cpu_dist, new_vhost_cpu_dist)
-        print(assignment)
+        print('\nAssignment result:\n' + str(assignment))
         print('\nUpdate CPU allocation for PMs...')
+        num_under_utilized_pms = 0
+        num_over_utilized_pms = 0
         for i in range(len(physical_machines)):
             if goal_values[i] < 1:
                 print(' PM #%d: disabled.' % (i))
                 continue
             old_switch_cpu_val = switch_cpu_dist[i]
-            new_switch_cpu_val = max(goal.MIN_CPU_PERCENT, goal.MAX_CPU_PERCENT - new_vhost_cpu_dist[i])
+            new_vhost_cpu_val = new_vhost_cpu_dist[i]
+            new_switch_cpu_val = max(goal.MIN_CPU_PERCENT, goal.MAX_CPU_PERCENT - new_vhost_cpu_val)
+            total_cpu_usage = old_switch_cpu_val + new_vhost_cpu_val
+            if total_cpu_usage < goal.UNDER_UTILIZED_CPU_THRESHOLD:
+                status = 'under'
+                num_under_utilized_pms += 1
+            elif total_cpu_usage > goal.OVER_UTILIZED_CPU_THRESHOLD:
+                status = 'over'
+                num_over_utilized_pms += 1
+            else:
+                status = 'ok'
             switch_cpu_dist[i] = math.ceil((1 - PM_SW_CPU_UPDATE_RATIO) * switch_cpu_dist[i] + PM_SW_CPU_UPDATE_RATIO * new_switch_cpu_val)
             vhost_cpu_dist[i] = goal.MAX_CPU_PERCENT - switch_cpu_dist[i]
-            print(' PM #%d: vhost_CPU=%d, total=%d, next_sw_CPU=(%.2lf*%d)+(%.2lf*%d)=%d, next_vhost_CPU = %d.' % (i, new_vhost_cpu_dist[i], old_switch_cpu_val+new_vhost_cpu_dist[i], (1 - PM_SW_CPU_UPDATE_RATIO), old_switch_cpu_val, PM_SW_CPU_UPDATE_RATIO, new_switch_cpu_val, switch_cpu_dist[i], vhost_cpu_dist[i]))
+            print(' PM #%d: %s, CPU=%d/%d, next_sw_CPU=(%.2lf*%d)+(%.2lf*%d)=%d, next_vhost_CPU = %d.' % (i, status, new_vhost_cpu_val, old_switch_cpu_val+new_vhost_cpu_dist[i], (1 - PM_SW_CPU_UPDATE_RATIO), old_switch_cpu_val, PM_SW_CPU_UPDATE_RATIO, new_switch_cpu_val, switch_cpu_dist[i], vhost_cpu_dist[i]))
+        if num_under_utilized_pms <= goal.UNDER_UTILIZED_PM_ALLOWED and num_over_utilized_pms == 0:
+            print('Assignment seems legit. Stop.')
+            break
+        elif num_over_utilized_pms == len(physical_machines):
+            print('All PMs are over-utilized. Stop because we probably cannot do better.')
+            break
         if assignment in assignment_history:
             print('Assignment result repeats round %d. Stop.' % (assignment_history.index(assignment)))
             break
         assignment_history.append(assignment)
+    print('Main loop finished with %d iterations.' % len(assignment_history))
 
 
 def main():

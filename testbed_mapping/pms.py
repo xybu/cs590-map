@@ -9,6 +9,7 @@ class PhysicalMachine:
       """
       self.pm_id = pm_id
       self.capacity_func = capacity_func
+      self.is_enabled = sum(capacity_func.coefficients) != 0
 
   def __str__(self):
     return 'PM #%d [%s]' % (self.pm_id, str(self.capacity_func))
