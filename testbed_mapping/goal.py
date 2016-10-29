@@ -19,7 +19,6 @@ OVER_UTILIZED_CPU_THRESHOLD = 110
 
 UNDER_UTILIZED_PM_ALLOWED = 1
 
-USE_KNAPSACK_LIMIT = True
 USE_CORRECT_GOAL_APPROACH = SUPPORTED_CORRECT_GOAL_APPROACH_REDUCE
 
 
@@ -48,38 +47,37 @@ def reduce_array_to_target_sum(data, target_sum):
 
 class GoalCalculator:
 
-    def __init__(self, graph, pms):
+    def __init__(self, graph, pms, use_knapsack_limit=True):
         """
         :param networkx.Graph graph:
         :param list[pms.PhysicalMachine] pms:
         """
         self.graph = graph
         self.pms = pms
+        self.use_knapsack_limit = use_knapsack_limit
         self.goal_hist = []
         self.switch_cpu_hist = []
         self.vhost_cpu_hist = []
         self.sum_of_node_weight = 0
         self.sum_of_node_cpu = 0
-        if USE_KNAPSACK_LIMIT:
-            self._vhost_cpu_req = []
-            self._vhost_weight = []
+        self._vhost_cpu_req = []
+        self._vhost_weight = []
         for node in graph.nodes(data=True):
             node_cpu = node[1][NODE_CPU_KEY]
             node_weight = node[1][NODE_WEIGHT_KEY]
-            if USE_KNAPSACK_LIMIT:
-                self._vhost_cpu_req.append(node_cpu)
-                self._vhost_weight.append(node_weight)
+            self._vhost_cpu_req.append(node_cpu)
+            self._vhost_weight.append(node_weight)
             self.sum_of_node_weight += node_weight
             self.sum_of_node_cpu += node_cpu
-        if USE_KNAPSACK_LIMIT:
-            self.knapsack_limits = {}
-            for i in range(MIN_CPU_PERCENT, MAX_CPU_PERCENT):
-                self.get_knapsack_limit(i)
+        if use_knapsack_limit:
+            # The Knapsack matrix of max possible capacity has all the values we need.
+            # So we use one pass to pre-compute all the values we need later.
+            ks_matrix = knapsack(self._vhost_weight, self._vhost_cpu_req, MAX_CPU_PERCENT)
+            self.knapsack_limits = {i: v for i, v in enumerate(ks_matrix[-1])}
 
     def get_knapsack_limit(self, cap):
         if cap not in self.knapsack_limits:
             self.knapsack_limits[cap] = knapsack_max_value(knapsack(self._vhost_weight, self._vhost_cpu_req, cap))
-            print('Added knapsack cache ks[%d] = %lf.' % (cap, self.knapsack_limits[cap]))
         return self.knapsack_limits[cap]
 
     def get_next_goal(self, switch_cpu_dist, vhost_cpu_dist):
@@ -94,7 +92,7 @@ class GoalCalculator:
             while func_cap < 0:
                 switch_cpu_dist[i] += 1
                 func_cap = pm.capacity_func.eval(switch_cpu_dist[i])
-            if USE_KNAPSACK_LIMIT:
+            if self.use_knapsack_limit:
                 ks_cap = self.get_knapsack_limit(vhost_cpu_dist[i])
                 cap = min(func_cap, ks_cap)
                 pm_capacity.append(cap)

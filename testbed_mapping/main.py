@@ -37,11 +37,11 @@ def move_vhosts_out_of_disabled_pms(graph, assignment, num_pms, goal_values, swi
             # Should have updated switch CPU usage of the PM as well to better find the least stressed PM.
 
 
-def main_loop(oracle, physical_machines):
+def main_loop(oracle, physical_machines, use_knapsack_limit=True):
     assignment_history = []
     switch_cpu_dist = [goal.INITIAL_CPU_PERCENT] * len(physical_machines)
     vhost_cpu_dist = [goal.MAX_CPU_PERCENT - v for v in switch_cpu_dist]
-    goal_calc = goal.GoalCalculator(oracle.graph, physical_machines)
+    goal_calc = goal.GoalCalculator(oracle.graph, physical_machines, use_knapsack_limit)
     while True:
         print('\n' + '*' * 80 + '\n')
         goal_values = goal_calc.get_next_goal(switch_cpu_dist, vhost_cpu_dist)
@@ -81,7 +81,7 @@ def main_loop(oracle, physical_machines):
             print('Assignment result repeats round %d. Stop.' % (assignment_history.index(assignment)))
             break
         assignment_history.append(assignment)
-    print('Main loop finished with %d iterations.' % len(assignment_history))
+    print('\nMain loop finished with %d iterations.' % len(assignment_history))
 
 
 def main():
@@ -94,6 +94,8 @@ def main():
                         help='File to read PM information. One capacity function per line.')
     parser.add_argument('--work-dir', type=str, default=None,
                         help='Directory to save output files.')
+    parser.add_argument('--disable-knapsack-limit', default=False, action='store_true',
+                        help='If present, will not use knapsack limit when computing capacity.')
     args = parser.parse_args()
 
     if args.oracle.lower() == 'chaco':
@@ -104,7 +106,7 @@ def main():
 
     physical_machines = parse_input.parse_pms(args.pm_file)
 
-    main_loop(oracle, physical_machines)
+    main_loop(oracle, physical_machines, not args.disable_knapsack_limit)
 
 
 if __name__ == '__main__':
