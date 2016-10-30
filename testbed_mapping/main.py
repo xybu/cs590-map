@@ -2,6 +2,7 @@
 
 import argparse
 import math
+import sys
 
 import goal
 import oracles
@@ -9,7 +10,7 @@ import parse_input
 
 
 # The coefficient for calculating next-round switch CPU usage of PMs. Next = (1-C)*accumulated + C*current
-PM_SW_CPU_UPDATE_RATIO = 0.6
+PM_SW_CPU_UPDATE_RATIO = 0.3
 
 # The lower bound for max CPU value of PMs if adaptively reduced.
 PM_CPU_CEILING_LOW_THRESHOLD = 50
@@ -19,7 +20,8 @@ PM_CPU_CEILING_ADJUST_STEP = -1
 
 
 def calculate_vhost_cpu_dist(graph, assignment, num_pms):
-    pm_vhost_cpu_usage = [0] * num_pms
+    max_pm_id_returned = max(assignment)
+    pm_vhost_cpu_usage = [0] * (max_pm_id_returned + 1)
     for i, pm in enumerate(assignment):
         vhost_cpu_req = graph.node[i + 1][oracles.NODE_CPU_KEY]
         pm_vhost_cpu_usage[pm] += vhost_cpu_req
@@ -34,7 +36,7 @@ def find_least_stressed_pm(num_pms, goal_values, switch_cpu_dist, vhost_cpu_dist
 def move_vhosts_out_of_disabled_pms(graph, assignment, num_pms, goal_values, switch_cpu_dist, vhost_cpu_dist):
     print('Moving vhosts out of disabled PMs...')
     for i, pm in enumerate(assignment):
-        if goal_values[pm] < 1:
+        if len(goal_values) <= pm or goal_values[pm] < 1:
             # This PM is disabled. Move it to the least stressed node.
             new_pm = find_least_stressed_pm(num_pms, goal_values, switch_cpu_dist, vhost_cpu_dist)
             vhost_cpu_req = graph.node[i + 1][oracles.NODE_CPU_KEY]
@@ -44,7 +46,11 @@ def move_vhosts_out_of_disabled_pms(graph, assignment, num_pms, goal_values, swi
             # Should have updated switch CPU usage of the PM as well to better find the least stressed PM.
 
 
-def main_loop(oracle, physical_machines, use_knapsack_limit=True, use_adaptive_pm_cpu_ceiling=True, correct_goals_by_scaling=False):
+def main_loop(oracle, physical_machines,
+              use_knapsack_limit=True,
+              use_adaptive_pm_cpu_ceiling=True,
+              correct_goals_by_scaling=False,
+              stop_when_no_under_utilized_pms=False):
     num_pms = len(physical_machines)
     assignment_history = []
     switch_cpu_dist = [goal.INITIAL_CPU_PERCENT] * num_pms
@@ -100,12 +106,15 @@ def main_loop(oracle, physical_machines, use_knapsack_limit=True, use_adaptive_p
         num_under_utilized_pms = len(under_utilized_pms)
         # For adaptive reduction, we reduce *the most stressed* PM when *same thing happens again*.
         if num_under_utilized_pms <= goal.UNDER_UTILIZED_PM_ALLOWED and num_over_utilized_pms == 0:
-            print('Assignment seems legit. Stop.')
+            print('Assignment seems very nice. Stop.')
             break
         elif num_over_utilized_pms == num_pms:
             print('All PMs are over-utilized. Stop because we probably cannot do better.')
             break
-        if assignment in assignment_history:
+        elif stop_when_no_under_utilized_pms and num_under_utilized_pms == 0:
+            print('PMs are either ok or over. There might be space for balancing load but...')
+            break
+        elif assignment in assignment_history:
             print('Assignment result repeats round %d.' % (assignment_history.index(assignment)))
             if not use_adaptive_pm_cpu_ceiling:
                 break
@@ -130,6 +139,8 @@ def main():
                         help='If present, will not use knapsack limit when computing capacity.')
     parser.add_argument('--disable-adaptive-pm-cpu-ceiling', default=False, action='store_true',
                         help='If present, will not adaptively reduce CPU ceiling value for PMs.')
+    parser.add_argument('--stop-if-no-under-pms', default=False, action='store_true',
+                        help='If present, will stop when there is no PM that is under-utilized.')
     parser.add_argument('--correct-goals-by-scaling', default=False, action='store_true',
                         help='If present, will scale the goals to vertex weight sum rather than subtracting.')
     args = parser.parse_args()
@@ -142,7 +153,12 @@ def main():
 
     physical_machines = parse_input.parse_pms(args.pm_file)
 
-    main_loop(oracle, physical_machines, not args.disable_knapsack_limit, not args.disable_adaptive_pm_cpu_ceiling, args.correct_goals_by_scaling)
+    main_loop(oracle=oracle,
+              physical_machines=physical_machines,
+              use_knapsack_limit=not args.disable_knapsack_limit,
+              use_adaptive_pm_cpu_ceiling=not args.disable_adaptive_pm_cpu_ceiling,
+              correct_goals_by_scaling=args.correct_goals_by_scaling,
+              stop_when_no_under_utilized_pms=args.stop_if_no_under_pms)
 
 
 if __name__ == '__main__':

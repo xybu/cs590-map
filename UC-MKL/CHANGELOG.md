@@ -33,6 +33,11 @@ better than) a case such as (90%, 87%).
 2. For the case where there is not enough power for the mapping, all PMs can be
 over-utilized. What can be a proper stop condition for this?
 
+3. Another reasonable stop condition is when there is no PM that is under utilized.
+Of course more iterations could move some workload from over-utilized PMs to "OK" PMs,
+but it is not clear to what extent the new solution is better compared with the old
+solution.
+
 ## Initial Values
 
 Based on observations that 
