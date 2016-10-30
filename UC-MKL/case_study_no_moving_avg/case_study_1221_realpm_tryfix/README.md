@@ -52,11 +52,18 @@ rather than 2 PMs).
 
 #### Improvement
 
-Maybe it works better on coarsened graph?
+1. Maybe it works better on coarsened graph?
+
+2. With this KS limit it's not that important to use "most pessimistic" values
+as starting point (see CHANGELOG.md).
 
 ### Converting CPU requirement to capacity requirement
 
 ### Reduce MAX_CPU for PMs dynamically
+
+This should be a very ugly and heuristic approach.
+
+When to reduce? Reduce which PM? What's the lower bound?
 
 ### Change underlying algorithm to a multi-constraint solver
 

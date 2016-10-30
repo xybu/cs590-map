@@ -110,5 +110,39 @@ We changed it so that this update will skip PMs not chosen in this round (i.e., 
 
 The capacity function "0 17600 -235200" is not valid because part of its
 codomain is negative on the domain. A valid function should be f(x): [0, 100] ->
-R+. We should probably add a routine to check this instead of trusting the
-input.
+R+. Since this is largely a problem from calculating regression functions,
+the program (in Python wrapper) will automatically detect the min value at which
+the function is valid.
+
+## 0/1 Knapsack Limit
+
+A fundamental problem with UC-MKL is that the decision made at each step uses
+only partial information -- when deciding the goals for each set it uses only
+capacity functions, and when checking CPU usage it uses only vhost CPU
+requirements. To deal with the issue, we add another limit calculated from
+CPU requirements -- the 0/1 Knapsack value for the available CPU share (KS
+capacity), the weights of nodes (KS profit), and the vhost CPU requirements (KS
+cost). This can give a rough upperbound for the max value for each goal. In
+other words, 0/1 Knapsack tries to answer the question "What's the max possible
+sum of vertex weight that a% CPU share budget can deal with?" Any excessive
+capacity beyond this value will only lead to over-utilization of this PM.
+
+It turns out that this limit only mitigates the issue. The reason is that while
+say, 80%, CPU share means the max set weight cannot exceed, like, 10920, MKL
+solver does not translate 10920 back to 80% -- for example, it can choose a few
+nodes whose sum of weight is 100 and sum of CPU requirement is 10, instead of
+choosing one node whose weight is 100 and sum of CPU requirement is 1 (which is
+of better value from knapsack solver).
+
+### Follow-Up
+
+1. We could calculate the KS limit based on a coarsened version of the original
+graph. This should give better values because some nodes are "bundled". But
+(1) we can't use the MKL-coarsened graph because it happens after the goals are
+decided, and (2) if we dynamically coarsen the graph, we cannot precompute the
+KS limits.
+
+2. With this KS limit it's not that important to use "most pessimistic" values
+as starting point (see Initial Values section) anymore. Sometimes using an
+initial value to make KS limit smaller works better. There should be a point
+to balance capacity and KS limits -- to be explored.

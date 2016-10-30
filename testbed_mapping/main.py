@@ -8,7 +8,14 @@ import oracles
 import parse_input
 
 
+# The coefficient for calculating next-round switch CPU usage of PMs. Next = (1-C)*accumulated + C*current
 PM_SW_CPU_UPDATE_RATIO = 0.6
+
+# The lower bound for max CPU value of PMs if adaptively reduced.
+PM_CPU_CEILING_LOW_THRESHOLD = 50
+
+# By how much to adjust the max CPU value of PMs at each step.
+PM_CPU_CEILING_ADJUST_STEP = -1
 
 
 def calculate_vhost_cpu_dist(graph, assignment, num_pms):
@@ -37,22 +44,31 @@ def move_vhosts_out_of_disabled_pms(graph, assignment, num_pms, goal_values, swi
             # Should have updated switch CPU usage of the PM as well to better find the least stressed PM.
 
 
-def main_loop(oracle, physical_machines, use_knapsack_limit=True):
+def main_loop(oracle, physical_machines, use_knapsack_limit=True, use_adaptive_pm_cpu_ceiling=True, correct_goals_by_scaling=False):
+    num_pms = len(physical_machines)
     assignment_history = []
-    switch_cpu_dist = [goal.INITIAL_CPU_PERCENT] * len(physical_machines)
+    switch_cpu_dist = [goal.INITIAL_CPU_PERCENT] * num_pms
     vhost_cpu_dist = [goal.MAX_CPU_PERCENT - v for v in switch_cpu_dist]
-    goal_calc = goal.GoalCalculator(oracle.graph, physical_machines, use_knapsack_limit)
+    pm_cpu_ceiling = [goal.MAX_CPU_PERCENT] * num_pms
+    if correct_goals_by_scaling:
+        correction_approach = goal.GoalCalculator.CORRECTION_APPROACH_SCALE
+    else:
+        correction_approach = goal.GoalCalculator.CORRECTION_APPROACH_REDUCE
+    goal_calc = goal.GoalCalculator(oracle.graph, physical_machines, use_knapsack_limit, correction_approach=correction_approach)
+    # prev_under_utilized_pms = []
+    # prev_over_utilized_pms = []
+    # pm_cpu_ceiling_adjusted_flags = [0] * num_pms
     while True:
         print('\n' + '*' * 80 + '\n')
+        under_utilized_pms = []
+        over_utilized_pms = []
         goal_values = goal_calc.get_next_goal(switch_cpu_dist, vhost_cpu_dist)
         assignment = oracle.get_assignment(goal_values)
-        new_vhost_cpu_dist = calculate_vhost_cpu_dist(oracle.graph, assignment, len(physical_machines))
-        move_vhosts_out_of_disabled_pms(oracle.graph, assignment, len(physical_machines), goal_values, switch_cpu_dist, new_vhost_cpu_dist)
+        new_vhost_cpu_dist = calculate_vhost_cpu_dist(oracle.graph, assignment, num_pms)
+        move_vhosts_out_of_disabled_pms(oracle.graph, assignment, num_pms, goal_values, switch_cpu_dist, new_vhost_cpu_dist)
         print('\nAssignment result:\n' + str(assignment))
         print('\nUpdate CPU allocation for PMs...')
-        num_under_utilized_pms = 0
-        num_over_utilized_pms = 0
-        for i in range(len(physical_machines)):
+        for i in range(num_pms):
             if goal_values[i] < 1:
                 print(' PM #%d: disabled.' % (i))
                 continue
@@ -62,25 +78,41 @@ def main_loop(oracle, physical_machines, use_knapsack_limit=True):
             total_cpu_usage = old_switch_cpu_val + new_vhost_cpu_val
             if total_cpu_usage < goal.UNDER_UTILIZED_CPU_THRESHOLD:
                 status = 'under'
-                num_under_utilized_pms += 1
+                under_utilized_pms.append((physical_machines[i], new_vhost_cpu_val))
             elif total_cpu_usage > goal.OVER_UTILIZED_CPU_THRESHOLD:
                 status = 'over'
-                num_over_utilized_pms += 1
+                record = (physical_machines[i], new_switch_cpu_val)
+                over_utilized_pms.append(record)
+                # if use_adaptive_pm_cpu_ceiling and record in prev_over_utilized_pms:
+                #     if pm_cpu_ceiling_adjusted_flags[i] == 1:
+                #         pm_cpu_ceiling[i] = max(PM_CPU_CEILING_LOW_THRESHOLD, pm_cpu_ceiling[i] + PM_CPU_CEILING_ADJUST_STEP)
+                #     pm_cpu_ceiling_adjusted_flags[i] = 1 - pm_cpu_ceiling_adjusted_flags[i]
             else:
                 status = 'ok'
             switch_cpu_dist[i] = math.ceil((1 - PM_SW_CPU_UPDATE_RATIO) * switch_cpu_dist[i] + PM_SW_CPU_UPDATE_RATIO * new_switch_cpu_val)
-            vhost_cpu_dist[i] = goal.MAX_CPU_PERCENT - switch_cpu_dist[i]
-            print(' PM #%d: %s, CPU=%d/%d, next_sw_CPU=(%.2lf*%d)+(%.2lf*%d)=%d, next_vhost_CPU = %d.' % (i, status, new_vhost_cpu_val, old_switch_cpu_val+new_vhost_cpu_dist[i], (1 - PM_SW_CPU_UPDATE_RATIO), old_switch_cpu_val, PM_SW_CPU_UPDATE_RATIO, new_switch_cpu_val, switch_cpu_dist[i], vhost_cpu_dist[i]))
+            vhost_cpu_dist[i] = pm_cpu_ceiling[i] - switch_cpu_dist[i]
+            # if use_adaptive_pm_cpu_ceiling:
+            #     if vhost_cpu_dist[i] <= 0:
+            #         pm_cpu_ceiling[i] = goal.MAX_CPU_PERCENT
+            #         vhost_cpu_dist[i] = pm_cpu_ceiling[i] - switch_cpu_dist[i]
+            print(' PM #%d: %s, CPU=%d/%d/%d, next_sw_CPU=(%.2lf*%d)+(%.2lf*%d)=%d, next_vhost_CPU = %d.' % (i, status, new_vhost_cpu_val, old_switch_cpu_val+new_vhost_cpu_dist[i], pm_cpu_ceiling[i], (1 - PM_SW_CPU_UPDATE_RATIO), old_switch_cpu_val, PM_SW_CPU_UPDATE_RATIO, new_switch_cpu_val, switch_cpu_dist[i], vhost_cpu_dist[i]))
+        num_over_utilized_pms = len(over_utilized_pms)
+        num_under_utilized_pms = len(under_utilized_pms)
+        # For adaptive reduction, we reduce *the most stressed* PM when *same thing happens again*.
         if num_under_utilized_pms <= goal.UNDER_UTILIZED_PM_ALLOWED and num_over_utilized_pms == 0:
             print('Assignment seems legit. Stop.')
             break
-        elif num_over_utilized_pms == len(physical_machines):
+        elif num_over_utilized_pms == num_pms:
             print('All PMs are over-utilized. Stop because we probably cannot do better.')
             break
         if assignment in assignment_history:
-            print('Assignment result repeats round %d. Stop.' % (assignment_history.index(assignment)))
-            break
+            print('Assignment result repeats round %d.' % (assignment_history.index(assignment)))
+            if not use_adaptive_pm_cpu_ceiling:
+                break
         assignment_history.append(assignment)
+        prev_over_utilized_pms = over_utilized_pms
+        prev_under_utilized_pms = under_utilized_pms
+        print(pm_cpu_ceiling)
     print('\nMain loop finished with %d iterations.' % len(assignment_history))
 
 
@@ -96,6 +128,10 @@ def main():
                         help='Directory to save output files.')
     parser.add_argument('--disable-knapsack-limit', default=False, action='store_true',
                         help='If present, will not use knapsack limit when computing capacity.')
+    parser.add_argument('--disable-adaptive-pm-cpu-ceiling', default=False, action='store_true',
+                        help='If present, will not adaptively reduce CPU ceiling value for PMs.')
+    parser.add_argument('--correct-goals-by-scaling', default=False, action='store_true',
+                        help='If present, will scale the goals to vertex weight sum rather than subtracting.')
     args = parser.parse_args()
 
     if args.oracle.lower() == 'chaco':
@@ -106,7 +142,7 @@ def main():
 
     physical_machines = parse_input.parse_pms(args.pm_file)
 
-    main_loop(oracle, physical_machines, not args.disable_knapsack_limit)
+    main_loop(oracle, physical_machines, not args.disable_knapsack_limit, not args.disable_adaptive_pm_cpu_ceiling, args.correct_goals_by_scaling)
 
 
 if __name__ == '__main__':

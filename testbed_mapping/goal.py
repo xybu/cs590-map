@@ -4,13 +4,13 @@ from oracles import NODE_CPU_KEY
 from parse_chaco import NODE_WEIGHT_KEY
 from knapsack import knapsack, knapsack_max_value
 
-# Scale up or down the goal array to fit the target sum.
+
 SUPPORTED_CORRECT_GOAL_APPROACH_SCALE = 0
 
-# Use the k largest values (and reduce the kth largest one if necessary) to fit the target sum.
+
 SUPPORTED_CORRECT_GOAL_APPROACH_REDUCE = 1
 
-INITIAL_CPU_PERCENT = 15
+INITIAL_CPU_PERCENT = 20
 MIN_CPU_PERCENT = 10
 MAX_CPU_PERCENT = 100
 
@@ -18,8 +18,6 @@ UNDER_UTILIZED_CPU_THRESHOLD = 90
 OVER_UTILIZED_CPU_THRESHOLD = 110
 
 UNDER_UTILIZED_PM_ALLOWED = 1
-
-USE_CORRECT_GOAL_APPROACH = SUPPORTED_CORRECT_GOAL_APPROACH_REDUCE
 
 
 def scale_array_to_target_sum(data, target_sum):
@@ -47,14 +45,27 @@ def reduce_array_to_target_sum(data, target_sum):
 
 class GoalCalculator:
 
-    def __init__(self, graph, pms, use_knapsack_limit=True):
+    """ Calculate the desired set weights given information of the graph, PMs, and CPU share limits. """
+
+    # Scale up or down the goal array to fit the target sum.
+    CORRECTION_APPROACH_SCALE = 0
+
+    # Use the k largest values (and reduce the kth largest one if necessary) to fit the target sum.
+    CORRECTION_APPROACH_REDUCE = 1
+
+    def __init__(self, graph, pms, use_knapsack_limit=True, correction_approach=CORRECTION_APPROACH_SCALE):
         """
         :param networkx.Graph graph:
         :param list[pms.PhysicalMachine] pms:
+        :param True | False use_knapsack_limit: If True, take KS limit into account when setting goals.
+        :param int correction_approach: How to correct the goals when their sum does not sum up to vertex weight sum.
         """
+        if correction_approach not in (self.CORRECTION_APPROACH_REDUCE, self.CORRECTION_APPROACH_SCALE):
+            raise ValueError('Correction approach "' + str(correction_approach) + '" is not supported.')
         self.graph = graph
         self.pms = pms
         self.use_knapsack_limit = use_knapsack_limit
+        self.correction_approach = correction_approach
         self.goal_hist = []
         self.switch_cpu_hist = []
         self.vhost_cpu_hist = []
@@ -105,12 +116,10 @@ class GoalCalculator:
             pm_capacity = scale_array_to_target_sum(pm_capacity, self.sum_of_node_weight)
         elif sum(pm_capacity) > self.sum_of_node_weight:
             # Max possible capacity is too large.
-            if USE_CORRECT_GOAL_APPROACH == SUPPORTED_CORRECT_GOAL_APPROACH_SCALE:
+            if self.correction_approach == self.CORRECTION_APPROACH_SCALE:
                 pm_capacity = scale_array_to_target_sum(pm_capacity, self.sum_of_node_weight)
-            elif USE_CORRECT_GOAL_APPROACH == SUPPORTED_CORRECT_GOAL_APPROACH_REDUCE:
+            else: # self.correction_approach == self.CORRECTION_APPROACH_REDUCE:
                 pm_capacity = reduce_array_to_target_sum(pm_capacity, self.sum_of_node_weight)
-            else:
-                raise ValueError('Constant USE_CORRECT_GOAL_APPROACH has unsupported value.')
         print('Will use the following goal values:')
         for i, c in enumerate(pm_capacity):
             print('  goal[%d] = %lf' % (i, c))
