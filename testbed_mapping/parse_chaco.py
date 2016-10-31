@@ -9,10 +9,7 @@ Parse a Chaco graph file to a Networkx object.
 """
 
 import networkx as nx
-from parse_input import line_is_comment, to_num
-
-
-NODE_WEIGHT_KEY = 'weight'
+from parse_input import line_is_comment, to_num, NODE_WEIGHT_KEY
 
 
 def parse_chaco_input(file_path):

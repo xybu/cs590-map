@@ -3,6 +3,10 @@
 import capacity_function
 import pms
 
+
+NODE_WEIGHT_KEY = 'weight'
+
+
 def line_is_comment(line):
     """ Determine if a line is comment according to Chaco input spec. """
     return len(line) == 0 or line[0] in ('%', '#')

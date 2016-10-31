@@ -5,6 +5,8 @@ import os
 import subprocess
 import tempfile
 
+import metis
+
 from parse_input import to_num
 from parse_chaco import parse_chaco_input
 from parse_chaco import NODE_WEIGHT_KEY
@@ -17,7 +19,43 @@ SUPPORTED_ORACLES = {
 NODE_CPU_KEY = 'cpu'
 
 
-class ChacoOracle:
+class BaseOracle:
+
+    def __init__(self, work_dir=None):
+        if work_dir is None:
+            self.temp_work_dir = tempfile.TemporaryDirectory(suffix='chaco')
+            work_dir = self.temp_work_dir.name
+        elif not os.path.exists(work_dir):
+            os.makedirs(work_dir, exist_ok=True)
+        elif os.path.isfile(work_dir):
+            raise ValueError('Working directory "%s" is a file.' % work_dir)
+        self.work_dir = work_dir
+        self._graph = None
+
+    @property
+    def graph(self):
+        return self._graph
+
+    @graph.setter
+    def graph(self, graph):
+        self._graph = graph
+
+    def update_vhost_cpu_req(self, vhost_cpu_req):
+        if isinstance(vhost_cpu_req, list):
+            assert(len(vhost_cpu_req) == self.graph.number_of_nodes())
+            for i, v in enumerate(vhost_cpu_req):
+                self.graph.node[i + 1][NODE_CPU_KEY] = v
+        elif isinstance(vhost_cpu_req, dict):
+            for k, v in vhost_cpu_req.items():
+                self.graph.node[k][NODE_CPU_KEY] = v
+        else:
+            raise ValueError('Type of vhost_cpu_req is not recognized.')
+
+    def get_assignment(self, goals):
+        raise NotImplementedError('BaseOracle class must be extended.')
+
+
+class ChacoOracle(BaseOracle):
 
     """ Chaco is a single constraint solver. """
 
@@ -30,28 +68,10 @@ class ChacoOracle:
     PARTITION_METHOD_READ_FROM_FILE = 7
 
     def __init__(self, graph_file_path, global_partition_method=PARTITION_METHOD_MKL, work_dir=None):
-        if work_dir is None:
-            self.temp_work_dir = tempfile.TemporaryDirectory(suffix='chaco')
-            work_dir = self.temp_work_dir.name
-        elif not os.path.exists(work_dir):
-            os.makedirs(work_dir, exist_ok=True)
-        elif os.path.isfile(work_dir):
-            raise ValueError('Working directory "%s" is a file.' % work_dir)
-        self.work_dir = work_dir
-        self.global_partition_method = global_partition_method
+        super().__init__(work_dir)
         self.graph_file_path = graph_file_path
+        self.global_partition_method = global_partition_method
         self.graph = parse_chaco_input(graph_file_path)
-
-    def update_vhost_cpu_req(self, vhost_cpu_req):
-        if isinstance(vhost_cpu_req, list):
-            assert(len(vhost_cpu_req) == self.graph.number_of_nodes())
-            for i, v in enumerate(vhost_cpu_req):
-                self.graph.node[i + 1][NODE_CPU_KEY] = v
-        elif isinstance(vhost_cpu_req, dict):
-            for k, v in vhost_cpu_req.items():
-                self.graph.node[k][NODE_CPU_KEY] = v
-        else:
-            raise ValueError('Type of vhost_cpu_req is not recognized.')
 
     def get_assignment(self, goals):
         hypercube_dimension = math.ceil(math.log(len(goals), 2))
@@ -77,3 +97,28 @@ class ChacoOracle:
             print(o + '\n')
         with open(self.work_dir + '/output', 'r') as outf:
             return [to_num(v) for v in outf.readlines()]
+
+
+class MetisOracle(BaseOracle):
+
+    def __init__(self, graph_file_path, is_graph_file_chaco_format=True, work_dir=None):
+        super().__init__(work_dir)
+        if is_graph_file_chaco_format:
+            self.graph = parse_chaco_input(graph_file_path)
+        else:
+            raise NotImplementedError('METIS graph format is not yet implemented!')
+        self.graph['edge_weight_attr'] = NODE_WEIGHT_KEY
+        self.graph['node_weight_attr'] = [NODE_WEIGHT_KEY]
+        self.networkx_to_metis()
+
+    def update_vhost_cpu_req(self, vhost_cpu_req, use_cpu_as_extra_weight=False):
+        super().update_vhost_cpu_req(vhost_cpu_req)
+        if use_cpu_as_extra_weight:
+            self.graph['node_weight_attr'].append(NODE_CPU_KEY)
+        self.networkx_to_metis()
+
+    def networkx_to_metis(self):
+        self.metis_graph = metis.networkx_to_metis(self.graph)
+
+    def get_assignment(self, goals):
+        pass
