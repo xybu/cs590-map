@@ -80,8 +80,10 @@ class ChacoOracle(BaseOracle):
         with open(self.work_dir + '/goals', 'w') as goalf:
             print('\n'.join([str(v) for v in goals]), file=goalf)
             if len(goals) < 2 ** hypercube_dimension:
-                # Append some zero goals so that the number of goal values is a power of 2.
-                print('0\n' * (2 ** hypercube_dimension - len(goals)), file=goalf)
+                # Append some zero goals so that the number of goal values is a
+                # power of 2.
+                print(
+                    '0\n' * (2 ** hypercube_dimension - len(goals)), file=goalf)
         # Generate the input file for this iteration.
         oracle_input = self.graph_file_path + '\n'
         oracle_input += self.work_dir + '/goals\n'
@@ -93,7 +95,8 @@ class ChacoOracle(BaseOracle):
         with open(self.work_dir + '/input', 'w') as inf:
             print(oracle_input, file=inf)
         with open(self.work_dir + '/input', 'r') as inf:
-            o = subprocess.check_output([SUPPORTED_ORACLES['chaco']], stdin=inf, timeout=10, universal_newlines=True, stderr=subprocess.STDOUT)
+            o = subprocess.check_output([SUPPORTED_ORACLES[
+                                        'chaco']], stdin=inf, timeout=10, universal_newlines=True, stderr=subprocess.STDOUT)
             print(o + '\n')
         with open(self.work_dir + '/output', 'r') as outf:
             return [to_num(v) for v in outf.readlines()]
@@ -106,19 +109,70 @@ class MetisOracle(BaseOracle):
         if is_graph_file_chaco_format:
             self.graph = parse_chaco_input(graph_file_path)
         else:
-            raise NotImplementedError('METIS graph format is not yet implemented!')
-        self.graph['edge_weight_attr'] = NODE_WEIGHT_KEY
-        self.graph['node_weight_attr'] = [NODE_WEIGHT_KEY]
+            raise NotImplementedError(
+                'METIS graph format is not yet implemented!')
+        setattr(self.graph, 'edge_weight_attr', NODE_WEIGHT_KEY)
+        setattr(self.graph, 'node_weight_attr', [NODE_WEIGHT_KEY])
         self.networkx_to_metis()
 
     def update_vhost_cpu_req(self, vhost_cpu_req, use_cpu_as_extra_weight=False):
         super().update_vhost_cpu_req(vhost_cpu_req)
         if use_cpu_as_extra_weight:
-            self.graph['node_weight_attr'].append(NODE_CPU_KEY)
+            setattr(self.graph, 'node_weight_attr', [NODE_WEIGHT_KEY, NODE_CPU_KEY])
         self.networkx_to_metis()
 
     def networkx_to_metis(self):
         self.metis_graph = metis.networkx_to_metis(self.graph)
 
-    def get_assignment(self, goals):
-        pass
+    def _normalize_goals(self, goals):
+        total_goals = sum(goals)
+        new_goals = [v / total_goals for v in goals]
+        if sum(new_goals) != 1.0:
+            # Add the division error to the max goal set.
+            new_goals[new_goals.index(max(new_goals))] += 1.0 - sum(new_goals)
+        return new_goals
+
+    def get_assignment(self, goals, goals_cpu=None, load_imbalance_vec=None):
+        goal_attributes = getattr(self.graph, 'node_weight_attr')
+        goals = self._normalize_goals(goals)
+        if NODE_CPU_KEY in goal_attributes and goals_cpu is None:
+            raise ValueError(
+                'CPU share is included in vertex weight but not set in goals.')
+        elif goals_cpu is not None:
+            if NODE_CPU_KEY not in goal_attributes:
+              print(
+                  'Warning: CPU share it not a key in vertex weight. CPU goals will be ignored.')
+            else:
+              goals_cpu = self._normalize_goals(goals_cpu)
+              goals = list(zip(goals, goals_cpu))
+        
+        # Build a default load imbalance vector if not given.
+        if load_imbalance_vec is None:
+            load_imbalance_vec = [1.0] * len(goal_attributes)
+
+        # METIS disallows goal value to be 0. So we need to remap the values
+        # to get rid of 0s.
+        goals_mapping = {}
+        corrected_goals = []
+        for i, v in enumerate(goals):
+            keep = False
+            if isinstance(v, int) or isinstance(v, float):
+                keep = v != 0
+            else: # v is a tuple.
+                keep = 0 not in v
+            if keep:
+                goals_mapping[len(corrected_goals)] = i
+                corrected_goals.append(v)
+
+        print(len(load_imbalance_vec))
+        print(self.metis_graph.ncon.value)
+        print(goals)
+        print(corrected_goals)
+        print(goals_mapping)
+        obj_val, assignment = metis.part_graph(self.metis_graph,
+                                               nparts=len(corrected_goals),
+                                               tpwgts=corrected_goals,
+                                               ubvec=load_imbalance_vec,
+                                               recursive=False)
+        assignment = [goals_mapping[v] for v in assignment]
+        return assignment

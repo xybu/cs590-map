@@ -147,6 +147,8 @@ def main():
 
     if args.oracle.lower() == 'chaco':
         oracle = oracles.ChacoOracle(args.graph_file, work_dir=args.work_dir)
+    elif args.oracle.lower() == 'metis':
+        oracle = oracles.MetisOracle(args.graph_file, work_dir=args.work_dir)
     else:
         raise ValueError('Oracle "%s" is not supported.' % args.oracle)
     oracle.update_vhost_cpu_req(parse_input.read_flat_ints(args.vhost_cpu_file))
