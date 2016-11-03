@@ -111,14 +111,15 @@ class MetisOracle(BaseOracle):
         else:
             raise NotImplementedError(
                 'METIS graph format is not yet implemented!')
-        setattr(self.graph, 'edge_weight_attr', NODE_WEIGHT_KEY)
-        setattr(self.graph, 'node_weight_attr', [NODE_WEIGHT_KEY])
+        self.graph.graph['edge_weight_attr'] = NODE_WEIGHT_KEY
+        self.graph.graph['node_weight_attr'] = [NODE_WEIGHT_KEY]
         self.networkx_to_metis()
 
+    # TODO: Change use_cpu_as_extra_weight to True by default.
     def update_vhost_cpu_req(self, vhost_cpu_req, use_cpu_as_extra_weight=False):
         super().update_vhost_cpu_req(vhost_cpu_req)
         if use_cpu_as_extra_weight:
-            setattr(self.graph, 'node_weight_attr', [NODE_WEIGHT_KEY, NODE_CPU_KEY])
+            self.graph.graph['node_weight_attr'] = [NODE_WEIGHT_KEY, NODE_CPU_KEY]
         self.networkx_to_metis()
 
     def networkx_to_metis(self):
@@ -133,7 +134,7 @@ class MetisOracle(BaseOracle):
         return new_goals
 
     def get_assignment(self, goals, goals_cpu=None, load_imbalance_vec=None):
-        goal_attributes = getattr(self.graph, 'node_weight_attr')
+        goal_attributes = self.graph.graph['node_weight_attr']
         goals = self._normalize_goals(goals)
         if NODE_CPU_KEY in goal_attributes and goals_cpu is None:
             raise ValueError(
@@ -169,10 +170,12 @@ class MetisOracle(BaseOracle):
         print(goals)
         print(corrected_goals)
         print(goals_mapping)
+        print('%d %d' % (len(corrected_goals), len(corrected_goals) * self.metis_graph.ncon.value))
         obj_val, assignment = metis.part_graph(self.metis_graph,
                                                nparts=len(corrected_goals),
                                                tpwgts=corrected_goals,
                                                ubvec=load_imbalance_vec,
-                                               recursive=False)
+                                               recursive=False,
+                                               dbglvl=metis.mdbglvl_et.METIS_DBG_ALL)
         assignment = [goals_mapping[v] for v in assignment]
         return assignment

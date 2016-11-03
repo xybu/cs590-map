@@ -109,12 +109,16 @@ __version__ = '0.2a1'
 import ctypes
 from ctypes import POINTER as P, byref
 import os, sys, operator as op
+import sys
 from warnings import warn
 from collections import namedtuple
 try:
     import networkx
 except ImportError:
     networkx = None
+
+if sys.version_info >= (3, 0):
+    from functools import reduce
 
 __all__ = ['part_graph', 'networkx_to_metis', 'adjlist_to_metis']
 
@@ -778,7 +782,10 @@ def part_graph(graph, nparts=2,
     if ubvec and not isinstance(ubvec, ctypes.Array):
         ubvec = (real_t*len(ubvec))(*ubvec)
 
-    if tpwgts: assert len(tpwgts) == nparts * graph.ncon.value
+    if tpwgts:
+        print(len(tpwgts))
+        print(nparts * graph.ncon.value)
+        assert len(tpwgts) == nparts * graph.ncon.value
     if ubvec: assert len(ubvec) == graph.ncon.value
 
     nparts_var = idx_t(nparts)

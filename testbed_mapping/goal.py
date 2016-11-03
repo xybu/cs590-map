@@ -43,7 +43,7 @@ def reduce_array_to_target_sum(data, target_sum):
     return result
 
 
-class GoalCalculator:
+class CapacityGoalCalculator:
 
     """ Calculate the desired set weights given information of the graph, PMs, and CPU share limits. """
 
