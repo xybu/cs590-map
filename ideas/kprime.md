@@ -31,3 +31,7 @@ For example, given
 | CPU      | 90    | 85    | 80    | 85    | 510            |
 
 What's the min number of PMs that can satisfy the total required? What are they?
+
+## Ideas
+
+Subset sum? Knapsack?
