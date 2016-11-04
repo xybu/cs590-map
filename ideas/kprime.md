@@ -12,16 +12,16 @@ The question is something like this: given the capacity and CPU shares of PMs, w
 | Capacity | W1    | W2    | ... | Wk    | W = Sum of vertex weight.   |
 | CPU      | C1    | C2    | ... | Ck    | C = Sum of vhost CPU share. |
 
-What's the smallest subset of PMs `P = {PM #a, PM #b, .. PM #k'}` that can satisfy all three conditions below:
+What's the smallest subset of PMs `P = {PM #a, PM #b, ..}` and `k' = |P|` that can satisfy all three conditions below:
 
-1. 1 <= k' <= k
+1. 1 <= `k'` <= `k`
 2. Sum of W_x, x in P, >= W
 3. Sum of C_x, x in P, >= C
 
 How good can we solve this problem?
- * Can we determine the size of `P`, that is, `|P|`?
+ * Can we determine the size of `P`, that is, `k'`?
  * Can we determine the elements of `P`?
- * If we can't, can we at least give a lower bound for the value of `|P|`?
+ * If we can't, can we at least give a lower bound for the value of `k'`?
 
 For example, given
 
