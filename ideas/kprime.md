@@ -18,7 +18,11 @@ What's the smallest subset of PMs `P = {PM #a, PM #b, .. PM #k'}` that can satis
 2. Sum of W_x, x in P, >= W
 3. Sum of C_x, x in P, >= C
 
-Can we determine the size of `P`, that is, `|P|`? Can we determine the elements of `P`?
+Can we determine the size of `P`, that is, `|P|`?
+
+Can we determine the elements of `P`?
+
+If we can't, can we at least give a lower bound for the value of `|P|`?
 
 For example, given
 
