@@ -24,11 +24,11 @@ We explored UC-MKL to its limit and are exploring a solution based on METIS.
  1. [How to use UC-MKL (input format)](UC-MKL/README.md).
  2. [Summary of Changes we have made to UC-MKL](UC-MKL/CHANGELOG.md)
  3. We instrumented UC-MKL code to record all intermediate states the program will go over.
-  1) [Cases](UC-MKL/case_study_original) based on Rocketfuel graphs showed that UC-MKL repeated itself in most iterations.
-  2) [Case](UC-MKL/case_study_kprime-1) that allowed 1 PM to be under-utilized.
-  3) [Cases](UC-MKL/case_study_no_moving_avg) that studied the effect of moving average, initial values, and stop conditions.
-  4) [Case](UC-MKL/case_study_1221_realpm) that tried the fixes on real PM functions. In this case UC-MKL will "over-estimate" the power of PMs and stubbornly put the whole topology on one PM.
-  5) [Case](UC-MKL/case_study_1221_realpm_tryfix) in which we tried to let UC-MKL use information about both capacity constraint and vhost CPU constraint to determine K'. The 0/1 Knapsack model improved the estimation but to a very limited extent. It's a fundamental problem that UC-MKL cannot make use of all information at each step. We proposed [more ways to address it](UC-MKL/case_study_1221_realpm_tryfix). Some are ugly heuristics. We decided to resort to METIS.
+   1. [Cases](UC-MKL/case_study_original) based on Rocketfuel graphs showed that UC-MKL repeated itself in most iterations.
+   2. [Case](UC-MKL/case_study_kprime-1) that allowed 1 PM to be under-utilized.
+   3. [Cases](UC-MKL/case_study_no_moving_avg) that studied the effect of moving average, initial values, and stop conditions.
+   4. [Case](UC-MKL/case_study_1221_realpm) that tried the fixes on real PM functions. In this case UC-MKL will "over-estimate" the power of PMs and stubbornly put the whole topology on one PM.
+   5. [Case](UC-MKL/case_study_1221_realpm_tryfix) in which we tried to let UC-MKL use information about both capacity constraint and vhost CPU constraint to determine K'. The 0/1 Knapsack model improved the estimation but to a very limited extent. It's a fundamental problem that UC-MKL cannot make use of all information at each step. We proposed [more ways to address it](UC-MKL/case_study_1221_realpm_tryfix). Some are ugly heuristics. We decided to resort to METIS.
 
 ### PyWrapper
 
