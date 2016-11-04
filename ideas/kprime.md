@@ -35,3 +35,9 @@ What's the min number of PMs that can satisfy the total required? What are they?
 ## Ideas
 
 Subset sum? Knapsack?
+
+## Feedback Heuristic
+
+Where to start (at least we have a tight lowerbound for `k'`)?
+
+Rules for moving? If all PMs over-utilized and we have spare PM, add one more?
