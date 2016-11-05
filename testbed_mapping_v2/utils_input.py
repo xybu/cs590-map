@@ -12,3 +12,8 @@ def to_num(str):
         return int(str)
     except:
         return float(str)
+
+
+def read_int_file(file_path):
+    with open(file_path, 'r') as f:
+        return [to_num(v) for v in f.readlines()]
