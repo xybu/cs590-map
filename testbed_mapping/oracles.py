@@ -31,6 +31,7 @@ class BaseOracle:
             raise ValueError('Working directory "%s" is a file.' % work_dir)
         self.work_dir = work_dir
         self._graph = None
+        self._node_weight_sum = {}
 
     @property
     def graph(self):
@@ -39,6 +40,14 @@ class BaseOracle:
     @graph.setter
     def graph(self, graph):
         self._graph = graph
+
+    def calc_node_weight_sum(self, key):
+        if key not in self._node_weight_sum:
+            total = 0
+            for v in self._graph.nodes(data=True):
+                total += v[1][key]
+            self._node_weight_sum[key] = total
+        return  self._node_weight_sum[key]
 
     def update_vhost_cpu_req(self, vhost_cpu_req):
         if isinstance(vhost_cpu_req, list):
