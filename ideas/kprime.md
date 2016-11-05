@@ -32,6 +32,15 @@ For example, given
 
 What's the min number of PMs that can satisfy the total required? What are they?
 
+
+Some wild thoughts:
+ * Also we should note that the two constraints are correlated. If there is excessive capacity
+but insufficient CPU we may convert one to another.
+ * A PM can be excluded if all its shares can be met by the unused portions of other PMs.
+ * If there is only one machine, then we have no choice.
+ * If there is no "surplus" on any constraint, all PMs must be chosen.
+ * Any view from economics perspective?
+
 ## Ideas
 
 Subset sum? Knapsack?

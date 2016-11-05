@@ -11,6 +11,10 @@ To measure capacity function, we use the following mechanism:
 
 **TBD**.
 
+## Regression
+
+Actually we don't need to convert the raw values to a regression function... We can use the values directly...
+
 ## Questions
 
 What if we later take link delay into consideration? Will the new scheme adapt?

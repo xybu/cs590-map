@@ -14,12 +14,13 @@ So we will use the outer loop to refine the result.
 
 Some heuristics we could inherit:
 
-1. If a PM has unused CPU share, increase its capacity or vhost CPU share
-(by what? Provided that it will reduce min cut?). Basically to use the
-under-utilized portion.
+1. If a PM has unused CPU share, increase its capacity and/or vhost CPU share
+(by what? Provided that it will reduce min cut?). Reserve, say 50%, of unused
+share, and allocate the other 50% to both capacity and vhost. They divide the
+share proportional to current CPU usage.
 
-2. If a PM is over-utilized, decrease its capacity or vhost CPU share. Similar
-to 1.
+2. If a PM is over-utilized, decrease its capacity and/or vhost CPU share. Check
+what's the culprit and then decide.
 
 ## Load Imbalance Vector
 
