@@ -6,12 +6,12 @@ def line_is_comment(line):
     return len(line) == 0 or line[0] in ('%', '#')
 
 
-def to_num(str):
+def to_num(s):
     """ Try parsing the given string to int or float. """
     try:
-        return int(str)
-    except:
-        return float(str)
+        return int(s)
+    except ValueError:
+        return float(s)
 
 
 def read_int_file(file_path):

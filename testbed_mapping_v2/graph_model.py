@@ -67,8 +67,8 @@ def parse_chaco_input(file_path):
             nodes_weighted = options[-1] == '1'
             edges_weighted = len(options) >= 2 and options[-2] == '1'
             read_node_numbers = len(options) == 3 and options[-3] == '1'
-        G = nx.Graph(edge_weight_attr=constants.EDGE_WEIGHT_KEY)
-        G.add_nodes_from(range(1, num_nodes + 1))
+        nxgraph = nx.Graph(edge_weight_attr=constants.EDGE_WEIGHT_KEY)
+        nxgraph.add_nodes_from(range(1, num_nodes + 1))
         i = 1
         for line in f:
             line = line.strip()
@@ -83,14 +83,13 @@ def parse_chaco_input(file_path):
                 this_node = row[0]
                 neighbor_starts_at = 1
             if nodes_weighted:
-                G.node[this_node][constants.NODE_SWITCH_CAPACITY_WEIGHT_KEY] = row[neighbor_starts_at]
+                nxgraph.node[this_node][constants.NODE_SWITCH_CAPACITY_WEIGHT_KEY] = row[neighbor_starts_at]
                 neighbor_starts_at += 1
             if not edges_weighted:
-                G.add_edges_from([(this_node, node)
-                                  for node in row[neighbor_starts_at:]])
+                nxgraph.add_edges_from([(this_node, node) for node in row[neighbor_starts_at:]])
             else:
                 for node, weight in zip(row[neighbor_starts_at::2], row[neighbor_starts_at+1::2]):
-                    G.add_edge(this_node, node, weight=weight)
-        assert(num_nodes == G.number_of_nodes())
-        assert(num_edges == G.number_of_edges())
-        return G
+                    nxgraph.add_edge(this_node, node, weight=weight)
+        assert(num_nodes == nxgraph.number_of_nodes())
+        assert(num_edges == nxgraph.number_of_edges())
+        return nxgraph

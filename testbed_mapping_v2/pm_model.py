@@ -32,7 +32,7 @@ class CapacityFunction:
     result = 0
     multiplier = 1
     for a in self.coefficients:
-      result = result + a * multiplier
+      result += a * multiplier
       multiplier = multiplier * x
     return result
 
@@ -43,8 +43,16 @@ class CapacityFunction:
 
 class Machine:
 
-    def __init__(self, id, max_cpu_share, min_switch_cpu_share, max_switch_cpu_share, coefficients):
-        self.pm_id = id
+    def __init__(self, pm_id, max_cpu_share, min_switch_cpu_share, max_switch_cpu_share, coefficients):
+        """
+        Instantiate a physical machine object.
+        :param int pm_id:
+        :param int max_cpu_share:
+        :param int min_switch_cpu_share:
+        :param int max_switch_cpu_share:
+        :param list[int] coefficients:
+        """
+        self.pm_id = pm_id
         self.max_cpu_share = max_cpu_share
         self.min_switch_cpu_share = min_switch_cpu_share
         self.max_switch_cpu_share = max_switch_cpu_share
@@ -58,7 +66,7 @@ class Machine:
         """
         Parse the input file to a list of Machine objects. The input line format is:
         MAX_CPU_SHARE MIN_SWITCH_CPU_SHARE MAX_SWITCH_CPU_SHARE c_0 c_1 c_2 ...
-        :param filepath: Path to the input file
+        :param file_path: Path to the input file
         :return list[Machine]: Parsed machines.
         """
         all_pms = []

@@ -1,1 +1,2 @@
 inform >= 1.4.2
+networkx
