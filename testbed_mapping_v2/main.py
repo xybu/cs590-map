@@ -13,6 +13,8 @@ import utils_input
 
 is_tty = inform.Color.isTTY(sys.stdout)
 emphasize_used_pm = inform.Color('green', enable=is_tty)
+emphasize_underused_pm = inform.Color('yellow', enable=is_tty)
+emphasize_overused_pm = inform.Color('red', enable=is_tty)
 emphasis_unused_pm = inform.Color('blue', enable=is_tty)
 
 
@@ -55,7 +57,13 @@ class AssignmentRecord:
         s += '  Min cut: %d\n' % self.min_cut
         s += '  Machines used:\n'
         for i, pm in enumerate(self.machines_used):
-            s += '    ' + emphasize_used_pm(pm) + '\n'
+            if self.used_cpu_shares[i] > pm.max_cpu_share * (1 + constants.PM_OVER_UTILIZED_THRESHOLD):
+                f = emphasize_overused_pm
+            elif self.used_cpu_shares[i] < pm.max_cpu_share * (1 - constants.PM_UNDER_UTILIZED_THRESHOLD):
+                f = emphasize_underused_pm
+            else:
+                f = emphasize_used_pm
+            s += '    ' + f(pm) + '\n'
             s += '      CPU: switch_sh=%d, vhost={u=%d, sh=%d}, total={u=%d, sh=%d}.\n' % (self.switch_cpu_shares[i], self.vhost_cpu_usage[i], self.vhost_cpu_shares[i], self.used_cpu_shares[i], self.switch_cpu_shares[i] + self.vhost_cpu_shares[i])
         s += '  Machines excluded:\n'
         for pm in self.machines_unused:
@@ -232,6 +240,10 @@ def main():
             # nothing different in terms of assignment.
             actual_switch_cpu_share_needed = used_cpu_shares[i] - vhost_cpu_usage[i]
             next_switch_cpu_share = int(constants.SWITCH_CPU_SHARE_UPDATE_FACTOR * old_switch_cpu_share + (1 - constants.SWITCH_CPU_SHARE_UPDATE_FACTOR) * actual_switch_cpu_share_needed)
+            if next_switch_cpu_share < pm.min_switch_cpu_share:
+                next_switch_cpu_share = pm.min_switch_cpu_share
+            elif next_switch_cpu_share > pm.max_switch_cpu_share:
+                next_switch_cpu_share = pm.max_switch_cpu_share
             # We may update vhost CPU share later.
             next_vhost_cpu_share = vhost_cpu_usage[i]
             # Then we examine how much power is left on this PM.
@@ -241,6 +253,8 @@ def main():
             if pm_unused_ratio > constants.PM_UNDER_UTILIZED_THRESHOLD:
                 pm_free_cpu_share = int(pm_unused_cpu_share * (1 - constants.PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO))
                 pm_extra_switch_cpu_share = max(1, int(pm_free_cpu_share * actual_switch_cpu_share_needed / (actual_switch_cpu_share_needed + old_vhost_cpu_share)))
+                if next_switch_cpu_share == pm.max_switch_cpu_share:
+                    pm_extra_switch_cpu_share = 0
                 pm_extra_vhost_cpu_share = pm_free_cpu_share - pm_extra_switch_cpu_share
                 next_switch_cpu_share += pm_extra_switch_cpu_share
                 next_vhost_cpu_share += pm_extra_vhost_cpu_share
@@ -252,7 +266,8 @@ def main():
             elif pm_unused_ratio < -1 * constants.PM_OVER_UTILIZED_THRESHOLD:
                 # If the PM is under-utilized, the ratio is negative.
                 # TODO: Think of better algorithm for this branch. For now I just cap the value.
-                max_vhost_cpu_share = pm.max_cpu_share - next_switch_cpu_share
+                max_vhost_cpu_share = (pm.max_cpu_share - next_switch_cpu_share) * (1 + constants.PM_OVER_UTILIZED_THRESHOLD)
+                # max_vhost_cpu_share = pm.max_cpu_share * (1 + constants.PM_OVER_UTILIZED_THRESHOLD) - next_switch_cpu_share
                 print('  Over-utilized. vhost_cpu-%d' % (next_vhost_cpu_share - max_vhost_cpu_share))
                 next_vhost_cpu_share = max_vhost_cpu_share
             # Update the array.

@@ -26,7 +26,7 @@ def nxgraph_node_property_sum(graph, key):
     :return int | float:
     """
     total = 0
-    for v in graph.nodes(data=True):
+    for v in graph.nodes_iter(data=True):
         total += v[1][key]
     return total
 
@@ -38,7 +38,7 @@ def nxgraph_edge_property_sum(graph, key):
     :return int | float:
     """
     total = 0
-    for e in graph.edges(data=True):
+    for e in graph.edges_iter(data=True):
         f, t, d = e
         total += d[key]
     return total

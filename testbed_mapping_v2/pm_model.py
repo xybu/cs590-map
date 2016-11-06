@@ -80,7 +80,7 @@ class Machine:
                 min_switch_cpu_share = utils_input.to_num(min_switch_cpu_share)
                 max_switch_cpu_share = utils_input.to_num(max_switch_cpu_share)
                 coefficients = [utils_input.to_num(c) for c in coefficients.split()]
-                pm = Machine(id=len(all_pms), max_cpu_share=max_cpu_share, min_switch_cpu_share=min_switch_cpu_share,
+                pm = Machine(pm_id=len(all_pms), max_cpu_share=max_cpu_share, min_switch_cpu_share=min_switch_cpu_share,
                              max_switch_cpu_share=max_switch_cpu_share, coefficients=coefficients)
                 proper_min_switch_cpu_share = min_switch_cpu_share
                 for i in range(min_switch_cpu_share, max_switch_cpu_share + 1):
