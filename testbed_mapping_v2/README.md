@@ -20,10 +20,10 @@ MAX_CPU_SHARE MIN_SWITCH_CPU_SHARE MAX_SWITCH_CPU_SHARE c_0 c_1 c_2 ...
 ```
 
 where
- * `MAX_CPU_SHARE`: the maximum CPU shares (usually NCores * 100; use a smaller value to represent system overhead).
- * `MIN_SWITCH_CPU_SHARE`: reserve no less than this amount of CPU share to packet processing on the PM.
- * `MAX_SWITCH_CPU_SHARE`: reserve no more than this amount of CPU share to packet processing on the PM.
- * `0` <= <= `MIN_SWITCH_CPU_SHARE` <= `MAX_SWITCH_CPU_SHARE` <= `MAX_CPU_SHARE`.
+ * `MAX_CPU_SHARE`: the maximum CPU shares (usually 100xNCores; use a smaller value to represent system overhead).
+ * `MIN_SWITCH_CPU_SHARE`: Use no less than this amount of CPU share to packet processing on the PM.
+ * `MAX_SWITCH_CPU_SHARE`: Use no more than this amount of CPU share to packet processing on the PM.
+ * `0` <= `MIN_SWITCH_CPU_SHARE` <= `MAX_SWITCH_CPU_SHARE` <= `MAX_CPU_SHARE`.
  * `c_0` ... `c_m` are the coefficients for the capacity function. `f(u) = c_0 + c_1 * u + c_2 * u^2 + ...`. We require that the function cannot always evaluate to 0.
 
 The numbers can be separated by spaces or tabs. Empty lines or lines starting with `#` will be ignored.
