@@ -224,6 +224,7 @@ def main():
             unused_cpu_shares.pop(least_used_pm_id)
             vhost_cpu_usage.pop(least_used_pm_id)
             print('PM #%d will be excluded from next round.' % machine_to_pop.pm_id)
+            # We tried to add a new task here. It greatly increased search space but didn't improve result.
         else:
             # We can de-optimize this poor PM so that its contents go to other PMs.
             print('No PM can be excluded from next round.')
