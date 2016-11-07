@@ -23,6 +23,7 @@ class CapacityFunction:
     if len(domain) != 2 or domain[0] > domain[1]:
         raise ValueError('Invalid function domain: "%s"' % str(domain))
     # TODO: Validate that the function is non-negative on the domain.
+    self.domain = domain
     self.coefficients = coefficients
     if high_order_first:
         self.coefficients.reverse()
@@ -35,6 +36,12 @@ class CapacityFunction:
       result += a * multiplier
       multiplier = multiplier * x
     return result
+
+  def __eq__(self, other):
+      return self.domain == other.domain and self.coefficients == other.coefficients
+
+  def __ne__(self, other):
+      return not self.__eq__(other)
 
   def __repr__(self):
     highest_order = len(self.coefficients) - 1
@@ -57,6 +64,17 @@ class Machine:
         self.min_switch_cpu_share = min_switch_cpu_share
         self.max_switch_cpu_share = max_switch_cpu_share
         self.capacity_func = CapacityFunction((min_switch_cpu_share, max_switch_cpu_share), coefficients, False)
+
+    def __eq__(self, other):
+        """
+        Return True if current PM equals the given PM (all parameters are equal except for PM ID).
+        :param Machine other:
+        :return True | False:
+        """
+        return self.max_cpu_share == other.max_cpu_share and self.min_switch_cpu_share == other.min_switch_cpu_share and self.max_switch_cpu_share == other.max_switch_cpu_share and self.capacity_func == other.capacity_func
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __repr__(self):
         return '<PM #%s | (%d, %d)/%d | %s>' % (self.pm_id, self.min_switch_cpu_share, self.max_switch_cpu_share, self.max_cpu_share, str(self.capacity_func))

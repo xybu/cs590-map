@@ -200,7 +200,7 @@ def main():
                                              used_cpu_shares=used_cpu_shares, vhost_cpu_usage=vhost_cpu_usage,
                                              assignment=assignment)
         assignment_hist.append(assignment_record)
-        assignment_signatures.append(([pm.pm_id for pm in machines_unused], switch_cpu_shares, vhost_cpu_shares))
+        assignment_signatures.append((machines_unused, switch_cpu_shares, vhost_cpu_shares))
 
         # To preserve state we copy the input lists.
         machines_used = machines_used.copy()
@@ -287,7 +287,7 @@ def main():
                 # Will use less machines next round.
                 len(assignment_record.machines_used) > len(machines_used) or
                 # Attempt a new share combination.
-                shares_changed and ([pm.pm_id for pm in machines_unused], switch_cpu_shares, vhost_cpu_shares) not in assignment_signatures
+                shares_changed and (machines_unused, switch_cpu_shares, vhost_cpu_shares) not in assignment_signatures
         ):
             task_queue.append((min_cut, assignment_record, machines_used, machines_unused, switch_cpu_shares, vhost_cpu_shares))
         print()
