@@ -67,8 +67,8 @@ Each iteration performs as follows:
         This way when eliminating PMs the program will not calculate setups that are actually equal twice.
         **TODO**.
  7. Adjustments based on the assignment result.
-     1. Unneeded PM elimination. Find the PM that takes least portion of the weights. If the weights it
-        takes can be fulfilled by the unused shares of other PMs then this PM is not needed. Here we take
+     1. Unneeded PM elimination. Find the PM that takes the least load. If its load can be fulfilled by the
+        unused shares of other PMs then this PM is not needed. Here we take
         an assumption that the capacity function to some extent reflects the PM performance -- to provide
         equal amount of switch capcity, a weaker PM uses more CPU shares. The reason why this PM takes
         least weight is usually its inferior performance, so if it can use, say, 15% CPU share to provide,
@@ -77,10 +77,14 @@ Each iteration performs as follows:
         then this PM is not needed. Unneeded PMs are usually eliminated in the earliest rounds. Some further
         thoughts:
          1. Note that there is chance that an unneeded PM may not be eliminated because of the CPU 
-            estimation. We can improve this part by removing the PM and see if other PMs are stressed. If
-            not then we remove it. Otherwise we bring it back and set it "sticky". **TODO**.
-         2. We can use the heuristics we thought of before to determine if this step is needed. E.g., the
-            min number of PMs needed -- but what if overloading PMs results in better edge cut? **TODO**.
+            estimation. We change it so that the PM is removed as long as its vhost weight can be covered
+            by free CPU shares -- this could slightly stress other PMs and may NOT guarantee to produce best result.
+            Corner cases like this, however, are very hard to trigger. In practice this usually means the PM is
+            removed earlier than when we used total weight.
+         2. If all PMs used are stressed and we have unused PMs the last removed PM will be brought back and set sticky.
+         3. We can use the heuristics we thought of before to determine if this step is needed. E.g., the
+            min number of PMs needed (NOTE: THIS IS NOT TRUE!) -- but what if overloading PMs results in better edge
+            cut? **TODO**.
      2. CPU share adjustment. We distinguish three situations:
          1. The least utilized PM. **TODO**. If not "sticky" then we bias towards eliminating it by
             __what__? If sticky then we treat it the same as any under-utilized PM.
@@ -96,8 +100,8 @@ Each iteration performs as follows:
             next_sw=6+ceil(6*(10/70))=6+1=7. next_vhost=70+(6-1)=75. Because 75+7=82<100, no capping will
             be done.
          3. Over-utilized. **TODO**. We cap its vhost CPU share to the max possible vhost CPU share scaled
-            up by over utilization threshold. That is,
-            `(pm.max_cpu_share - next_sw_cpu_share) * (1 + constants.PM_OVER_UTILIZED_THRESHOLD)`.
+            up by half of over utilization threshold. That is,
+            `(pm.max_cpu_share - next_sw_cpu_share) * (1 + constants.PM_OVER_UTILIZED_THRESHOLD / 2)`.
  8. Stop conditions. The algorithm will NOT add a new task unless
      1. It's the first iteration.
      2. Edge cut is reduced in this round (we may do better by adjusting the params).

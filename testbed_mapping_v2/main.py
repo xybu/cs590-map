@@ -90,6 +90,12 @@ def main():
     print(args)
     print()
 
+    # Print the constant params.
+    print('Program parameters:')
+    for k in constants.__all__:
+        print('  %s: %s' % (k, getattr(constants, k)))
+    print()
+
     # Read graph input and vhost CPU file, and then update the graph properties.
     graph = graph_model.parse_chaco_input(args.graph_file)
     vhost_requirements = utils_input.read_int_file(args.vhost_cpu_file)
@@ -120,6 +126,7 @@ def main():
     vhost_cpu_shares = []
     imbalance_vec = (1.0 + constants.SWITCH_CAPACITY_IMBALANCE_FACTOR, 1.0 + constants.VHOST_CPU_IMBALANCE_FACTOR)
     for pm in machines:
+        # If this scheme should be changed, update the PM bring-back logic as well.
         switch_cpu_share = max(constants.INIT_SWITCH_CPU_SHARES, pm.min_switch_cpu_share)
         vhost_cpu_share = pm.max_cpu_share - switch_cpu_share
         switch_cpu_shares.append(switch_cpu_share)
@@ -182,7 +189,13 @@ def main():
             pm_weight = pm_switch_weight + pm_vhost_weight
             pm_weights.append(pm_weight)
 
-            print(emphasize_used_pm(pm))
+            if used_cpu_shares[i] > pm.max_cpu_share * (1 + constants.PM_OVER_UTILIZED_THRESHOLD):
+                f = emphasize_overused_pm
+            elif used_cpu_shares[i] < pm.max_cpu_share * (1 - constants.PM_UNDER_UTILIZED_THRESHOLD):
+                f = emphasize_underused_pm
+            else:
+                f = emphasize_used_pm
+            print(f(pm))
             print('  Switch:  CPU=%d, capacity=%.4lf, capacity_used=%.4lf, CPU_needed=%d' % (switch_cpu_shares[i], switch_cap_shares[i], switch_cap_usage[i], actual_switch_cpu_share_needed))
             print('  VHosts:  CPU=%d, CPU_used=%d' % (vhost_cpu_shares[i], vhost_cpu_usage[i]))
             print('  Overall: CPU_used=%d, CPU_unused=%d' % (pm_used_cpu_share, pm_unused_cpu_share))
@@ -213,7 +226,13 @@ def main():
 
         # Test if we can get rid of the least used PM. We are very conservative here.
         least_used_pm_id = pm_weights.index(min(pm_weights))
-        if sum(unused_cpu_shares) - unused_cpu_shares[least_used_pm_id] - used_cpu_shares[least_used_pm_id] > 0:
+        total_unused_shares = sum(unused_cpu_shares) - unused_cpu_shares[least_used_pm_id]
+        shares_needed_to_exclude_pm = vhost_cpu_shares[least_used_pm_id]
+        print('PM Elimination Phase:')
+        print('  Target PM: #%d, sticky=%s' % (machines_used[least_used_pm_id].pm_id, str(machines_used[least_used_pm_id].sticky)))
+        print('  Total free shares: %d' % total_unused_shares)
+        print('  Shares needed to trigger PM elimination: %d' % shares_needed_to_exclude_pm)
+        if total_unused_shares - shares_needed_to_exclude_pm > 0 and not machines_used[least_used_pm_id].sticky:
             # The unused CPU share of other PMs can cover this PM.
             # Here we assumed that other PMs can produce no less switch capacity with the CPU share used by this PM.
             machine_to_pop = machines_used.pop(least_used_pm_id)
@@ -223,16 +242,16 @@ def main():
             used_cpu_shares.pop(least_used_pm_id)
             unused_cpu_shares.pop(least_used_pm_id)
             vhost_cpu_usage.pop(least_used_pm_id)
-            print('PM #%d will be excluded from next round.' % machine_to_pop.pm_id)
+            print('  PM #%d will be excluded from next round.' % machine_to_pop.pm_id)
             # We tried to add a new task here. It greatly increased search space but didn't improve result.
         else:
             # We can de-optimize this poor PM so that its contents go to other PMs.
-            print('No PM can be excluded from next round.')
+            print('  No PM can be excluded from next round.')
         print()
-        # We could add a task here actually.
 
         # Tune parameters for next round.
         shares_changed = False
+        num_overloaded_pms = 0
         for i, pm in enumerate(machines_used):
             print(emphasize_used_pm(pm))
             old_switch_cpu_share = switch_cpu_shares[i]
@@ -267,10 +286,11 @@ def main():
             elif pm_unused_ratio < -1 * constants.PM_OVER_UTILIZED_THRESHOLD:
                 # If the PM is under-utilized, the ratio is negative.
                 # TODO: Think of better algorithm for this branch. For now I just cap the value.
-                max_vhost_cpu_share = (pm.max_cpu_share - next_switch_cpu_share) * (1 + constants.PM_OVER_UTILIZED_THRESHOLD)
+                max_vhost_cpu_share = (pm.max_cpu_share - next_switch_cpu_share) * (1 + constants.PM_OVER_UTILIZED_THRESHOLD / 2)
                 # max_vhost_cpu_share = pm.max_cpu_share * (1 + constants.PM_OVER_UTILIZED_THRESHOLD) - next_switch_cpu_share
                 print('  Over-utilized. vhost_cpu-%d' % (next_vhost_cpu_share - max_vhost_cpu_share))
                 next_vhost_cpu_share = max_vhost_cpu_share
+                num_overloaded_pms += 1
             # Update the array.
             if next_vhost_cpu_share != old_vhost_cpu_share or next_switch_cpu_share != old_switch_cpu_share:
                 shares_changed = True
@@ -290,6 +310,27 @@ def main():
                 shares_changed and (machines_unused, switch_cpu_shares, vhost_cpu_shares) not in assignment_signatures
         ):
             task_queue.append((min_cut, assignment_record, machines_used, machines_unused, switch_cpu_shares, vhost_cpu_shares))
+
+        if num_overloaded_pms == len(machines_used) and len(machines_unused) > 0:
+            # All used PMs are overloaded but we have free machines.
+            machines_used = machines_used.copy()
+            machines_unused = machines_unused.copy()
+            switch_cpu_shares = switch_cpu_shares.copy()
+            vhost_cpu_shares = vhost_cpu_shares.copy()
+            m = machines_unused.pop()   # The machine to bring back from free list.
+            i = 0
+            for pm in machines_used:
+                if m.pm_id < pm.pm_id:
+                    break
+                i += 1
+            machines_used.insert(i, m)
+            switch_cpu_shares.insert(i, constants.INIT_SWITCH_CPU_SHARES)
+            vhost_cpu_shares.insert(i, m.max_cpu_share - constants.INIT_SWITCH_CPU_SHARES)
+            m.sticky = True
+            task_queue.append(
+                (min_cut, assignment_record, machines_used, machines_unused, switch_cpu_shares, vhost_cpu_shares))
+            print('Brought PM #%d back to list.' % m.pm_id)
+
         print()
 
     for a in assignment_hist:

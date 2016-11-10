@@ -1,5 +1,11 @@
 #!/usr/bin/python3
 
+__all__ = [
+    'EDGE_WEIGHT_KEY', 'NODE_SWITCH_CAPACITY_WEIGHT_KEY', 'NODE_CPU_WEIGHT_KEY', 'SWITCH_CAPACITY_IMBALANCE_FACTOR',
+    'VHOST_CPU_IMBALANCE_FACTOR', 'INIT_SWITCH_CPU_SHARES', 'SWITCH_CPU_SHARE_UPDATE_FACTOR',
+    'PM_UNDER_UTILIZED_THRESHOLD', 'PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO', 'PM_OVER_UTILIZED_THRESHOLD'
+]
+
 # The attribute for edge's weight. If changed, must update graph_model as well.
 EDGE_WEIGHT_KEY = 'weight'
 
@@ -25,7 +31,7 @@ SWITCH_CPU_SHARE_UPDATE_FACTOR = 0.4
 PM_UNDER_UTILIZED_THRESHOLD = 0.1
 
 # For the under-utilized portion, we reserve 70% and allocate 30% proportionally to switch and vhost shares.
-PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO = 0.7
+PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO = 0.65
 
 # We consider the PM to be over-utilized if total CPU share needed on the PM is 10% more than its maximum.
 PM_OVER_UTILIZED_THRESHOLD = 0.1

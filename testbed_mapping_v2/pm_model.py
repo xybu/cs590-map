@@ -63,6 +63,7 @@ class Machine:
         self.max_cpu_share = max_cpu_share
         self.min_switch_cpu_share = min_switch_cpu_share
         self.max_switch_cpu_share = max_switch_cpu_share
+        self.sticky = False
         self.capacity_func = CapacityFunction((min_switch_cpu_share, max_switch_cpu_share), coefficients, False)
 
     def __eq__(self, other):
