@@ -12,3 +12,11 @@ Also if the demo version does better then an optimized version should do even be
 3. The ones in EmuLab paper.
 
 4. The ones in METIS paper.
+
+## Alternative Approaches
+
+1. Balanced partitioning
+
+2. Partitioning based on CPU share requirement (no capacity)
+
+3. Partitioning based on link bandwidth?
