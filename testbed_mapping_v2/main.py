@@ -41,7 +41,8 @@ def calculate_set_weights(graph, key, assignment):
 
 class AssignmentRecord:
 
-    def __init__(self, assignment_id, min_cut, machines_used, machines_unused, switch_cpu_shares, vhost_cpu_shares, used_cpu_shares, vhost_cpu_usage, assignment):
+    def __init__(self, assignment_id, min_cut, machines_used, machines_unused,
+                 switch_cpu_shares, vhost_cpu_shares, used_cpu_shares, vhost_cpu_usage, assignment):
         self.assignment_id = assignment_id
         self.min_cut = min_cut
         self.machines_used = machines_used
@@ -78,6 +79,89 @@ class AssignmentRecord:
     @staticmethod
     def cmp_key(a):
         return a.min_cut
+
+
+class MachineUsageResult:
+
+    def __init__(self, old_index, pm, switch_cpu_share, vhost_cpu_share, switch_cap_usage, vhost_cpu_usage,
+                 total_vertex_weight, total_cpu_weight):
+        """
+        Instantiate an object that synthesizes the usage info about a PM given an assignment.
+        :param int old_index: The index of the PM before sorting.
+        :param pm_model.Machine pm: The PM object.
+        :param int switch_cpu_share: Input of CPU shares for switch part to get the assignment.
+        :param int vhost_cpu_share: Input of CPU shares for vhost part to get the assignment.
+        :param int switch_cap_usage: Actual amount of capacity assigned to the PM. Used for calculating sw CPU usage.
+        :param int vhost_cpu_usage: Actual amount of CPU shares used by vhosts assigned to the PM.
+        :param int total_vertex_weight: Sum of vertex weight (total capacity). Used for calculating weight.
+        :param int total_cpu_weight: Sum of CPU weight of nodes. Used for calculating weight.
+        """
+        self.old_index = old_index
+        self.pm = pm
+        self.prev_switch_cpu_share = switch_cpu_share
+        self.prev_vhost_cpu_share = vhost_cpu_share
+        self.switch_cap_usage = switch_cap_usage
+        self.vhost_cpu_usage = vhost_cpu_usage
+        self.total_vertex_weight = total_vertex_weight
+        self.total_cpu_weight = total_cpu_weight
+        # Could have used binary search here.
+        actual_switch_cpu_share_needed = switch_cpu_share
+        while pm.capacity_func.eval(actual_switch_cpu_share_needed) > switch_cap_usage:
+            actual_switch_cpu_share_needed -= 1
+        while pm.capacity_func.eval(actual_switch_cpu_share_needed) < switch_cap_usage:
+            actual_switch_cpu_share_needed += 1
+        self.switch_cpu_usage = max(actual_switch_cpu_share_needed, pm.min_switch_cpu_share)
+
+    @property
+    def cpu_share_used(self):
+        return self.switch_cpu_usage + self.vhost_cpu_usage
+
+    @property
+    def cpu_share_free(self):
+        return self.pm.max_cpu_share - self.cpu_share_used
+
+    @property
+    def switch_share_weight(self):
+        return self.switch_cap_usage / self.total_vertex_weight
+
+    @property
+    def vhost_share_weight(self):
+        return self.vhost_cpu_usage / self.total_cpu_weight
+
+    @property
+    def total_weight(self):
+        return self.switch_share_weight + self.vhost_share_weight
+
+    def is_over_utilized(self, delta=0):
+        return self.cpu_share_used + delta > int(self.pm.max_cpu_share * (1 + constants.PM_OVER_UTILIZED_THRESHOLD))
+
+    def over_utilized_shares(self, delta=0):
+        return self.cpu_share_used + delta - self.pm.max_cpu_share
+
+    def is_under_utilized(self, delta=0):
+        return int(self.pm.max_cpu_share * (1 - constants.PM_UNDER_UTILIZED_THRESHOLD)) > (self.cpu_share_used + delta)
+
+    def under_utilized_shares(self, delta=0):
+        return int(self.pm.max_cpu_share * (1 - constants.PM_UNDER_UTILIZED_THRESHOLD)) - (self.cpu_share_used + delta)
+
+    @property
+    def emphasis_color(self, delta=0):
+        if self.is_over_utilized(delta):
+            return emphasize_overused_pm
+        elif self.is_under_utilized(delta):
+            return emphasize_underused_pm
+        else:
+            return emphasize_used_pm
+
+    def print(self):
+        print(str(self.old_index) + ': ' + str(self.emphasis_color(self.pm)))
+        print('  Switch Used/Alloc:  CPU = %d / %d, Cap = %.4lf / %.4lf' % (
+            self.switch_cpu_usage, self.prev_switch_cpu_share,
+            self.switch_cap_usage, self.pm.capacity_func.eval(self.prev_switch_cpu_share)))
+        print('  Vhost  Used/Alloc:  CPU = %d / %d' % (self.vhost_cpu_usage, self.prev_vhost_cpu_share))
+        print('  Overall: CPU = %d / %d' % (self.cpu_share_used, self.pm.max_cpu_share))
+        print('  Weights: sw = %.4lf, vcpu = %.4lf, total = %.4lf' % (
+            self.switch_share_weight, self.vhost_share_weight, self.total_weight))
 
 
 def main():
@@ -132,7 +216,8 @@ def main():
         switch_cpu_shares.append(switch_cpu_share)
         vhost_cpu_shares.append(vhost_cpu_share)
 
-    # A task is a tuple (prev_edge_cut, prev_assignment, machines_used, machines_unused, switch_cpu_shares, vhost_cpu_shares)
+    # A task is a tuple of
+    # (prev_edge_cut, prev_assignment, machines_used, machines_unused, switch_cpu_shares, vhost_cpu_shares)
     task_queue = [(total_vertex_weight, None, machines.copy(), [], switch_cpu_shares, vhost_cpu_shares)]
     assignment_hist = []
     assignment_signatures = []  # Should use a hash table or something.
@@ -165,42 +250,19 @@ def main():
 
         switch_cap_usage = calculate_set_weights(graph, constants.NODE_SWITCH_CAPACITY_WEIGHT_KEY, assignment)
         vhost_cpu_usage = calculate_set_weights(graph, constants.NODE_CPU_WEIGHT_KEY, assignment)
-        used_cpu_shares = []
-        unused_cpu_shares = []
-        pm_weights = []
+        machine_usages = []
 
+        # Associate information about usage of a single PM to an object.
         for i, pm in enumerate(machines_used):
-            # Find the exact CPU share needed to provide the allocated switch capacity.
-            # TODO: Change this to binary search.
-            actual_switch_cpu_share_needed = switch_cpu_shares[i]
-            while pm.capacity_func.eval(actual_switch_cpu_share_needed) > switch_cap_usage[i]:
-                actual_switch_cpu_share_needed -= 1
-            while pm.capacity_func.eval(actual_switch_cpu_share_needed) < switch_cap_usage[i]:
-                actual_switch_cpu_share_needed += 1
-            actual_switch_cpu_share_needed = max(actual_switch_cpu_share_needed, pm.min_switch_cpu_share)
-            pm_used_cpu_share = actual_switch_cpu_share_needed + vhost_cpu_usage[i]
-            pm_unused_cpu_share = pm.max_cpu_share - pm_used_cpu_share
-            used_cpu_shares.append(pm_used_cpu_share)
-            unused_cpu_shares.append(pm_unused_cpu_share)
-
-            # A heuristic index that measures how much workload this PM takes from the entire workload.
-            pm_switch_weight = switch_cap_usage[i] / total_vertex_weight
-            pm_vhost_weight = vhost_cpu_usage[i] / total_vhost_cpu_weight
-            pm_weight = pm_switch_weight + pm_vhost_weight
-            pm_weights.append(pm_weight)
-
-            if used_cpu_shares[i] > pm.max_cpu_share * (1 + constants.PM_OVER_UTILIZED_THRESHOLD):
-                f = emphasize_overused_pm
-            elif used_cpu_shares[i] < pm.max_cpu_share * (1 - constants.PM_UNDER_UTILIZED_THRESHOLD):
-                f = emphasize_underused_pm
-            else:
-                f = emphasize_used_pm
-            print(f(pm))
-            print('  Switch:  CPU=%d, capacity=%.4lf, capacity_used=%.4lf, CPU_needed=%d' % (switch_cpu_shares[i], switch_cap_shares[i], switch_cap_usage[i], actual_switch_cpu_share_needed))
-            print('  VHosts:  CPU=%d, CPU_used=%d' % (vhost_cpu_shares[i], vhost_cpu_usage[i]))
-            print('  Overall: CPU_used=%d, CPU_unused=%d' % (pm_used_cpu_share, pm_unused_cpu_share))
-            print('  Weights: sw_weight=%.4lf, vh_weight=%.4lf, total_weight=%.4lf' % (pm_switch_weight, pm_vhost_weight, pm_weight))
-        print()
+            machine_usage = MachineUsageResult(old_index=i, pm=pm,
+                                               switch_cpu_share=switch_cpu_shares[i], vhost_cpu_share=vhost_cpu_shares[i],
+                                               switch_cap_usage=switch_cap_usage[i],
+                                               vhost_cpu_usage=vhost_cpu_usage[i],
+                                               total_vertex_weight=total_vertex_weight,
+                                               total_cpu_weight=total_vhost_cpu_weight)
+            # machine_usage.print()
+            machine_usages.append(machine_usage)
+        # print()
 
         # After excluding any PM, PM ID and array index will no longer match. We need to convert that in assignment.
         pm_index_mapping = [pm.pm_id for pm in machines_used]
@@ -210,7 +272,8 @@ def main():
         assignment_record = AssignmentRecord(assignment_id=len(assignment_hist), min_cut=min_cut,
                                              machines_used=machines_used, machines_unused=machines_unused,
                                              switch_cpu_shares=switch_cpu_shares, vhost_cpu_shares=vhost_cpu_shares,
-                                             used_cpu_shares=used_cpu_shares, vhost_cpu_usage=vhost_cpu_usage,
+                                             used_cpu_shares=[u.cpu_share_used for u in machine_usages],
+                                             vhost_cpu_usage=vhost_cpu_usage,
                                              assignment=assignment)
         assignment_hist.append(assignment_record)
         assignment_signatures.append((machines_unused, switch_cpu_shares, vhost_cpu_shares))
@@ -220,83 +283,112 @@ def main():
         machines_unused = machines_unused.copy()
         switch_cpu_shares = switch_cpu_shares.copy()
         vhost_cpu_shares = vhost_cpu_shares.copy()
-        used_cpu_shares = used_cpu_shares.copy()
-        unused_cpu_shares = unused_cpu_shares.copy()
-        vhost_cpu_usage = vhost_cpu_usage.copy()
 
-        # Test if we can get rid of the least used PM. We are very conservative here.
-        least_used_pm_id = pm_weights.index(min(pm_weights))
-        total_unused_shares = sum(unused_cpu_shares) - unused_cpu_shares[least_used_pm_id]
-        shares_needed_to_exclude_pm = vhost_cpu_shares[least_used_pm_id]
+        # Sort the PMs by descending total weight.
+        machine_usages.sort(key=lambda u : -u.total_weight)
+
+        # Check if the least used PM can be eliminated. If the free CPU shares of all other PMs can cover the
+        # CPU shares undertaken by this PM, then this PM can be removed from list.
+        # It doesn't matter doing this either before or after adjustment because the decision won't change.
+        least_used_pm = machine_usages[-1]
+        total_cpu_shares_free = sum([u.cpu_share_free for u in machine_usages]) - least_used_pm.cpu_share_free
         print('PM Elimination Phase:')
-        print('  Target PM: #%d, sticky=%s' % (machines_used[least_used_pm_id].pm_id, str(machines_used[least_used_pm_id].sticky)))
-        print('  Total free shares: %d' % total_unused_shares)
-        print('  Shares needed to trigger PM elimination: %d' % shares_needed_to_exclude_pm)
-        if total_unused_shares - shares_needed_to_exclude_pm > 0 and not machines_used[least_used_pm_id].sticky:
+        print('  Target PM: #%d, sticky=%s' % (least_used_pm.pm.pm_id, str(least_used_pm.pm.sticky)))
+        print('  Total free CPU shares: %d' % total_cpu_shares_free)
+        print('  Shares covered by PM:  %d' % least_used_pm.cpu_share_used)
+        if total_cpu_shares_free - least_used_pm.cpu_share_used > 0 and not least_used_pm.pm.sticky:
             # The unused CPU share of other PMs can cover this PM.
-            # Here we assumed that other PMs can produce no less switch capacity with the CPU share used by this PM.
-            machine_to_pop = machines_used.pop(least_used_pm_id)
-            machines_unused.append(machine_to_pop)
-            switch_cpu_shares.pop(least_used_pm_id)
-            vhost_cpu_shares.pop(least_used_pm_id)
-            used_cpu_shares.pop(least_used_pm_id)
-            unused_cpu_shares.pop(least_used_pm_id)
-            vhost_cpu_usage.pop(least_used_pm_id)
-            print('  PM #%d will be excluded from next round.' % machine_to_pop.pm_id)
+            # This is conservative because in general other PMs can produce no less switch capacity with the CPU
+            # hare used by this PM.
+            machines_used.pop(least_used_pm.old_index)
+            machines_unused.append(least_used_pm.pm)
+            switch_cpu_shares.pop(least_used_pm.old_index)
+            vhost_cpu_shares.pop(least_used_pm.old_index)
+            print('  PM #%d will be excluded from next round.' % least_used_pm.pm.pm_id)
+            task_queue.append(
+                (total_vertex_weight, None, machines_used, machines_unused, switch_cpu_shares, vhost_cpu_shares))
+            print()
+            continue
             # We tried to add a new task here. It greatly increased search space but didn't improve result.
         else:
             # We can de-optimize this poor PM so that its contents go to other PMs.
             print('  No PM can be excluded from next round.')
         print()
 
-        # Tune parameters for next round.
-        shares_changed = False
+        # From the PM that takes the most weight to the PM that takes the least weight, check if it's over-utilized,
+        # just fine, or under-utilized.
         num_overloaded_pms = 0
-        for i, pm in enumerate(machines_used):
-            print(emphasize_used_pm(pm))
-            old_switch_cpu_share = switch_cpu_shares[i]
-            old_vhost_cpu_share = vhost_cpu_shares[i]
-            # For switch CPU share value, we move it towards the actual value needed. This adjustment will produce
-            # nothing different in terms of assignment.
-            actual_switch_cpu_share_needed = used_cpu_shares[i] - vhost_cpu_usage[i]
-            next_switch_cpu_share = int(constants.SWITCH_CPU_SHARE_UPDATE_FACTOR * old_switch_cpu_share + (1 - constants.SWITCH_CPU_SHARE_UPDATE_FACTOR) * actual_switch_cpu_share_needed)
-            if next_switch_cpu_share < pm.min_switch_cpu_share:
-                next_switch_cpu_share = pm.min_switch_cpu_share
-            elif next_switch_cpu_share > pm.max_switch_cpu_share:
-                next_switch_cpu_share = pm.max_switch_cpu_share
-            # We may update vhost CPU share later.
-            next_vhost_cpu_share = vhost_cpu_usage[i]
-            # Then we examine how much power is left on this PM.
-            pm_unused_cpu_share = pm.max_cpu_share - next_switch_cpu_share - vhost_cpu_usage[i]
-            pm_unused_ratio = pm_unused_cpu_share / pm.max_cpu_share
-            print('  This round: switch_cpu=%d/%d, vhost_cpu=%d/%d, ratio=%.4lf' % (actual_switch_cpu_share_needed, old_switch_cpu_share, vhost_cpu_usage[i], old_vhost_cpu_share, pm_unused_ratio))
-            if pm_unused_ratio > constants.PM_UNDER_UTILIZED_THRESHOLD:
-                pm_free_cpu_share = int(pm_unused_cpu_share * (1 - constants.PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO))
-                pm_extra_switch_cpu_share = max(1, int(pm_free_cpu_share * actual_switch_cpu_share_needed / (actual_switch_cpu_share_needed + old_vhost_cpu_share)))
-                if next_switch_cpu_share == pm.max_switch_cpu_share:
-                    pm_extra_switch_cpu_share = 0
-                pm_extra_vhost_cpu_share = pm_free_cpu_share - pm_extra_switch_cpu_share
-                next_switch_cpu_share += pm_extra_switch_cpu_share
-                next_vhost_cpu_share += pm_extra_vhost_cpu_share
-                if next_vhost_cpu_share < old_vhost_cpu_share:
-                    next_vhost_cpu_share = min(old_vhost_cpu_share, pm.max_cpu_share - next_switch_cpu_share)
-                    print('  Under-utilized. sw_cpu+%d, vhost_cpu=%d' % (pm_extra_switch_cpu_share, next_vhost_cpu_share))
-                else:
-                    print('  Under-utilized. sw_cpu+%d, vhost_cpu+%d' % (pm_extra_switch_cpu_share, next_vhost_cpu_share - old_vhost_cpu_share))
-            elif pm_unused_ratio < -1 * constants.PM_OVER_UTILIZED_THRESHOLD:
-                # If the PM is under-utilized, the ratio is negative.
-                # TODO: Think of better algorithm for this branch. For now I just cap the value.
-                max_vhost_cpu_share = (pm.max_cpu_share - next_switch_cpu_share) * (1 + constants.PM_OVER_UTILIZED_THRESHOLD / 2)
-                # max_vhost_cpu_share = pm.max_cpu_share * (1 + constants.PM_OVER_UTILIZED_THRESHOLD) - next_switch_cpu_share
-                print('  Over-utilized. vhost_cpu-%d' % (next_vhost_cpu_share - max_vhost_cpu_share))
-                next_vhost_cpu_share = max_vhost_cpu_share
+        prev_pm_under_utilized = False
+        vhost_cpu_deltas = [0] * len(machine_usages)
+        switch_cpu_deltas = [0] * len(machine_usages)
+        print('Share Adjustment Phase:')
+        for i, pm in enumerate(machine_usages):
+            total_delta = vhost_cpu_deltas[i] + switch_cpu_deltas[i]
+            pm.print()
+            if pm.is_over_utilized(total_delta):
                 num_overloaded_pms += 1
-            # Update the array.
-            if next_vhost_cpu_share != old_vhost_cpu_share or next_switch_cpu_share != old_switch_cpu_share:
-                shares_changed = True
-            switch_cpu_shares[i] = next_switch_cpu_share
-            vhost_cpu_shares[i] = next_vhost_cpu_share
-            print('  Next round: switch_cpu=%d, switch_cap=%.4lf, vhost_cpu=%d' % (next_switch_cpu_share, pm.capacity_func.eval(next_switch_cpu_share), next_vhost_cpu_share))
+                shares_over = pm.over_utilized_shares(total_delta)
+                shares_to_discard = shares_over # int(shares_over * (1 - constants.PM_OVER_UTILIZED_PORTION_RESERVE_RATIO))
+                if i < len(machine_usages) - 1:
+                    pm_next = machine_usages[i + 1]
+                    curr_pm_switch_delta = int(shares_to_discard * pm.switch_cpu_usage / pm.cpu_share_used)
+                    if pm.switch_cpu_usage + switch_cpu_deltas[i] - curr_pm_switch_delta < pm.pm.min_switch_cpu_share:
+                        curr_pm_switch_delta = pm.switch_cpu_usage + switch_cpu_deltas[i] - pm.pm.min_switch_cpu_share
+                    switch_cpu_deltas[i] -= curr_pm_switch_delta
+                    vhost_cpu_deltas[i] -= shares_to_discard - curr_pm_switch_delta
+                    switch_cpu_deltas[i +  1] += int(shares_to_discard * pm_next.switch_cpu_usage / (pm_next.switch_cpu_usage + pm_next.vhost_cpu_usage))
+                    vhost_cpu_deltas[i + 1] += shares_to_discard - switch_cpu_deltas[i +  1]
+                    print('  Over by %d shares. Dispose %d shares to the next PM.' % (shares_over, shares_to_discard))
+                else:
+                    print('  Over by %d shares. No other PM can take it.' % (shares_over))
+                prev_pm_under_utilized = False
+            elif pm.is_under_utilized(total_delta):
+                shares_under = pm.under_utilized_shares(total_delta)
+                shares_usable = max(1, int(shares_under * (1 - constants.PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO)))
+                if i > 0 and prev_pm_under_utilized and shares_usable > vhost_cpu_deltas[i - 1]:
+                    shares_usable = vhost_cpu_deltas[i - 1]
+                print('  Under-utilized shares: %d. Adjustable shares: %d.' % (shares_under, shares_usable))
+                switch_cpu_delta = max(1, int(shares_usable * pm.switch_cpu_usage / pm.cpu_share_used))
+                if pm.switch_cpu_usage + switch_cpu_delta > pm.pm.max_switch_cpu_share:
+                    switch_cpu_delta = pm.pm.max_switch_cpu_share - pm.switch_cpu_usage
+                vhost_cpu_delta = shares_usable - switch_cpu_delta
+                if vhost_cpu_delta < 0:
+                    vhost_cpu_delta = 0
+                switch_cpu_deltas[i] += switch_cpu_delta
+                vhost_cpu_deltas[i] += vhost_cpu_delta
+                prev_pm_under_utilized = True
+            else:
+                print('  Share in reasonable range.')
+                prev_pm_under_utilized = False
+            print('  Switch deltas: ' + str(switch_cpu_deltas))
+            print('  Vhost deltas:  ' + str(vhost_cpu_deltas))
+        print()
+        for i, pm in enumerate(machine_usages):
+            pm.switch_cpu_delta = switch_cpu_deltas[i]
+            pm.vhost_cpu_delta = vhost_cpu_deltas[i]
+
+        # Change the order back to index-based.
+        machine_usages.sort(key=lambda u: u.old_index)
+
+        # Extract the input for next round.
+        switch_cpu_shares_new = []
+        vhost_cpu_shares_new = []
+        for pm in machine_usages:
+            # Note that our next input is based on current output. Given a graph shape and some preliminary resource
+            # quantification, there isn't much to tune.
+            next_switch_cpu_share = pm.switch_cpu_usage + pm.switch_cpu_delta
+            # if next_switch_cpu_share > pm.pm.max_switch_cpu_share:
+            #     next_switch_cpu_share = pm.pm.max_switch_cpu_share
+            # elif next_switch_cpu_share < pm.pm.min_switch_cpu_share:
+            #     next_switch_cpu_share = pm.pm.min_switch_cpu_share
+            switch_cpu_shares_new.append(next_switch_cpu_share)
+            next_vhost_cpu_share = pm.vhost_cpu_usage + pm.vhost_cpu_delta
+            if next_vhost_cpu_share + next_switch_cpu_share > pm.pm.max_cpu_share:
+                next_vhost_cpu_share = pm.pm.max_cpu_share # Treat switch part as "overclocked" portion.
+            vhost_cpu_shares_new.append(next_vhost_cpu_share)
+        shares_changed = switch_cpu_shares_new != switch_cpu_shares or vhost_cpu_shares_new != vhost_cpu_shares
+        switch_cpu_shares = switch_cpu_shares_new
+        vhost_cpu_shares = vhost_cpu_shares_new
 
         # Try another round if any of the following conditions are met:
         if (
@@ -337,7 +429,7 @@ def main():
         print(a)
         print()
 
-    print('Best assignment is...')
+    print('Best assignment out of %d candidates is...' % len(assignment_hist))
     print()
     best_assignment = sorted(assignment_hist, key=AssignmentRecord.cmp_key)[0]
     print(best_assignment)

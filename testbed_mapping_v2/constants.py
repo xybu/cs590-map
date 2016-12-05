@@ -15,11 +15,14 @@ NODE_SWITCH_CAPACITY_WEIGHT_KEY = 'weight'
 # The attribute for node's CPU requirement value.
 NODE_CPU_WEIGHT_KEY = 'cpu'
 
-# To what extent do we allow for imbalance on switch capacity constraint? As close to constraint as possible.
-SWITCH_CAPACITY_IMBALANCE_FACTOR = 0
+# To what extent do we allow for imbalance on switch capacity constraint?
+# We allow for some delta so that
+# (1) graph shape helps reduce search space and
+# (2) resource limit fits graph shape better.
+SWITCH_CAPACITY_IMBALANCE_FACTOR = 0.1
 
-# To what extent do we allow for imbalance on CPU constraint? +/- 10%.
-VHOST_CPU_IMBALANCE_FACTOR = 0.1
+# To what extent do we allow for imbalance on CPU constraint? +/- 15%.
+VHOST_CPU_IMBALANCE_FACTOR = 0.15
 
 # Switch CPU shares that will be assigned to every PMs in the first round.
 INIT_SWITCH_CPU_SHARES = 20
@@ -31,7 +34,7 @@ SWITCH_CPU_SHARE_UPDATE_FACTOR = 0.4
 PM_UNDER_UTILIZED_THRESHOLD = 0.1
 
 # For the under-utilized portion, we reserve 70% and allocate 30% proportionally to switch and vhost shares.
-PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO = 0.65
+PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO = 0.7
 
 # We consider the PM to be over-utilized if total CPU share needed on the PM is 10% more than its maximum.
 PM_OVER_UTILIZED_THRESHOLD = 0.1
