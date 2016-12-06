@@ -38,11 +38,19 @@ The numbers can be separated by spaces or tabs. Empty lines or lines starting wi
 
 Our model currently takes only CPU shares into consideration, but memory requirement can be easily added in the manner CPU requirement is fulfilled:
 
-* Add memory limit as a new constraint to METIS
-* Specify memory requirement for each vertex
+* Add memory limit as a new constraint to METIS.
+* Specify memory requirement for each vertex by adding one more weight.
 * Model the relation between memory usage and switching capacity.
 
 ### Data Structure
+
+#### Graph Modelling
+
+The topology is a graph `G=(V, E)`.
+
+Each vhost / switch is a vertex with two weights -- cap weight and CPU weight.
+
+Each link is an edge with one weight -- link bandwidth.
 
 #### Capacity Function
 
@@ -68,15 +76,6 @@ The algorithm takes a set of parameters from user. Some adjusts the requirement 
  * Threshold for PM over-utilization (default: if CPU share needed to cover the load is 10% more than the max CPU share of this PM).
  * Threshold for PM under-utilization (default: if CPU share needed to cover the load is no more than 90% of max CPU share of this PM).
 
-### Starting Point
-
-The first iteration uses the following initial values:
-
- * All PMs are chosen and no PM is excluded.
- * Each PM is allocated `constants.INIT_SWITCH_CPU_SHARES` (default: 20) or PM's 
-   `MIN_SWITCH_CPU_SHARE`  percent CPU, whichever is greater, for packet processing.
- * Rest of the CPU share is allocated to fulfill vhost CPU requirements.
-
 ### Iterations
 
 The program has an input queue to hold input that will be tried, and a hash set that saves the input along with its result (i.e., assignment and edge cut):
@@ -90,23 +89,31 @@ input_queue = [
     'pms_used': all_pms,
     'pms_excluded': [],
     'switch_cpu_shares': [constants.INIT_SWITCH_CPU_SHARES] * len(all_pms)
-    'vhost_cpu_shares': [(pm[i].MAX_CPU_SHARE - constants.INIT_SWITCH_CPU_SHARES) for i in len(all_pms)]
+    'vhost_cpu_shares': [(all_pms[i].MAX_CPU_SHARE - constants.INIT_SWITCH_CPU_SHARES) for i from 0 to len(all_pms)]
   }]
 
 // Can be done by parallel workers.
 while (!input_queue.empty()) {
-  perform_partition(input_queue.dequeue())
+  perform_partition(**input_queue.dequeue())
 }
 print_the_best_partition()
 ```
 
-Each iteration takes the following input:
+The procedure `perform_partition()` takes the following input:
 
 1. Result of parent iteration (assignment and edge cut)
 2. Lists of chosen PMs (PMs that will be used in this round) and excluded PMs (PMs determined to be not needed from previous rounds).
 3. CPU shares for switching and vhost, respectively, for each PM.
 
-Each iteration performs as follows:
+Initial input consists of the following values:
+
+* No parent assignment, 
+* All PMs are chosen and no PM is excluded.
+* Each PM is allocated `constants.INIT_SWITCH_CPU_SHARES` (default: 20) or PM's 
+  `MIN_SWITCH_CPU_SHARE`  percent CPU, whichever is greater, for packet processing.
+* Rest of the CPU share is allocated to fulfill vhost CPU requirements.
+
+The logic of `perform_partition()` is as follows:
 
  1. For every PM, calculate switch capacity value from capacity function and switch CPU share.
  2. Normalize vhost CPU shares and switch capacity (that is, x => x / sum) values.
@@ -122,6 +129,44 @@ Each iteration performs as follows:
 		 * `ws` = `sw_cap` / total_switch_capacity
  6. Eliminate unneeded PMs (explained later). May add to input queue.
  7. Tune CPU shares (explained later). May add to input queue.
+
+```
+// Calculate switch capacity for each PM.
+switch_cap_values = []
+for i from 0 to len(pms_used):
+  sw_cpu_share = switch_cpu_shares[i]
+  sw_cap_value = pms_used[i].capacity_func(sw_cpu_share)
+  switch_cap_values.append(sw_cap_value)
+
+// Normalize input for METIS. The actual normalization procedure is called "normalize_shares()" in main.py.
+// For example, [90, 80, 70, 60] => [0.3, 0.267, 0.233, 0.2]
+total_cap_values = sum(switch_cap_values)
+switch_cap_frac = [v / total_cap_values for v in switch_cap_values]
+total_cpu_shares = sum(vhost_cpu_shares)
+vhost_cpu_frac = [v / total_cpu_shares for v in vhost_cpu_shares]
+
+// Call METIS API.
+min_cut, assignment = METIS(graph, nparts=len(pms_used), tpwgts=zip(switch_cap_frac, vhost_cpu_frac))
+
+// Save the result to assignment history.
+// Signature is (pms_excluded, switch_cpu_shares, vhost_cpu_shares).
+add_to_assignment_hist(pms_used, pms_excluded, switch_cpu_shares, vhost_cpu_shares, min_cut, assignment)
+
+sw_cap_usage = For each PM, sum of vertex weights of vertices assigned to the PM.
+vhost_cpu_usage = For each PM, sum of CPU shares needed by vertices assigned to the PM.
+
+// Calculate the weights carried by each PM.
+pm_weights = []
+for i from 0 to len(pms_used):
+  ws = sw_cap_usage[i] / total_switch_capacity // total_switch_capacity is sum of weights of all vertices.
+  wv = vhost_cpu_usage[i] / total_vhost_cpu // total_vhost_cpu is sum of CPU weights of all vertices.
+  pm_weights.append(ws+wv)
+
+sort_pms_used_by_decreasing_pm_weights()
+
+if (!eliminate_pms())
+    tune_cpu_shares()
+```
 
 #### PM Elimination
 
