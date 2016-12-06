@@ -80,7 +80,7 @@ The algorithm takes a set of parameters from user. Some adjusts the requirement 
 
 The program has an input queue to hold input that will be tried, and a hash set that saves the input along with its result (i.e., assignment and edge cut):
 
-```
+```python
 // Starting point.
 input_queue = [
   {
@@ -130,7 +130,7 @@ The logic of `perform_partition()` is as follows:
  6. Eliminate unneeded PMs (explained later). May add to input queue.
  7. Tune CPU shares (explained later). May add to input queue.
 
-```
+```python
 // Calculate switch capacity for each PM.
 switch_cap_values = []
 for i from 0 to len(pms_used):
