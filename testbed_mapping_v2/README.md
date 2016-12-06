@@ -113,7 +113,7 @@ Initial input consists of the following values:
 
 * No parent assignment, 
 * All PMs are chosen and no PM is excluded.
-* Each PM is allocated `constants.INIT_SWITCH_CPU_SHARES` (default: 20) or PM's 
+* Each PM is allocated `constants.INIT_SWITCH_CPU_SHARES` (default: 20) or PM's
   `MIN_SWITCH_CPU_SHARE`  percent CPU, whichever is greater, for packet processing.
 * Rest of the CPU share is allocated to fulfill vhost CPU requirements.
 
@@ -204,7 +204,7 @@ if sum(unused_shares) - unused_shares[least_used_pm] >= sw_cpu_usage[i] + vhost_
 
 In this phase we first sort the PMs by descending `wv+ws`, then calculate CPU shares for next round based on output of this round.
 
-The high-level idea is that, if a PM is overloaded, move some of its shares to the next most powerful PM; if a PM is under-utilized, allocate more shares but no more than the shares added to any stronger under-utilized PM.
+The high-level idea is that, if a PM is overloaded, take the max it can do and send the excessive shares to the next most powerful PM; if a PM is under-utilized, increase its shares but no more than the shares added to any stronger under-utilized PM.
 
 1. `vhost_cpu_deltas = [0] * len(machine_used)`
 2. `switch_cpu_deltas = [0] * len(machine_used)`
@@ -227,10 +227,63 @@ The high-level idea is that, if a PM is overloaded, move some of its shares to t
 After the adjustment, the new input will be added to input queue if
 
 1. It's the first iteration (parent assignment is NULL).
-2. Edge cut is reduced in this round (we may do better by adjusting the params).
-3. The input signature has not been tried before.
+2. The input signature has not been tried before.
 
-```python
+```java
+// Assume pms_used and related arrays have been sorted in order of decreasing `wv+ws`
+// before entering this procedure.
+
+// Form input for next round based on output of this round.
+
+// Initialize adjustments to vhost and switch CPU shares of all PMs to 0.
+vhost_cpu_deltas = [0] * len(pms_used)
+sw_cpu_deltas = [0] * len(pms_used)
+
+// Consider PMs in the order of decreasing `wv+ws` value.
+// Round all numbers to integers.
+for PM i in order of decreasing `wv+ws`:
+  pm = pms_used[i]
+  total_delta = vhost_cpu_deltas[i] + sw_cpu_deltas[i]
+  curr_usage = sw_cpu_usage[i] + vhost_cpu_usage[i]
+  if using (curr_usage + total_delta) CPU shares overloads PM i:
+    shares_over = total_delta + curr_usage - pm.MAX_CPU_SHARE
+    if i == len(pms_used) - 1:
+      continue // No next PM to pour shares to.
+    // Decrease shares_over shares from this PM.
+    sw_delta = shares_over * (sw_cpu_usage[i] / curr_usage) // Reduce this shares from switch CPU usage.
+    if sw_cpu_usage[i] - sw_delta < pm.MIN_SWITCH_CPU_SHARE:
+      sw_delta = sw_cpu_usage[i] - pm.MIN_SWITCH_CPU_SHARE // Enforce min switch CPU share limit
+    sw_cpu_deltas[i] = sw_delta
+    vhost_cpu_deltas[i] = shares_over - sw_delta
+    // Increase shares_over shares to next PM.
+    sw_cpu_deltas[i + 1] = shares_over * (sw_cpu_usage[i + 1] / (sw_cpu_usage[i + 1] + vhost_cpu_usage[i + 1]))
+    if sw_cpu_usage[i + 1] + sw_cpu_deltas[i + 1] > pms_used[i + 1].MAX_SWITCH_CPU_SHARE:
+      sw_cpu_deltas[i + 1] = pms_used[i + 1].MAX_SWITCH_CPU_SHARE - sw_cpu_usage[i + 1]
+    vhost_cpu_deltas[i + 1] = shares_over - sw_cpu_deltas[i + 1]
+  else if PM i is under-utilized when using (curr_usage + total_delta) shares:
+    shares_under = pm.MAX_CPU_SHARE * (1 - constants.PM_UNDER_UTILIZED_THRESHOLD)) - (curr_usage + total_delta)
+    // Allocate a portion of shares_under (at least 1) in next round.
+    shares_usable = max(1, shares_under * (1 - constants.PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO))
+    // Allocate no more shares than previous under-utilized PM so that the resource limit is gradually relaxed
+    // among all PMs. A less-powerful PM usually has larger shares_under value; if we don't have this limit then
+    // workload may favor the least-used PM.
+    // The unused shares will be considered eventually when all more powerful PMs are settled.
+    if i > 0 and PM (i-1) is also under-utilized:
+      shares_usable = vhost_cpu_deltas[i - 1]
+    sw_delta = max(1, int(shares_usable * switch_cpu_usage[i] / curr_usage))
+    if sw_cpu_usage[i] + sw_delta > pm.MAX_SWITCH_CPU_SHARE:
+      sw_delta = pm.MAX_SWITCH_CPU_SHARE - sw_cpu_usage[i]
+    sw_cpu_deltas[i] = sw_delta
+    vhost_cpu_deltas[i] = max(0, shares_usable - sw_delta)
+
+// Form input for next round. Note that overloaded PMs are capped at their MAX_CPU_SHARE value.
+for i from 0 to len(pms_used):
+  switch_cpu_shares[i] = sw_cpu_usage[i] + sw_cpu_deltas[i]
+  vhost_cpu_shares[i] = vhost_cpu_usage[i] + vhost_cpu_deltas[i]
+
+if (prev_assignment is None or
+    the new input is not tried before):
+  add_new_input_to_queue().
 ```
 
 #### Convergence
