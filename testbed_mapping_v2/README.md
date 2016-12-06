@@ -67,7 +67,7 @@ For each PM we form an object with the following properties:
 * `pm.MIN_SWITCH_CPU_SHARE`
 * `pm.MAX_SWITCH_CPU_SHARE`
 
-A PM is "overloaded" (or "over-utilized") if ...
+A PM is "overloaded" (or "over-utilized") if ... Our algorithm leaves 
 
 A PM is "under-utilized" if ...
 
