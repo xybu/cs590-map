@@ -76,7 +76,7 @@ The algorithm takes a set of parameters from user. Some adjusts the requirement 
  * Threshold for PM over-utilization (default: if CPU share needed to cover the load is 10% more than the max CPU share of this PM).
  * Threshold for PM under-utilization (default: if CPU share needed to cover the load is no more than 90% of max CPU share of this PM).
 
-### Iterations
+### Outer Loop
 
 The program has an input queue to hold input that will be tried, and a hash set that saves the input along with its result (i.e., assignment and edge cut):
 
@@ -112,6 +112,8 @@ Initial input consists of the following values:
 * Each PM is allocated `constants.INIT_SWITCH_CPU_SHARES` (default: 20) or PM's 
   `MIN_SWITCH_CPU_SHARE`  percent CPU, whichever is greater, for packet processing.
 * Rest of the CPU share is allocated to fulfill vhost CPU requirements.
+
+### Single Step
 
 The logic of `perform_partition()` is as follows:
 
@@ -178,6 +180,9 @@ Here we rely on the fact that capacity function of PMs reflects to some extent t
 
 To address a corner case in which all used PMs are overloaded yet there is at least one unused PM, the last removed (i.e., the strongest of the weaks) PM will be brought back and set sticky (thus won't be excluded once again).
 
+```python
+```
+
 #### CPU Share Tuning
 
 In this phase we first sort the PMs by descending `wv+ws`, then calculate CPU shares for next round based on output of this round.
@@ -207,6 +212,9 @@ After the adjustment, the new input will be added to input queue if
 1. It's the first iteration (parent assignment is NULL).
 2. Edge cut is reduced in this round (we may do better by adjusting the params).
 3. The input signature has not been tried before.
+
+```python
+```
 
 #### Convergence
 
