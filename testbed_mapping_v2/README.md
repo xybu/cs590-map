@@ -84,7 +84,7 @@ The algorithm takes a set of parameters from user. Some adjusts the requirement 
 
 The program has an input queue to hold input that will be tried, and a hash set that saves the input along with its result (i.e., assignment and edge cut):
 
-```python
+```java
 // Starting point.
 input_queue = [
   {
@@ -136,7 +136,7 @@ The logic of `perform_partition()` is as follows:
  6. Eliminate unneeded PMs (explained later). May add to input queue.
  7. Tune CPU shares (explained later). May add to input queue.
 
-```python
+```java
 // Calculate switch capacity for each PM.
 switch_cap_values = []
 for i from 0 to len(pms_used):
@@ -185,7 +185,7 @@ Here we rely on the fact that capacity function of PMs reflects to some extent t
 
 To address a corner case in which all used PMs are overloaded yet there is at least one unused PM, the last removed (i.e., the strongest of the weaks) PM will be brought back and set sticky (thus won't be excluded once again).
 
-```python
+```java
 // For each PM, calculate the unused shares -- max share minus the shares used.
 unused_shares = []
 for i from 0 to len(pms_used):
