@@ -186,11 +186,17 @@ Here we rely on the fact that capacity function of PMs reflects to some extent t
 To address a corner case in which all used PMs are overloaded yet there is at least one unused PM, the last removed (i.e., the strongest of the weaks) PM will be brought back and set sticky (thus won't be excluded once again).
 
 ```python
+// For each PM, calculate the unused shares -- max share minus the shares used.
 unused_shares = []
 for i from 0 to len(pms_used):
   unused_shares.append(pms_used[i].MAX_CPU_SHARE - sw_cpu_usage[i] - vhost_cpu_usage[i])
+
+// Check the PM that takes least load.
 least_used_pm = index of PM with the smallest wv+ws value.
-if sum(unused_shares) - unused_shares[least_used_pm] > sw_cpu_usage[i] + vhost_cpu_usage[i]:
+
+// If unused CPU shares of all other PMs is no less than the CPU shares carried by this PM
+// Then this PM can be excluded.
+if sum(unused_shares) - unused_shares[least_used_pm] >= sw_cpu_usage[i] + vhost_cpu_usage[i]:
   exclude PM least_used_pm and add to queue the new input
 ```
 
