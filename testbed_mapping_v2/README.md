@@ -82,6 +82,17 @@ The first iteration uses the following initial values:
 The program has an input queue to hold input that will be tried, and a hash set that saves the input along with its result (i.e., assignment and edge cut):
 
 ```
+// Starting point.
+input_queue = [
+  {
+    'prev_assignment': None,
+    'min_cut': total_vertex_weight,
+    'pms_used': all_pms,
+    'pms_excluded': [],
+    'switch_cpu_shares': [constants.INIT_SWITCH_CPU_SHARES] * len(all_pms)
+    'vhost_cpu_shares': [(pm[i].MAX_CPU_SHARE - constants.INIT_SWITCH_CPU_SHARES) for i in len(all_pms)]
+  }]
+
 // Can be done by parallel workers.
 while (!input_queue.empty()) {
   perform_partition(input_queue.dequeue())
