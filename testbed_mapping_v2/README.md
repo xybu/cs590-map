@@ -67,6 +67,10 @@ For each PM we form an object with the following properties:
 * `pm.MIN_SWITCH_CPU_SHARE`
 * `pm.MAX_SWITCH_CPU_SHARE`
 
+A PM is "overloaded" (or "over-utilized") if ...
+
+A PM is "under-utilized" if ...
+
 ### Parameters
 
 The algorithm takes a set of parameters from user. Some adjusts the requirement tightness and some tunes the step size. Those values do not change after program is loaded. Some notable ones are:
@@ -155,6 +159,7 @@ min_cut, assignment = METIS(graph, nparts=len(pms_used), tpwgts=zip(switch_cap_f
 add_to_assignment_hist(pms_used, pms_excluded, switch_cpu_shares, vhost_cpu_shares, min_cut, assignment)
 
 sw_cap_usage = For each PM, sum of vertex weights of vertices assigned to the PM.
+sw_cpu_usage = For each PM `i`, the min CPU share `u` such that `pm.capacity_func(u) >= sw_cap_usage[i]`.
 vhost_cpu_usage = For each PM, sum of CPU shares needed by vertices assigned to the PM.
 
 // Calculate the weights carried by each PM.
@@ -181,6 +186,12 @@ Here we rely on the fact that capacity function of PMs reflects to some extent t
 To address a corner case in which all used PMs are overloaded yet there is at least one unused PM, the last removed (i.e., the strongest of the weaks) PM will be brought back and set sticky (thus won't be excluded once again).
 
 ```python
+unused_shares = []
+for i from 0 to len(pms_used):
+  unused_shares.append(pms_used[i].MAX_CPU_SHARE - sw_cpu_usage[i] - vhost_cpu_usage[i])
+least_used_pm = index of PM with the smallest wv+ws value.
+if sum(unused_shares) - unused_shares[least_used_pm] > sw_cpu_usage[i] + vhost_cpu_usage[i]:
+  exclude PM least_used_pm and add to queue the new input
 ```
 
 #### CPU Share Tuning
