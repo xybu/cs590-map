@@ -34,6 +34,31 @@ The numbers can be separated by spaces or tabs. Empty lines or lines starting wi
 
 ## Algorithm
 
+### About Memory Requirement
+
+Our model currently takes only CPU shares into consideration, but memory requirement can be easily added in the manner CPU requirement is fulfilled:
+
+* Add memory limit as a new constraint to METIS
+* Specify memory requirement for each vertex
+* Model the relation between memory usage and switching capacity.
+
+### Data Structure
+
+#### Capacity Function
+
+Assuming capacity functions are polynomial, we abstract capacity function as a sequence of coefficients `a_n, a_(n-1), ..., a_0`.
+Given a CPU share value `u` the capacity function returns the switching capacity that `u` shares of CPU can sustain `f(u) = a_n*u^n + a_(n-1)*u^(n-1) + ... + a_0`.
+
+#### Physical Machine
+
+For each PM we form an object with the following properties:
+
+* `pm.pm_id`: A unique identifier of the PM.
+* `pm.capacity_func`: Capacity function of the PM.
+* `pm.MAX_CPU_SHARE`
+* `pm.MIN_SWITCH_CPU_SHARE`
+* `pm.MAX_SWITCH_CPU_SHARE`
+
 ### Parameters
 
 The algorithm takes a set of parameters from user. Some adjusts the requirement tightness and some tunes the step size. Those values do not change after program is loaded. Some notable ones are:
