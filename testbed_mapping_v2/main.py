@@ -23,12 +23,13 @@ def underline(s):
 
 
 def normalize_shares(shares):
-        total = sum(shares)
-        norm_shares = [v / total for v in shares]
-        if sum(norm_shares) != 1:
-            # Add the division error to the max goal set.
-            norm_shares[norm_shares.index(max(norm_shares))] += 1 - sum(norm_shares)
-        return norm_shares
+    shares = [v if v > 0 else 1 for v in shares]
+    total = sum(shares)
+    norm_shares = [v / total for v in shares]
+    if sum(norm_shares) != 1:
+        # Add the division error to the max goal set.
+        norm_shares[norm_shares.index(max(norm_shares))] += 1 - sum(norm_shares)
+    return norm_shares
 
 
 def calculate_set_weights(graph, key, assignment):
@@ -340,6 +341,10 @@ def main():
                     vhost_cpu_deltas[i + 1] += shares_to_discard - switch_cpu_deltas[i +  1]
                     print('  Over by %d shares. Dispose %d shares to the next PM.' % (shares_over, shares_to_discard))
                 else:
+                    if pm.switch_cpu_usage + switch_cpu_deltas[i] > pm.pm.max_switch_cpu_share:
+                        switch_cpu_deltas[i] = pm.pm.max_switch_cpu_share - pm.switch_cpu_usage
+                    if switch_cpu_deltas[i] + vhost_cpu_deltas[i] + pm.cpu_share_used > pm.pm.max_cpu_share:
+                        vhost_cpu_deltas[i] = pm.pm.max_cpu_share - pm.switch_cpu_usage - switch_cpu_deltas[i] - pm.vhost_cpu_usage
                     print('  Over by %d shares. No other PM can take it.' % (shares_over))
                 prev_pm_under_utilized = False
             elif pm.is_under_utilized(total_delta):

@@ -214,7 +214,10 @@ The high-level idea is that, if a PM is overloaded, take the max it can do and s
 		2. Switch CPU share of this PM for next round will be `next_sw_share = min(max(adj_sw_share, pm.MIN_SWITCH_CPU_SHARE), pm.MAX_SWITCH_CPU_SHARE)` where `adj_sw_share = sw_cpu_usage + switch_cpu_deltas[i] - shares_over * (sw_cpu_usage / (vhost_cpu_usage + sw_cpu_usage))`. Basically we use the switch CPU usage as the base, then proportionally reduce the overused shares, and enforce the switch CPU share range.
 		3. Vhost CPU share of this PM for next round will be `vhost_cpu_usage + shares_over - (next_sw_share - sw_cpu_usage)`.
 		4. Distribute `shares_over` to `switch_cpu_deltas[i + 1]` and `vhost_cpu_deltas[i + 1]` proportionally to `sw_cpu_usage` and `vhost_cpu_usage` of the next PM.
-	2. If the PM is under-utilized after taking `total_delta` shares:
+  2. If the PM is over-utilized after ... BUT there is no next PM:
+    1. If switch CPU usage plus switch delta goes beyond MAX_SWITCH_CPU_SHARE, cap switch CPU share for next round there.
+    2. If total CPU usage plus total delta goes beyond MAX_CPU_SHARE, set vhost CPU share for next round to be MAX_CPU_SHARE minus the portion allocated to switching.
+	3. If the PM is under-utilized after taking `total_delta` shares:
 		1. Calculate the under-utilized shares `shares_under = pm.MAX_CPU_SHARE * (1 - constants.PM_UNDER_UTILIZED_THRESHOLD)) - (vhost_cpu_usage + sw_cpu_usage + total_delta)`.
 		2. Going to allocate `shares_usable = max(1, int(shares_under * (1 - constants.PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO)))` more shares to this PM. That is, at least 1 share, at most the usable portion of `shares_under`.
 		3. But if there is a previous PM and this PM is under-utilized, the `shares_usable` calculated in previous step is capped by `vhost_cpu_deltas[i - 1]` (so that the added share won't be more than any stronger PM).
@@ -247,8 +250,12 @@ for PM i in order of decreasing `wv+ws`:
   curr_usage = sw_cpu_usage[i] + vhost_cpu_usage[i]
   if using (curr_usage + total_delta) CPU shares overloads PM i:
     shares_over = total_delta + curr_usage - pm.MAX_CPU_SHARE
-    if i == len(pms_used) - 1:
-      continue // No next PM to pour shares to.
+    if i < len(pms_used) - 1:
+      if switch_cpu_usage[i] + switch_cpu_deltas[i] > pm.pm.max_switch_cpu_share:
+        switch_cpu_deltas[i] = pm.max_switch_cpu_share - pm.switch_cpu_usage
+      if switch_cpu_deltas[i] + vhost_cpu_deltas[i] + pm.cpu_share_used > pm.max_cpu_share:
+        vhost_cpu_deltas[i] = pm.max_cpu_share - switch_cpu_deltas[i] - curr_usage
+      continue
     // Decrease shares_over shares from this PM.
     sw_delta = shares_over * (sw_cpu_usage[i] / curr_usage) // Reduce this shares from switch CPU usage.
     if sw_cpu_usage[i] - sw_delta < pm.MIN_SWITCH_CPU_SHARE:
