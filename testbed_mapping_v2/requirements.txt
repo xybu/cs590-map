@@ -1,2 +1,4 @@
 inform >= 1.4.2
 networkx
+matplotlib
+git+https://github.com/pygraphviz/pygraphviz.git

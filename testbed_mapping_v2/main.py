@@ -1,8 +1,11 @@
 #!/usr/bin/python3
 
 import argparse
+import math
 import sys
 import inform
+import networkx as nx
+import matplotlib.pyplot as plt
 
 import constants
 import graph_model
@@ -38,6 +41,37 @@ def calculate_set_weights(graph, key, assignment):
     for i, pm in enumerate(assignment):
         set_weights[pm] += graph.node[i + 1][key]
     return set_weights
+
+
+def visualize_assignment(graph, assignment, outfile_path=None, show=False):
+    try:
+        edge_weights = [math.log(w) / 2.4 for (u, v, w) in graph.edges(data='weight')]
+    except:
+        edge_weights = 1
+
+    try:
+        weights = [n[1][constants.NODE_SWITCH_CAPACITY_WEIGHT_KEY] for n in graph.nodes(data=True)]
+        sizes = [math.pow(w, 0.55) * 6 for w in weights]
+    except KeyError:
+        weights = NODE_DEFAULT_WEIGHT
+        sizes = weights
+
+    fig = plt.figure()
+    # plt.title("Visualization of \"%s\"" % args.path, {'fontweight': 'bold'})
+    plt.axis('off')
+    pos = nx.nx_agraph.graphviz_layout(graph)
+
+    nx.draw_networkx_nodes(graph, pos, node_size=sizes, node_color=assignment, cmap=plt.get_cmap('plasma'), alpha=0.95)
+    nx.draw_networkx_edges(graph, pos, width=edge_weights, alpha=0.7)
+
+    # nx.draw(graph, pos, with_labels=False, node_color=degrees, node_size=weights, cmap=plt.get_cmap('viridis'))
+    fig.tight_layout()
+    if outfile_path is not None:
+        for fmt in ('svg', 'pdf'):
+            plt.savefig(outfile_path + '.' + fmt, transparent=True, bbox_inches='tight', format=fmt, pad_inches=-0.4)
+    if show:
+        plt.show()
+    plt.close()
 
 
 class AssignmentRecord:
@@ -170,6 +204,7 @@ def main():
     parser.add_argument('-g', '--graph-file', type=str, required=True, help='File to read input graph from.')
     parser.add_argument('-p', '--pm-file', type=str, required=True, help='File to read PM information.')
     parser.add_argument('-c', '--vhost-cpu-file', type=str, required=True, help='File to read vhost CPU information.')
+    parser.add_argument('-o', '--out', type=str, required=False, default=None, help='If given, will generate output files to this dir.')
     args = parser.parse_args()
 
     print(args)
@@ -432,6 +467,12 @@ def main():
 
     for a in assignment_hist:
         print(a)
+        if args.out is not None:
+            outfile_prefix = args.out + '/assignment_' + str(a.assignment_id)
+            with open(outfile_prefix + '.txt', 'w') as f:
+                f.write('\n'.join([str(v) for v in a.assignment]) + '\n')
+            # Graph files will be prefix + {.svg|.pdf}.
+            visualize_assignment(graph, a.assignment, outfile_path=outfile_prefix)
         print()
 
     print('Best assignment out of %d candidates is...' % len(assignment_hist))

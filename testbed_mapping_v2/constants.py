@@ -37,4 +37,4 @@ PM_UNDER_UTILIZED_THRESHOLD = 0.1
 PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO = 0.7
 
 # We consider the PM to be over-utilized if total CPU share needed on the PM is 10% more than its maximum.
-PM_OVER_UTILIZED_THRESHOLD = 0.1
+PM_OVER_UTILIZED_THRESHOLD = 0.03
