@@ -19,10 +19,10 @@ NODE_CPU_WEIGHT_KEY = 'cpu'
 # We allow for some delta so that
 # (1) graph shape helps reduce search space and
 # (2) resource limit fits graph shape better.
-SWITCH_CAPACITY_IMBALANCE_FACTOR = 0.1
+SWITCH_CAPACITY_IMBALANCE_FACTOR = 0.02
 
 # To what extent do we allow for imbalance on CPU constraint? +/- 15%.
-VHOST_CPU_IMBALANCE_FACTOR = 0.15
+VHOST_CPU_IMBALANCE_FACTOR = 0.1
 
 # Switch CPU shares that will be assigned to every PMs in the first round.
 INIT_SWITCH_CPU_SHARES = 20
@@ -37,4 +37,4 @@ PM_UNDER_UTILIZED_THRESHOLD = 0.1
 PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO = 0.7
 
 # We consider the PM to be over-utilized if total CPU share needed on the PM is 10% more than its maximum.
-PM_OVER_UTILIZED_THRESHOLD = 0.03
+PM_OVER_UTILIZED_THRESHOLD = 0.05

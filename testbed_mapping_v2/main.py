@@ -2,6 +2,8 @@
 
 import argparse
 import math
+import operator
+import functools
 import sys
 import inform
 import networkx as nx
@@ -87,6 +89,8 @@ class AssignmentRecord:
         self.used_cpu_shares = used_cpu_shares
         self.vhost_cpu_usage = vhost_cpu_usage
         self.assignment = assignment
+        self.overused_pms = 0
+        self.underused_pms = 0
 
     def __repr__(self):
         s = underline('Assignment %d\n' % self.assignment_id)
@@ -95,8 +99,10 @@ class AssignmentRecord:
         for i, pm in enumerate(self.machines_used):
             if self.used_cpu_shares[i] > pm.max_cpu_share * (1 + constants.PM_OVER_UTILIZED_THRESHOLD):
                 f = emphasize_overused_pm
+                self.overused_pms += 1
             elif self.used_cpu_shares[i] < pm.max_cpu_share * (1 - constants.PM_UNDER_UTILIZED_THRESHOLD):
                 f = emphasize_underused_pm
+                self.underused_pms += 1
             else:
                 f = emphasize_used_pm
             s += '    ' + f(pm) + '\n'
@@ -110,10 +116,6 @@ class AssignmentRecord:
             if i % 20 == 19:
                 s += '\n    '
         return s.strip()
-
-    @staticmethod
-    def cmp_key(a):
-        return a.min_cut
 
 
 class MachineUsageResult:
@@ -477,7 +479,7 @@ def main():
 
     print('Best assignment out of %d candidates is...' % len(assignment_hist))
     print()
-    best_assignment = sorted(assignment_hist, key=AssignmentRecord.cmp_key)[0]
+    best_assignment = sorted(assignment_hist, key=operator.attrgetter('overused_pms', 'min_cut'))[0]
     print(best_assignment)
 
 

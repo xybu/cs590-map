@@ -305,7 +305,13 @@ The normalization step converts absolute values to fractions, which scales avail
 
 ### Best Assignment Determination
 
-The program stops when input queue becomes empty. Then the program picks the best assignment. Currently the criteria is min edge cut. This works well in practice because
+The program stops when input queue becomes empty. Then the program picks the best assignment. User can specify how assignments are ranked by weighing in the following factors:
+
+* Number of PMs over-utilized.
+* Number of PMs under-utilized.
+* Min cut.
+
+We observe that
 
 * Assignments with more PMs used tend to have larger edge cut values (because there are more sets).
 * Even if the assignment overloads some PM, the degree is usually acceptable and adjustable (by using conservative over-utilization threshold).
