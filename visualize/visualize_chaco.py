@@ -13,6 +13,7 @@ indicates larger weight.
 """
 
 import argparse
+import math
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -88,6 +89,8 @@ def main():
         'path', metavar='path', type=str, help='Path to the Chaco graph input.')
     parser.add_argument('--save', metavar='format', type=str, default=None,
                         help='Save the image in the specified format (png, svg, pdf). Do not save if not specified.')
+    parser.add_argument('--no-show', '-n', default=False, action='store_true',
+						help='If present, only save the plot and do not show it in a new window.')
     args = parser.parse_args()
     if args.save is not None and args.save.lower() not in SUPPORTED_SAVE_FORMAT:
         raise Exception('Error: unsupported save format "%s".' % args.save)
@@ -100,29 +103,33 @@ def main():
 
     try:
         weights = [n[1][NODE_WEIGHT_KEY] for n in graph.nodes(data=True)]
+        sizes = [math.pow(w, 0.55) * 6 for w in weights]
     except KeyError:
         weights = NODE_DEFAULT_WEIGHT
+        sizes = weights
 
     try:
-        edge_weights = [w/10+0.1 for (u, v, w) in graph.edges(data='weight')]
+        edge_weights = [math.log(w) / 2.4 for (u, v, w) in graph.edges(data='weight')]
         print(edge_weights)
     except:
         edge_weights = 1
 
-    plt.figure(figsize=(12, 9))
-    plt.title("Visualization of \"%s\"" % args.path, {'fontweight': 'bold'})
+    fig = plt.figure()
+    # plt.title("Visualization of \"%s\"" % args.path, {'fontweight': 'bold'})
     plt.axis('off')
     pos = nx.nx_agraph.graphviz_layout(graph)
 
     nx.draw_networkx_nodes(graph, pos,
-        node_size=weights, node_color=degrees, cmap=plt.get_cmap('viridis'), alpha=0.95)
+        node_size=sizes, node_color=degrees, cmap=plt.get_cmap('plasma'), alpha=0.95)
     nx.draw_networkx_edges(graph, pos, width=edge_weights, alpha=0.7)
 
     # nx.draw(graph, pos, with_labels=False, node_color=degrees, node_size=weights, cmap=plt.get_cmap('viridis'))
+    fig.tight_layout()
     if args.save is not None:
         plt.savefig(args.path + '.' + args.save, transparent=True,
-                    bbox_inches='tight', format=args.save)
-    plt.show()
+                    bbox_inches='tight', format=args.save, pad_inches=-0.4)
+    if not args.no_show:
+    	plt.show()
 
 
 if __name__ == '__main__':
