@@ -250,7 +250,7 @@ for PM i in order of decreasing `wv+ws`:
   curr_usage = sw_cpu_usage[i] + vhost_cpu_usage[i]
   if using (curr_usage + total_delta) CPU shares overloads PM i:
     shares_over = total_delta + curr_usage - pm.MAX_CPU_SHARE
-    if i < len(pms_used) - 1:
+    if i == len(pms_used) - 1:
       if switch_cpu_usage[i] + switch_cpu_deltas[i] > pm.pm.max_switch_cpu_share:
         switch_cpu_deltas[i] = pm.max_switch_cpu_share - pm.switch_cpu_usage
       if switch_cpu_deltas[i] + vhost_cpu_deltas[i] + pm.cpu_share_used > pm.max_cpu_share:
