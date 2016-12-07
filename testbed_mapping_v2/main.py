@@ -275,12 +275,16 @@ def main():
         print('sw_cap_shares: ' + str(switch_cap_shares))
         print('vh_cpu_shares: ' + str(vhost_cpu_shares))
 
-        min_cut, assignment = metis.part_graph(metis_graph,
-                                               nparts=len(machines_used),
-                                               tpwgts=list(zip(norm_switch_cap_shares, norm_vhost_cpu_shares)),
-                                               ubvec=imbalance_vec,
-                                               recursive=False)
-                                               # dbglvl=metis.mdbglvl_et.METIS_DBG_ALL)
+        if len(machines_used) == 1:
+            min_cut = 0
+            assignment = [0] * graph.number_of_nodes()
+        else:
+            min_cut, assignment = metis.part_graph(metis_graph,
+                                                   nparts=len(machines_used),
+                                                   tpwgts=list(zip(norm_switch_cap_shares, norm_vhost_cpu_shares)),
+                                                  ubvec=imbalance_vec,
+                                                 recursive=False)
+                                                  # dbglvl=metis.mdbglvl_et.METIS_DBG_ALL)
 
         print('min_cut:       ' + str(min_cut))
         # print(assignment)
@@ -433,7 +437,7 @@ def main():
         vhost_cpu_shares = vhost_cpu_shares_new
 
         # Try another round if any of the following conditions are met:
-        if (
+        if len(machines_used) > 0 and (
                 # This is the first round.
                 prev_assignment is None or
                 # This round reduces edge cut (usually a sign of better partition). Maybe we can improve in next round.

@@ -227,7 +227,7 @@ The high-level idea is that, if a PM is overloaded, take the max it can do and s
 		1. `next_sw_share = sw_cpu_usage + switch_cpu_deltas[i]` and enforce range limit.
 		2. `next_vhost_share = vhost_cpu_usage + vhost_cpu_deltas[i]`.
 
-After the adjustment, the new input will be added to input queue if
+After the adjustment, the new input will be added to input queue if at least two PMs are chosen AND
 
 1. It's the first iteration (parent assignment is NULL).
 2. The input signature has not been tried before.
@@ -289,7 +289,7 @@ for i from 0 to len(pms_used):
   vhost_cpu_shares[i] = vhost_cpu_usage[i] + vhost_cpu_deltas[i]
 
 if (prev_assignment is None or
-    the new input is not tried before):
+    the new input is not tried before and there are at least two PMs chosen):
   add_new_input_to_queue().
 ```
 
