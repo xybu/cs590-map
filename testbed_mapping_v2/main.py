@@ -55,7 +55,7 @@ def visualize_assignment(graph, assignment, outfile_path=None, show=False):
         weights = [n[1][constants.NODE_SWITCH_CAPACITY_WEIGHT_KEY] for n in graph.nodes(data=True)]
         sizes = [math.pow(w, 0.55) * 6 for w in weights]
     except KeyError:
-        weights = NODE_DEFAULT_WEIGHT
+        weights = 50
         sizes = weights
 
     fig = plt.figure()
@@ -76,6 +76,18 @@ def visualize_assignment(graph, assignment, outfile_path=None, show=False):
     plt.close()
 
 
+def calc_switch_cpu_usage(pm, switch_cap_usage, switch_cpu_share=None):
+    if switch_cpu_share is None:
+        actual_switch_cpu_share_needed = pm.max_switch_cpu_share
+    else:
+        actual_switch_cpu_share_needed = switch_cpu_share
+    while pm.capacity_func.eval(actual_switch_cpu_share_needed) > switch_cap_usage:
+        actual_switch_cpu_share_needed -= 1
+    while pm.capacity_func.eval(actual_switch_cpu_share_needed) < switch_cap_usage:
+        actual_switch_cpu_share_needed += 1
+    return max(actual_switch_cpu_share_needed, pm.min_switch_cpu_share)
+
+
 class AssignmentRecord:
 
     def __init__(self, assignment_id, min_cut, machines_used, machines_unused,
@@ -93,7 +105,7 @@ class AssignmentRecord:
         self.underused_pms = 0
 
     def __repr__(self):
-        s = underline('Assignment %d\n' % self.assignment_id)
+        s = underline('Assignment ' + str(self.assignment_id) + '\n')
         s += '  Min cut: %d\n' % self.min_cut
         s += '  Machines used:\n'
         for i, pm in enumerate(self.machines_used):
@@ -142,12 +154,12 @@ class MachineUsageResult:
         self.total_vertex_weight = total_vertex_weight
         self.total_cpu_weight = total_cpu_weight
         # Could have used binary search here.
-        actual_switch_cpu_share_needed = switch_cpu_share
-        while pm.capacity_func.eval(actual_switch_cpu_share_needed) > switch_cap_usage:
-            actual_switch_cpu_share_needed -= 1
-        while pm.capacity_func.eval(actual_switch_cpu_share_needed) < switch_cap_usage:
-            actual_switch_cpu_share_needed += 1
-        self.switch_cpu_usage = max(actual_switch_cpu_share_needed, pm.min_switch_cpu_share)
+        # actual_switch_cpu_share_needed = switch_cpu_share
+        # while pm.capacity_func.eval(actual_switch_cpu_share_needed) > switch_cap_usage:
+        #     actual_switch_cpu_share_needed -= 1
+        # while pm.capacity_func.eval(actual_switch_cpu_share_needed) < switch_cap_usage:
+        #     actual_switch_cpu_share_needed += 1
+        self.switch_cpu_usage = calc_switch_cpu_usage(pm, switch_cap_usage, switch_cpu_share)
 
     @property
     def cpu_share_used(self):
