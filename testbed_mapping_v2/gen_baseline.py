@@ -69,7 +69,7 @@ def gen_partition(assignment_id, assignment_title, args, graph, machines, node_w
     print()
 
     if args.out is not None:
-        outfile_prefix = args.out + '/assignment_' + str(assignment_id)
+        outfile_prefix = args.out + '/assignment_' + str(assignment_id) + '_%dPMs' % total_machines
         with open(outfile_prefix + '.txt', 'w') as f:
             f.write('\n'.join([str(v) for v in assignment]) + '\n')
         # Graph files will be prefix + {.svg|.pdf}.
@@ -127,6 +127,11 @@ def main():
     # Partitioning according to max cpu share.
     gen_partition('MAX_CPU_SHARE', 'MAX_CPU_SHARE Partitioning', args, graph, machines,
                   (constants.NODE_CPU_WEIGHT_KEY), normalize_shares([pm.max_cpu_share for pm in machines]),
+                  total_vertex_weight, total_vhost_cpu_weight)
+
+    # Partitioning based on 60% capacity.
+    gen_partition('C60_CAPACITY', 'C(60%) Partitioning', args, graph, machines,
+                  (constants.NODE_CPU_WEIGHT_KEY), normalize_shares([pm.capacity_func.eval(60) for pm in machines]),
                   total_vertex_weight, total_vhost_cpu_weight)
 
 
