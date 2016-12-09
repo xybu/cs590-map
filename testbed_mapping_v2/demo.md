@@ -100,9 +100,7 @@ It takes 3 iterations for our program to stop. It picks all PMs and give a min c
 
 ![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/1221-1053rnd-3pms/assignment_0.svg)
 
-Result of balanced partitioning:
-
-![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/1221-1053rnd-3pms/assignment_BALANCED_3PMs.svg)
+Graph of balanced partitioning is the same as that of balanced partitioning in previous case.
 
 Result of MAX_CPU_SHARE partitioning:
 
@@ -123,7 +121,7 @@ Result of C(90%) partitioning:
 
 We see that there is a PM heavily overloaded in balanced partitioning (BAL) and C(90%) partitioning (C90) -- utilization of PM #0 in BAL exceeds its maximum by 82% and utilization of PM #2 in C90 exceeds by 58%. BAL fails because it does not consider the performance discrepancy of PMs and C90 fails because it over-estimates the performance discrepancy. By contrast, our partition deals with lack of resource by overloading PM #0 by about 12%, and PM #1 by 18%, and PM #2 by 20%, which should have smaller impact on fidelity in general.
 
-Although it may depend on the actual experiment to determine whether or not our partition is better than MAX_CPU_SHARE partition (MCS), our partition result makes more sense in that (1) it tries to avoid overloading the weakest PM because fidelity may be worse otherwise, and (2) PMs with higher performance get more load automatically, while in MCS the experimenter must first realize that the experiment can be better off by swapping the partitions on PM #1 and PM #2, then do so manually.
+Although it may depend on the actual experiment to determine whether or not our partition is better than MAX_CPU_SHARE partition (MCS), our partition result makes more sense in that (1) it tries to avoid overloading the weakest PM because fidelity may be worse otherwise, and (2) PMs with higher performance get more load automatically, while in MCS the experimenter must first realize that the experiment can be better off by swapping the partitions on PM #1 and PM #2, then do so manually. When there are more PMs involved, such kinds of "optimization-by-eyes" may become less obvious, which makes it more desirable to do so automatically.
 
 ## Jellyfish Topology
 
@@ -133,7 +131,38 @@ The topology file [`jellyfish-210sw.graph`](demo/jellyfish-210sw.graph) has a to
 
 ![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/jellyfish-210sw.graph.svg)
 
+We pick the same three PMs used in previous case:
+
+```
+<PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>   # 2core@1.20GHz
+<PM #1 | (0, 360)/390 | f(u) = 0.3728 u^2 + 116.5081 u^1 + 4188.2548 u^0>   # 4core@1.20GHz
+<PM #2 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>    # 4core@2.39GHz
+```
+
 [PM Input](demo/pms_three_scaled_by_100.txt) | [CPU Requirement Input](demo/jellyfish-210sw.694rnd.host) | [Program command](demo/jellyfish-210sw-694rnd-3pms/COMMANDS) | [Program output](demo/jellyfish-210sw-694rnd-3pms/output.txt) | [Baseline output](demo/jellyfish-210sw-694rnd-3pms/baseline.txt)
+
+### Our assignment
+
+The program takes 46 iterations and picks a partition with min cut 3660.
+
+![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/jellyfish-210sw-694rnd-3pms/assignment_30.svg)
+
+Graphs for baseline partitions are not included because the topology is intrinsically random and visualizing them does not reveal interesting patterns.
+
+#### Comparison
+
+| Partition ID | Min cut | PM #0 (2C 1.2G) | PM #1 (4C 1.2G) | PM #2 (4C 2.39G) |
+|--------------|---------|----------------|----------------|----------------|
+|     Ours     |   3660  | 15/57/72/190   | 57/299/356/390 | 35/338/373/390 |
+|  Ours (OC)   |   2980  |       -        | 64/329/393/390 | 40/365/405/390 |
+|  BAL / 3PMs  |   3940  | 48/224/272/190 | 37/229/266/390 | 25/241/266/390 |
+|  MCS / 3PMs  |   3860  | 26/133/159/190 | 49/276/325/390 | 33/285/318/390 |
+|  C90 / 3PMs  |   3460  | 17/83/100/190  | 38/221/259/390 | 43/390/433/390 |
+
+Result of balanced partitioning is not acceptable because PM #0 is overloaded by too much. While the result of MCS partition
+is good enough, our result manages to further reduce edge cut by about 5% without sacrification. C90 partition reduces edge cut  at the expense of overloading PM #2 by 11%. As in previous cases, it's up to the experimenter to decide whether a smaller edge cut is preferred to in-range workload on PMs. However, if smaller min cut is more important, by slightly relaxing the parameter controlling the degree to tolerate PM overloading, we obtain a better partition (OC) which not only achieves smaller min cut, but also eliminates PM #0, by overloading PM #1 by 0.8% and PM #2 by 3.8%. It takes 7 iterations for our program to finish.
+
+The two partitions given by our program reflects the flexibility of our algorithm to meet different priorities needed by different experiments.
 
 ## Fat Tree Topology
 
