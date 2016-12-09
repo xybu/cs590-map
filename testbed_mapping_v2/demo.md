@@ -143,9 +143,9 @@ We pick the same three PMs used in previous case:
 
 ### Our assignment
 
-The program takes 46 iterations and picks a partition with min cut 3660.
+The program takes 24 iterations and picks a partition with min cut 3400.
 
-![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/jellyfish-210sw-694rnd-3pms/assignment_30.svg)
+![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/jellyfish-210sw-694rnd-3pms/assignment_12.svg)
 
 Graphs for baseline partitions are not included because the topology is intrinsically random and visualizing them does not reveal interesting patterns.
 
@@ -153,14 +153,14 @@ Graphs for baseline partitions are not included because the topology is intrinsi
 
 | Partition ID | Min cut | PM #0 (2C 1.2G) | PM #1 (4C 1.2G) | PM #2 (4C 2.39G) |
 |--------------|---------|----------------|----------------|----------------|
-|     Ours     |   3660  | 15/57/72/190   | 57/299/356/390 | 35/338/373/390 |
+|     Ours     |   3400  | 9/30/39/190    | 59/313/372/390 | 38/351/389/390 |
 |  Ours (OC)   |   2980  |       -        | 64/329/393/390 | 40/365/405/390 |
 |  BAL / 3PMs  |   3940  | 48/224/272/190 | 37/229/266/390 | 25/241/266/390 |
 |  MCS / 3PMs  |   3860  | 26/133/159/190 | 49/276/325/390 | 33/285/318/390 |
 |  C90 / 3PMs  |   3460  | 17/83/100/190  | 38/221/259/390 | 43/390/433/390 |
 
 Result of balanced partitioning is not acceptable because PM #0 is overloaded by too much. While the result of MCS partition
-is good enough, our result manages to further reduce edge cut by about 5% without sacrification. C90 partition reduces edge cut  at the expense of overloading PM #2 by 11%. As in previous cases, it's up to the experimenter to decide whether a smaller edge cut is preferred to in-range workload on PMs. However, if smaller min cut is more important, by slightly relaxing the parameter controlling the degree to tolerate PM overloading, we obtain a better partition (OC) which not only achieves smaller min cut, but also eliminates PM #0, by overloading PM #1 by 0.8% and PM #2 by 3.8%. It takes 7 iterations for our program to finish.
+is good enough, our result manages to further reduce edge cut by about 12% without sacrification. C90 partition has edge cut close to ours but PM #2 is overloaded by 11%, while in ours no PM is overloaded. Besides, if a smaller edge cut is preferred to in-range workload on PMs, by slightly relaxing the parameter controlling the degree to tolerate PM overloading, we obtain a better partition (OC) which not only achieves smaller min cut, but also eliminates PM #0, by overloading PM #1 by 0.8% and PM #2 by 3.8%. It takes 7 iterations for our program to finish the OC partition.
 
 The two partitions given by our program reflects the flexibility of our algorithm to meet different priorities needed by different experiments.
 
