@@ -1,0 +1,3 @@
+xb@ubuntu:[~/Desktop/cs590-map/testbed_mapping_v2]: ./main.py -g demo/1221.r0.cch.abr.graph -p demo/pms_six_scaled_by_100.txt -c demo/1221.1053rnd.host -o ./demo/1221-1053rnd-6pms > demo/1221-1053rnd-6pms/output.txt
+xb@ubuntu:[~/Desktop/cs590-map/testbed_mapping_v2]: ./gen_baseline.py -g demo/1221.r0.cch.abr.graph -p demo/pms_six_scaled_by_100.txt -c demo/1221.1053rnd.host -o ./demo/1221-1053rnd-6pms > demo/1221-1053rnd-6pms/baseline.txt
+xb@ubuntu:[~/Desktop/cs590-map/testbed_mapping_v2]: ./gen_baseline.py -g demo/1221.r0.cch.abr.graph -p demo/pms_3max_scaled_by_100.txt -c demo/1221.1053rnd.host -o ./demo/1221-1053rnd-6pms > demo/1221-1053rnd-6pms/baseline_3pm.txt
