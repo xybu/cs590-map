@@ -1,0 +1,125 @@
+Namespace(graph_file='demo/fattree-151sw.graph', out='demo/fattree-151sw-567rnd-2pms', pm_file='demo/pms_two_scaled_by_100.txt', vhost_cpu_file='demo/fattree-151sw.567rnd.host')
+
+Program parameters:
+  EDGE_WEIGHT_KEY: weight
+  NODE_SWITCH_CAPACITY_WEIGHT_KEY: weight
+  NODE_CPU_WEIGHT_KEY: cpu
+  SWITCH_CAPACITY_IMBALANCE_FACTOR: 0.03
+  VHOST_CPU_IMBALANCE_FACTOR: 0.1
+  INIT_SWITCH_CPU_SHARES: 20
+  SWITCH_CPU_SHARE_UPDATE_FACTOR: 0.4
+  PM_UNDER_UTILIZED_THRESHOLD: 0.1
+  PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO: 0.7
+  PM_OVER_UTILIZED_THRESHOLD: 0.05
+
+Graph stats:
+  Number of vertices:     151
+  Number of edges:        660
+  Total edge weight:      6600
+  Total vertex weight:    13750
+  Total vhost CPU weight: 567
+
+NOTE: Capacity function of PM #0 is not defined below 2. Input fixed.
+Read 2 PMs from input:
+  <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+  <PM #1 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+
+********************************************************************************
+************************* Weight-balanced Partitioning *************************
+********************************************************************************
+
+0: <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+  Switch Used/Alloc:  CPU = 36 / 36, Cap = 6870.0000 / 6917.1291
+  Vhost  Used/Alloc:  CPU = 291 / 291
+  Overall: CPU = 327 / 190
+  Weights: sw = 0.4996, vcpu = 0.5132, total = 1.0129
+1: <PM #1 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+  Switch Used/Alloc:  CPU = 18 / 18, Cap = 6880.0000 / 6965.2108
+  Vhost  Used/Alloc:  CPU = 276 / 276
+  Overall: CPU = 294 / 390
+  Weights: sw = 0.5004, vcpu = 0.4868, total = 0.9871
+
+Assignment BALANCED
+  Min cut: 1650
+  Machines used:
+    <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+      CPU: switch_sh=36, vhost={u=291, sh=291}, total={u=327, sh=327}.
+    <PM #1 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+      CPU: switch_sh=18, vhost={u=276, sh=276}, total={u=294, sh=294}.
+  Machines excluded:
+  Assignment of nodes:
+    0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 
+    0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 
+    1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 
+    1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 
+    1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
+
+********************************************************************************
+************************** MAX_CPU_SHARE Partitioning **************************
+********************************************************************************
+
+0: <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+  Switch Used/Alloc:  CPU = 23 / 23, Cap = 4240.0000 / 4307.0381
+  Vhost  Used/Alloc:  CPU = 188 / 188
+  Overall: CPU = 211 / 190
+  Weights: sw = 0.3084, vcpu = 0.3316, total = 0.6399
+1: <PM #1 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+  Switch Used/Alloc:  CPU = 26 / 26, Cap = 9510.0000 / 9698.8502
+  Vhost  Used/Alloc:  CPU = 379 / 379
+  Overall: CPU = 405 / 390
+  Weights: sw = 0.6916, vcpu = 0.6684, total = 1.3601
+
+Assignment MAX_CPU_SHARE
+  Min cut: 1350
+  Machines used:
+    <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+      CPU: switch_sh=23, vhost={u=188, sh=188}, total={u=211, sh=211}.
+    <PM #1 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+      CPU: switch_sh=26, vhost={u=379, sh=379}, total={u=405, sh=405}.
+  Machines excluded:
+  Assignment of nodes:
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+    1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 
+    1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 
+    0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+    0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+    1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0,
+
+********************************************************************************
+****************************** C(90) Partitioning ******************************
+********************************************************************************
+
+0: <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+  Switch Used/Alloc:  CPU = 15 / 15, Cap = 2590.0000 / 2704.1690
+  Vhost  Used/Alloc:  CPU = 105 / 105
+  Overall: CPU = 120 / 190
+  Weights: sw = 0.1884, vcpu = 0.1852, total = 0.3735
+1: <PM #1 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+  Switch Used/Alloc:  CPU = 31 / 31, Cap = 11160.0000 / 11426.0965
+  Vhost  Used/Alloc:  CPU = 462 / 462
+  Overall: CPU = 493 / 390
+  Weights: sw = 0.8116, vcpu = 0.8148, total = 1.6265
+
+Assignment C90_CAPACITY
+  Min cut: 1000
+  Machines used:
+    <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+      CPU: switch_sh=15, vhost={u=105, sh=105}, total={u=120, sh=120}.
+    <PM #1 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+      CPU: switch_sh=31, vhost={u=462, sh=462}, total={u=493, sh=493}.
+  Machines excluded:
+  Assignment of nodes:
+    1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 
+    1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 
+    1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 
+    0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 
+    1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 
+    1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1,
+
