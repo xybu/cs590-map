@@ -47,12 +47,15 @@ Our program stopped searching for better assignments after 7 iterations. It elim
 Because our baselines do not eliminate unneeded PMs, we generate baseline results not only with the same PM input we give to our program, but also with only the PMs chosen by our program.
 
 Result of balanced partitioning with PMs #3-#5:
+
 ![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/1221-1053rnd-6pms/assignment_BALANCED_3PMs.svg)
 
 Result of MAX_CPU_SHARE partitioning with PMs #3-#5:
+
 ![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/1221-1053rnd-6pms/assignment_MAX_CPU_SHARE_3PMs.svg)
 
 Result of C(90%) partitioning with PMs #3-#5:
+
 ![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/1221-1053rnd-6pms/assignment_C90_CAPACITY_3PMs.svg)
 
 Graphs for 6-PMs baselines are not shown here (accessible [here](demo/1221-1053rnd-6pms)).
@@ -98,12 +101,15 @@ It takes 3 iterations for our program to stop. It picks all PMs and give a min c
 ![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/1221-1053rnd-3pms/assignment_0.svg)
 
 Result of balanced partitioning:
+
 ![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/1221-1053rnd-3pms/assignment_BALANCED_3PMs.svg)
 
 Result of MAX_CPU_SHARE partitioning:
+
 ![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/1221-1053rnd-3pms/assignment_MAX_CPU_SHARE_3PMs.svg)
 
 Result of C(90%) partitioning:
+
 ![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/1221-1053rnd-3pms/assignment_C90_CAPACITY_3PMs.svg)
 
 ### Comparison
@@ -118,3 +124,17 @@ Result of C(90%) partitioning:
 We see that there is a PM heavily overloaded in balanced partitioning (BAL) and C(90%) partitioning (C90) -- utilization of PM #0 in BAL exceeds its maximum by 82% and utilization of PM #2 in C90 exceeds by 58%. BAL fails because it does not consider the performance discrepancy of PMs and C90 fails because it over-estimates the performance discrepancy. By contrast, our partition deals with lack of resource by overloading PM #0 by about 12%, and PM #1 by 18%, and PM #2 by 20%, which should have smaller impact on fidelity in general.
 
 Although it may depend on the actual experiment to determine whether or not our partition is better than MAX_CPU_SHARE partition (MCS), our partition result makes more sense in that (1) it tries to avoid overloading the weakest PM because fidelity may be worse otherwise, and (2) PMs with higher performance get more load automatically, while in MCS the experimenter must first realize that the experiment can be better off by swapping the partitions on PM #1 and PM #2, then do so manually.
+
+## Jellyfish Topology
+
+TODO: Cite some characteristics about the topology from Jellyfish paper: [http://pbg.cs.illinois.edu/papers/jellyfish-nsdi12.pdf](http://pbg.cs.illinois.edu/papers/jellyfish-nsdi12.pdf).
+
+The topology file [`jellyfish-210sw.graph`](demo/jellyfish-210sw.graph) has a total of `210` vertices and `630` edges. Total vertex weight is `27400` and total edge weight is `12600`. The CPU share requirements we assign to vertices sum up to `694`.
+
+![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/jellyfish-210sw.graph.svg)
+
+[PM Input](demo/pms_three_scaled_by_100.txt) | [CPU Requirement Input](demo/jellyfish-210sw.694rnd.host) | [Program command](demo/jellyfish-210sw-694rnd-3pms/COMMANDS) | [Program output](demo/jellyfish-210sw-694rnd-3pms/output.txt) | [Baseline output](demo/jellyfish-210sw-694rnd-3pms/baseline.txt)
+
+## Fat Tree Topology
+
+TBA.
