@@ -166,4 +166,48 @@ The two partitions given by our program reflects the flexibility of our algorith
 
 ## Fat Tree Topology
 
-TBA.
+Fat-tree topology (intro here: http://courses.csail.mit.edu/6.896/spring04/handouts/papers/fat_trees.pdf)
+
+The topology file [`fattree-151sw.graph`](demo/fattree-151sw.graph) has a total of `151` vertices and `660` edges. Total vertex weight is `13750` and total edge weight is `6600`. The total CPU share requirement by vertices is `567`.
+
+![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/fattree-151sw.graph.svg)
+
+This time we pick the least and most powerful PMs on our list:
+
+```
+<PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>   # 2core@1.20GHz
+<PM #1 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>    # 4core@2.39GHz
+```
+
+[PM Input](demo/pms_two_scaled_by_100.txt) | [CPU Requirement Input](demo/fattree-151sw.567rnd.host) | [Program command](demo/fattree-151sw-567rnd-2pms/COMMANDS) | [Program output](demo/fattree-151sw-567rnd-2pms/output.txt) | [Baseline output](demo/fattree-151sw-567rnd-2pms/baseline.txt)
+
+### Our assignment
+
+Our program stops after 7 iterations and the min cut is 1370. It also indicates that this setup does not have enough CPU resource
+even though the number of CPU shares needed by vertices (567) is smaller than the sum of max CPU shares of PMs (600).
+
+![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/fattree-151sw-567rnd-2pms/assignment_0.svg)
+
+Result of balanced partitioning:
+
+![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/fattree-151sw-567rnd-2pms/assignment_BALANCED_2PMs.svg)
+
+Result of MAX_CPU_SHARE partitioning:
+
+![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/fattree-151sw-567rnd-2pms/assignment_MAX_CPU_SHARE_2PMs.svg)
+
+Result of C(90%) partitioning:
+
+![](https://rawgithub.com/xybu/cs590-map/master/testbed_mapping_v2/demo/fattree-151sw-567rnd-2pms/assignment_C90_CAPACITY_2PMs.svg)
+
+
+### Comparison
+
+| Partition ID | Min cut | PM #0 (2C 1.2G) | PM #1 (4C 2.39G) |
+|--------------|---------|----------------|----------------|
+|     Ours     |   1370  | 24/169/193/190 | 26/398/424/390 |
+|      BAL     |   1650  | 36/291/327/190 | 18/276/294/390 |
+|      MCS     |   1350  | 23/188/211/190 | 26/379/405/390 |
+|      C90     |   1000  | 15/105/120/190 | 31/462/493/390 |
+
+C90 partition gives the smallest min cut yet PM #1 is heavily overloaded while PM #0 is under-utilized. BAL partition does well in neither min cut nor load allocation (either set will overload PM #0 and neither set saturates PM #1). As for MCS and our partition result, MCS overloads PM #0 by 11% and PM #1 by 4% while ours overloads PM #0 by 2% and PM #1 by 8%. Depending on the actual experiment to conduct the effect of those two overload schemes may or may not vary, but in general we prefer the more powerful PM to take more load when resource is not enough.
