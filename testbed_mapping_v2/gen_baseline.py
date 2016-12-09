@@ -129,9 +129,9 @@ def main():
                   (constants.NODE_CPU_WEIGHT_KEY), normalize_shares([pm.max_cpu_share for pm in machines]),
                   total_vertex_weight, total_vhost_cpu_weight)
 
-    # Partitioning based on 60% capacity.
-    gen_partition('C60_CAPACITY', 'C(60%) Partitioning', args, graph, machines,
-                  (constants.NODE_CPU_WEIGHT_KEY), normalize_shares([pm.capacity_func.eval(60) for pm in machines]),
+    # Partitioning based on 90% capacity.
+    gen_partition('C90_CAPACITY', 'C(90) Partitioning', args, graph, machines,
+                  (constants.NODE_CPU_WEIGHT_KEY), normalize_shares([pm.capacity_func.eval(0.9 * pm.max_cpu_share) for pm in machines]),
                   total_vertex_weight, total_vhost_cpu_weight)
 
 
