@@ -1,0 +1,336 @@
+Namespace(graph_file='demo/1221.r0.cch.abr.graph', out='./demo/1221-1053rnd-3pms', pm_file='demo/pms_three_scaled_by_100.txt', vhost_cpu_file='demo/1221.1053rnd.host')
+
+Program parameters:
+  EDGE_WEIGHT_KEY: weight
+  NODE_SWITCH_CAPACITY_WEIGHT_KEY: weight
+  NODE_CPU_WEIGHT_KEY: cpu
+  SWITCH_CAPACITY_IMBALANCE_FACTOR: 0.02
+  VHOST_CPU_IMBALANCE_FACTOR: 0.1
+  INIT_SWITCH_CPU_SHARES: 20
+  SWITCH_CPU_SHARE_UPDATE_FACTOR: 0.4
+  PM_UNDER_UTILIZED_THRESHOLD: 0.1
+  PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO: 0.7
+  PM_OVER_UTILIZED_THRESHOLD: 0.05
+
+Graph stats:
+  Number of vertices:     318
+  Number of edges:        758
+  Total edge weight:      11540
+  Total vertex weight:    23080
+  Total vhost CPU weight: 1053
+
+NOTE: Capacity function of PM #0 is not defined below 2. Input fixed.
+Read 3 PMs from input:
+  <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+  <PM #1 | (0, 360)/390 | f(u) = 0.3728 u^2 + 116.5081 u^1 + 4188.2548 u^0>
+  <PM #2 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+
+********************************************************************************
+********************************  Assignment 0  ********************************
+********************************************************************************
+
+sw_cpu_shares: [20, 20, 20]
+sw_cap_shares: [3705.6639098800006, 6667.548201999999, 7645.164306600001]
+vh_cpu_shares: [170, 370, 370]
+min_cut:       670
+
+PM Elimination Phase:
+  Target PM: #0, sticky=False
+  Total free CPU shares: -148
+  Shares covered by PM:  212
+  No PM can be excluded from next round.
+
+Share Adjustment Phase:
+2: <PM #2 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+  Switch Used/Alloc:  CPU = 27 / 20, Cap = 9850.0000 / 7645.1643
+  Vhost  Used/Alloc:  CPU = 440 / 370
+  Overall: CPU = 467 / 390
+  Weights: sw = 0.4268, vcpu = 0.4179, total = 0.8446
+  Over by 77 shares. Dispose 77 shares to the next PM.
+  Switch deltas: [-4, 5, 0]
+  Vhost deltas:  [-73, 72, 0]
+1: <PM #1 | (0, 360)/390 | f(u) = 0.3728 u^2 + 116.5081 u^1 + 4188.2548 u^0>
+  Switch Used/Alloc:  CPU = 35 / 20, Cap = 8610.0000 / 6667.5482
+  Vhost  Used/Alloc:  CPU = 426 / 370
+  Overall: CPU = 461 / 390
+  Weights: sw = 0.3731, vcpu = 0.4046, total = 0.7776
+  Over by 148 shares. Dispose 148 shares to the next PM.
+  Switch deltas: [-4, -6, 17]
+  Vhost deltas:  [-73, -65, 131]
+0: <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+  Switch Used/Alloc:  CPU = 25 / 20, Cap = 4620.0000 / 3705.6639
+  Vhost  Used/Alloc:  CPU = 187 / 170
+  Overall: CPU = 212 / 190
+  Weights: sw = 0.2002, vcpu = 0.1776, total = 0.3778
+  Over by 170 shares. No other PM can take it.
+  Switch deltas: [-4, -6, 17]
+  Vhost deltas:  [-73, -65, -39]
+
+
+********************************************************************************
+********************************  Assignment 1  ********************************
+********************************************************************************
+
+sw_cpu_shares: [42, 29, 23]
+sw_cap_shares: [8124.053405540801, 7880.5378283049995, 8669.415006531]
+vh_cpu_shares: [148, 361, 367]
+min_cut:       1800
+
+PM Elimination Phase:
+  Target PM: #0, sticky=False
+  Total free CPU shares: -130
+  Shares covered by PM:  231
+  No PM can be excluded from next round.
+
+Share Adjustment Phase:
+2: <PM #2 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+  Switch Used/Alloc:  CPU = 22 / 23, Cap = 8240.0000 / 8669.4150
+  Vhost  Used/Alloc:  CPU = 471 / 367
+  Overall: CPU = 493 / 390
+  Weights: sw = 0.3570, vcpu = 0.4473, total = 0.8043
+  Over by 103 shares. Dispose 103 shares to the next PM.
+  Switch deltas: [-4, 6, 0]
+  Vhost deltas:  [-99, 97, 0]
+1: <PM #1 | (0, 360)/390 | f(u) = 0.3728 u^2 + 116.5081 u^1 + 4188.2548 u^0>
+  Switch Used/Alloc:  CPU = 27 / 29, Cap = 7510.0000 / 7880.5378
+  Vhost  Used/Alloc:  CPU = 390 / 361
+  Overall: CPU = 417 / 390
+  Weights: sw = 0.3254, vcpu = 0.3704, total = 0.6958
+  Over by 130 shares. Dispose 130 shares to the next PM.
+  Switch deltas: [-4, -2, 21]
+  Vhost deltas:  [-99, -25, 109]
+0: <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+  Switch Used/Alloc:  CPU = 39 / 42, Cap = 7330.0000 / 8124.0534
+  Vhost  Used/Alloc:  CPU = 192 / 148
+  Overall: CPU = 231 / 190
+  Weights: sw = 0.3176, vcpu = 0.1823, total = 0.4999
+  Over by 171 shares. No other PM can take it.
+  Switch deltas: [-4, -2, 21]
+  Vhost deltas:  [-99, -25, -62]
+
+
+********************************************************************************
+********************************  Assignment 2  ********************************
+********************************************************************************
+
+sw_cpu_shares: [60, 25, 18]
+sw_cap_shares: [11753.416604920001, 7333.974805624999, 6965.210768035999]
+vh_cpu_shares: [130, 365, 372]
+min_cut:       2180
+
+PM Elimination Phase:
+  Target PM: #0, sticky=False
+  Total free CPU shares: -119
+  Shares covered by PM:  244
+  No PM can be excluded from next round.
+
+Share Adjustment Phase:
+1: <PM #1 | (0, 360)/390 | f(u) = 0.3728 u^2 + 116.5081 u^1 + 4188.2548 u^0>
+  Switch Used/Alloc:  CPU = 30 / 25, Cap = 7920.0000 / 7333.9748
+  Vhost  Used/Alloc:  CPU = 442 / 365
+  Overall: CPU = 472 / 390
+  Weights: sw = 0.3432, vcpu = 0.4198, total = 0.7629
+  Over by 82 shares. Dispose 82 shares to the next PM.
+  Switch deltas: [-5, 3, 0]
+  Vhost deltas:  [-77, 79, 0]
+2: <PM #2 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+  Switch Used/Alloc:  CPU = 20 / 18, Cap = 7470.0000 / 6965.2108
+  Vhost  Used/Alloc:  CPU = 407 / 372
+  Overall: CPU = 427 / 390
+  Weights: sw = 0.3237, vcpu = 0.3865, total = 0.7102
+  Over by 119 shares. Dispose 119 shares to the next PM.
+  Switch deltas: [-5, -2, 19]
+  Vhost deltas:  [-77, -35, 100]
+0: <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+  Switch Used/Alloc:  CPU = 40 / 60, Cap = 7690.0000 / 11753.4166
+  Vhost  Used/Alloc:  CPU = 204 / 130
+  Overall: CPU = 244 / 190
+  Weights: sw = 0.3332, vcpu = 0.1937, total = 0.5269
+  Over by 173 shares. No other PM can take it.
+  Switch deltas: [-5, -2, 19]
+  Vhost deltas:  [-77, -35, -73]
+
+
+********************************************************************************
+********************************  Assignment 3  ********************************
+********************************************************************************
+
+sw_cpu_shares: [59, 25, 18]
+sw_cap_shares: [11551.447269923201, 7333.974805624999, 6965.210768035999]
+vh_cpu_shares: [131, 365, 372]
+min_cut:       2290
+
+PM Elimination Phase:
+  Target PM: #0, sticky=False
+  Total free CPU shares: -121
+  Shares covered by PM:  242
+  No PM can be excluded from next round.
+
+Share Adjustment Phase:
+1: <PM #1 | (0, 360)/390 | f(u) = 0.3728 u^2 + 116.5081 u^1 + 4188.2548 u^0>
+  Switch Used/Alloc:  CPU = 30 / 25, Cap = 7920.0000 / 7333.9748
+  Vhost  Used/Alloc:  CPU = 442 / 365
+  Overall: CPU = 472 / 390
+  Weights: sw = 0.3432, vcpu = 0.4198, total = 0.7629
+  Over by 82 shares. Dispose 82 shares to the next PM.
+  Switch deltas: [-5, 3, 0]
+  Vhost deltas:  [-77, 79, 0]
+2: <PM #2 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+  Switch Used/Alloc:  CPU = 20 / 18, Cap = 7520.0000 / 6965.2108
+  Vhost  Used/Alloc:  CPU = 409 / 372
+  Overall: CPU = 429 / 390
+  Weights: sw = 0.3258, vcpu = 0.3884, total = 0.7142
+  Over by 121 shares. Dispose 121 shares to the next PM.
+  Switch deltas: [-5, -2, 20]
+  Vhost deltas:  [-77, -37, 101]
+0: <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+  Switch Used/Alloc:  CPU = 40 / 59, Cap = 7640.0000 / 11551.4473
+  Vhost  Used/Alloc:  CPU = 202 / 131
+  Overall: CPU = 242 / 190
+  Weights: sw = 0.3310, vcpu = 0.1918, total = 0.5229
+  Over by 173 shares. No other PM can take it.
+  Switch deltas: [-5, -2, 20]
+  Vhost deltas:  [-77, -37, -72]
+
+
+Assignment 0
+  Min cut: 670
+  Machines used:
+    <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+      CPU: switch_sh=20, vhost={u=187, sh=170}, total={u=212, sh=190}.
+    <PM #1 | (0, 360)/390 | f(u) = 0.3728 u^2 + 116.5081 u^1 + 4188.2548 u^0>
+      CPU: switch_sh=20, vhost={u=426, sh=370}, total={u=461, sh=390}.
+    <PM #2 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+      CPU: switch_sh=20, vhost={u=440, sh=370}, total={u=467, sh=390}.
+  Machines excluded:
+  Assignment of nodes:
+    1, 2, 1, 2, 2, 2, 2, 1, 0, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+    1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 
+    1, 1, 1, 1, 0, 2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 
+    2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 2, 0, 2, 2, 2, 1, 
+    1, 1, 2, 2, 0, 1, 2, 2, 2, 0, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 
+    2, 2, 2, 0, 1, 2, 1, 0, 0, 1, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 
+    0, 0, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 
+    1, 2, 1, 1, 0, 0, 2, 2, 1, 0, 0, 1, 2, 2, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 1, 1, 2, 0, 1, 1, 1, 2, 1, 2, 2, 2, 0, 0, 0, 0, 1, 
+    0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 
+    1, 1, 1, 1, 0, 2, 0, 0, 0, 0, 0, 0, 2, 1, 2, 2, 2, 2, 2, 2, 
+    1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 1, 2, 2, 0, 2, 1, 0, 2, 
+    1, 1, 1, 1, 1, 1, 1, 1, 2, 0, 1, 2, 2, 1, 2, 2, 2, 1, 1, 1, 
+    1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 1, 0, 2, 0, 0, 0, 0, 1, 
+    1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 
+    1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 2, 2, 0, 2, 2, 2, 2,
+
+Assignment 1
+  Min cut: 1800
+  Machines used:
+    <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+      CPU: switch_sh=42, vhost={u=192, sh=148}, total={u=231, sh=190}.
+    <PM #1 | (0, 360)/390 | f(u) = 0.3728 u^2 + 116.5081 u^1 + 4188.2548 u^0>
+      CPU: switch_sh=29, vhost={u=390, sh=361}, total={u=417, sh=390}.
+    <PM #2 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+      CPU: switch_sh=23, vhost={u=471, sh=367}, total={u=493, sh=390}.
+  Machines excluded:
+  Assignment of nodes:
+    1, 2, 1, 2, 0, 0, 0, 2, 0, 0, 0, 1, 1, 1, 1, 0, 2, 1, 1, 1, 
+    1, 1, 2, 1, 0, 0, 1, 2, 2, 0, 2, 2, 2, 2, 2, 1, 2, 2, 0, 0, 
+    2, 2, 1, 2, 0, 2, 1, 1, 0, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 
+    2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 2, 1, 
+    1, 1, 2, 2, 0, 2, 2, 2, 0, 0, 1, 0, 2, 2, 0, 1, 1, 0, 1, 0, 
+    0, 0, 0, 0, 1, 0, 2, 2, 2, 1, 0, 2, 1, 1, 1, 2, 2, 2, 2, 2, 
+    2, 2, 0, 1, 1, 1, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 
+    1, 0, 1, 1, 0, 0, 0, 0, 1, 2, 2, 1, 2, 0, 2, 2, 2, 2, 2, 2, 
+    2, 2, 0, 1, 1, 2, 2, 2, 1, 1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 2, 1, 1, 0, 1, 2, 1, 1, 1, 1, 
+    1, 1, 1, 1, 2, 0, 2, 2, 2, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 
+    2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 1, 0, 2, 0, 0, 1, 0, 0, 
+    1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 
+    1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 1, 
+    1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 
+    1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 2, 2, 0, 0,
+
+Assignment 2
+  Min cut: 2180
+  Machines used:
+    <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+      CPU: switch_sh=60, vhost={u=204, sh=130}, total={u=244, sh=190}.
+    <PM #1 | (0, 360)/390 | f(u) = 0.3728 u^2 + 116.5081 u^1 + 4188.2548 u^0>
+      CPU: switch_sh=25, vhost={u=442, sh=365}, total={u=472, sh=390}.
+    <PM #2 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+      CPU: switch_sh=18, vhost={u=407, sh=372}, total={u=427, sh=390}.
+  Machines excluded:
+  Assignment of nodes:
+    2, 2, 1, 1, 0, 0, 0, 1, 0, 0, 1, 2, 2, 0, 2, 0, 1, 2, 1, 2, 
+    1, 2, 2, 2, 0, 0, 2, 2, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 
+    1, 1, 1, 1, 0, 1, 1, 2, 0, 1, 0, 2, 2, 2, 0, 1, 1, 1, 1, 1, 
+    1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 0, 
+    2, 2, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 2, 0, 
+    0, 0, 0, 0, 2, 0, 1, 2, 2, 1, 0, 2, 1, 1, 1, 2, 2, 2, 2, 2, 
+    2, 2, 0, 2, 2, 2, 0, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 
+    1, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 1, 1, 0, 2, 2, 2, 2, 2, 2, 
+    2, 2, 0, 0, 2, 2, 2, 1, 2, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 2, 2, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 
+    2, 1, 1, 2, 2, 0, 2, 2, 2, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 
+    1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 2, 0, 0, 
+    2, 1, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1, 
+    2, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 
+    1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 2, 2, 0, 1, 2, 0, 2, 2, 0, 2, 
+    2, 2, 2, 2, 2, 0, 2, 2, 0, 0, 2, 0, 0, 0, 1, 1, 0, 0,
+
+Assignment 3
+  Min cut: 2290
+  Machines used:
+    <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+      CPU: switch_sh=59, vhost={u=202, sh=131}, total={u=242, sh=190}.
+    <PM #1 | (0, 360)/390 | f(u) = 0.3728 u^2 + 116.5081 u^1 + 4188.2548 u^0>
+      CPU: switch_sh=25, vhost={u=442, sh=365}, total={u=472, sh=390}.
+    <PM #2 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+      CPU: switch_sh=18, vhost={u=409, sh=372}, total={u=429, sh=390}.
+  Machines excluded:
+  Assignment of nodes:
+    0, 2, 1, 1, 0, 0, 0, 1, 0, 0, 1, 2, 2, 0, 2, 0, 1, 2, 1, 2, 
+    1, 2, 2, 2, 0, 0, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 
+    1, 1, 1, 1, 0, 1, 1, 2, 0, 1, 0, 2, 2, 2, 0, 1, 1, 1, 1, 1, 
+    1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 1, 0, 
+    2, 2, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 2, 0, 
+    0, 0, 0, 0, 2, 0, 1, 2, 2, 1, 0, 2, 1, 1, 1, 2, 2, 2, 2, 0, 
+    2, 2, 0, 2, 2, 2, 0, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 
+    1, 0, 0, 0, 2, 0, 0, 0, 2, 2, 2, 1, 1, 0, 2, 2, 2, 2, 2, 2, 
+    2, 2, 0, 0, 2, 2, 2, 1, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 2, 2, 1, 2, 1, 1, 0, 1, 1, 1, 1, 1, 1, 
+    2, 1, 1, 2, 2, 0, 2, 2, 2, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 
+    1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 2, 0, 0, 
+    2, 1, 2, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1, 
+    2, 0, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 
+    1, 1, 1, 0, 0, 2, 0, 0, 0, 1, 2, 2, 0, 1, 2, 0, 2, 2, 0, 2, 
+    2, 2, 2, 2, 2, 0, 2, 2, 0, 0, 2, 0, 0, 0, 1, 1, 0, 0,
+
+Best assignment out of 4 candidates is...
+
+Assignment 0
+  Min cut: 670
+  Machines used:
+    <PM #0 | (2, 180)/190 | f(u) = 0.0199 u^2 + 199.6030 u^1 + -294.3504 u^0>
+      CPU: switch_sh=20, vhost={u=187, sh=170}, total={u=212, sh=190}.
+    <PM #1 | (0, 360)/390 | f(u) = 0.3728 u^2 + 116.5081 u^1 + 4188.2548 u^0>
+      CPU: switch_sh=20, vhost={u=426, sh=370}, total={u=461, sh=390}.
+    <PM #2 | (0, 360)/390 | f(u) = 0.2880 u^2 + 329.0318 u^1 + 949.3183 u^0>
+      CPU: switch_sh=20, vhost={u=440, sh=370}, total={u=467, sh=390}.
+  Machines excluded:
+  Assignment of nodes:
+    1, 2, 1, 2, 2, 2, 2, 1, 0, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+    1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 
+    1, 1, 1, 1, 0, 2, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2, 2, 
+    2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2, 2, 0, 2, 2, 2, 1, 
+    1, 1, 2, 2, 0, 1, 2, 2, 2, 0, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 
+    2, 2, 2, 0, 1, 2, 1, 0, 0, 1, 2, 2, 1, 1, 1, 0, 0, 0, 0, 0, 
+    0, 0, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 
+    1, 2, 1, 1, 0, 0, 2, 2, 1, 0, 0, 1, 2, 2, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 1, 1, 2, 0, 1, 1, 1, 2, 1, 2, 2, 2, 0, 0, 0, 0, 1, 
+    0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 
+    1, 1, 1, 1, 0, 2, 0, 0, 0, 0, 0, 0, 2, 1, 2, 2, 2, 2, 2, 2, 
+    1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 1, 2, 2, 0, 2, 1, 0, 2, 
+    1, 1, 1, 1, 1, 1, 1, 1, 2, 0, 1, 2, 2, 1, 2, 2, 2, 1, 1, 1, 
+    1, 0, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 1, 0, 2, 0, 0, 0, 0, 1, 
+    1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 
+    1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 2, 2, 0, 2, 2, 2, 2,
