@@ -37,9 +37,9 @@ def normalize_shares(shares):
     return norm_shares
 
 
-def calculate_set_weights(graph, key, assignment):
-    max_pm_id_returned = max(assignment)
-    set_weights = [0] * (max_pm_id_returned + 1)
+def calculate_set_weights(graph, key, assignment, num_sets):
+    assert(num_sets >= max(assignment))
+    set_weights = [0] * num_sets
     for i, pm in enumerate(assignment):
         set_weights[pm] += graph.node[i + 1][key]
     return set_weights
@@ -92,6 +92,24 @@ class AssignmentRecord:
 
     def __init__(self, assignment_id, min_cut, machines_used, machines_unused,
                  switch_cpu_shares, vhost_cpu_shares, used_cpu_shares, vhost_cpu_usage, assignment):
+        self._notes = []
+        machines_used = machines_used.copy()
+        machines_unused = machines_unused.copy()
+        switch_cpu_shares = switch_cpu_shares.copy()
+        vhost_cpu_shares = vhost_cpu_shares.copy()
+        used_cpu_shares = used_cpu_shares.copy()
+        vhost_cpu_usage = vhost_cpu_usage.copy()
+        for i, pm in enumerate(machines_used.copy()):
+            try:
+                assignment.index(pm.pm_id)
+            except:
+                # PM isn't actually used in assignment.
+                excluded_pm = machines_used.pop(i)
+                self._add_note('PM #%s isn\'t actually used in assignment. Its switch CPU share is %d and vhost share is %d.' %
+                    (str(excluded_pm.pm_id), switch_cpu_shares.pop(i), vhost_cpu_shares.pop(i)))
+                machines_unused.append(excluded_pm)
+                used_cpu_shares.pop(i)
+                vhost_cpu_usage.pop(i)
         self.assignment_id = assignment_id
         self.min_cut = min_cut
         self.machines_used = machines_used
@@ -103,6 +121,10 @@ class AssignmentRecord:
         self.assignment = assignment
         self.overused_pms = 0
         self.underused_pms = 0
+        self.used_pms = len(machines_used)
+
+    def _add_note(self, note):
+        self._notes.append(note)
 
     def __repr__(self):
         s = underline('Assignment ' + str(self.assignment_id) + '\n')
@@ -127,6 +149,9 @@ class AssignmentRecord:
             s += str(v) + ', '
             if i % 20 == 19:
                 s += '\n    '
+        s += '\n  Notes:\n'
+        for i, v in enumerate(self._notes):
+            s += '    %d: %s\n' % (i, str(v))
         return s.strip()
 
 
@@ -302,8 +327,8 @@ def main():
         # print(assignment)
         print()
 
-        switch_cap_usage = calculate_set_weights(graph, constants.NODE_SWITCH_CAPACITY_WEIGHT_KEY, assignment)
-        vhost_cpu_usage = calculate_set_weights(graph, constants.NODE_CPU_WEIGHT_KEY, assignment)
+        switch_cap_usage = calculate_set_weights(graph, constants.NODE_SWITCH_CAPACITY_WEIGHT_KEY, assignment, len(machines_used))
+        vhost_cpu_usage = calculate_set_weights(graph, constants.NODE_CPU_WEIGHT_KEY, assignment, len(machines_used))
         machine_usages = []
 
         # Associate information about usage of a single PM to an object.
@@ -346,11 +371,18 @@ def main():
         # It doesn't matter doing this either before or after adjustment because the decision won't change.
         least_used_pm = machine_usages[-1]
         total_cpu_shares_free = sum([u.cpu_share_free for u in machine_usages]) - least_used_pm.cpu_share_free
+        nothing_assigned = True
         print('PM Elimination Phase:')
         print('  Target PM: #%d, sticky=%s' % (least_used_pm.pm.pm_id, str(least_used_pm.pm.sticky)))
         print('  Total free CPU shares: %d' % total_cpu_shares_free)
         print('  Shares covered by PM:  %d' % least_used_pm.cpu_share_used)
-        if total_cpu_shares_free - least_used_pm.cpu_share_used > 0 and not least_used_pm.pm.sticky:
+        try:
+            assignment.index(least_used_pm.pm.pm_id)
+            nothing_assigned = False
+        except:
+            pass
+        print('  Sticky: ' + str(least_used_pm.pm.sticky))
+        if (total_cpu_shares_free - least_used_pm.cpu_share_used > 0 or nothing_assigned) and not least_used_pm.pm.sticky:
             # The unused CPU share of other PMs can cover this PM.
             # This is conservative because in general other PMs can produce no less switch capacity with the CPU
             # hare used by this PM.
@@ -402,7 +434,7 @@ def main():
                 prev_pm_under_utilized = False
             elif pm.is_under_utilized(total_delta):
                 shares_under = pm.under_utilized_shares(total_delta)
-                shares_usable = max(1, int(shares_under * (1 - constants.PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO)))
+                shares_usable = max(2, int(shares_under * (1 - constants.PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO)))
                 if i > 0 and prev_pm_under_utilized and shares_usable > vhost_cpu_deltas[i - 1]:
                     shares_usable = vhost_cpu_deltas[i - 1]
                 print('  Under-utilized shares: %d. Adjustable shares: %d.' % (shares_under, shares_usable))
@@ -495,7 +527,7 @@ def main():
 
     print('Best assignment out of %d candidates is...' % len(assignment_hist))
     print()
-    best_assignment = sorted(assignment_hist, key=operator.attrgetter('overused_pms', 'min_cut'))[0]
+    best_assignment = sorted(assignment_hist, key=operator.attrgetter('overused_pms', 'used_pms', 'min_cut'))[0]
     print(best_assignment)
 
 
