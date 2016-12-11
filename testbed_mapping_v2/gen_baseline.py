@@ -42,9 +42,9 @@ def gen_partition(assignment_id, assignment_title, args, graph, machines, node_w
     total_machines = len(machines)
     metis_graph = nxgraph_to_metis(graph, node_weight_attr=node_weight_attr)
     min_cut, assignment = metis.part_graph(metis_graph, nparts=total_machines, tpwgts=weights, recursive=False)
-    switch_cap_usage = calculate_set_weights(graph, constants.NODE_SWITCH_CAPACITY_WEIGHT_KEY, assignment)
+    switch_cap_usage = calculate_set_weights(graph, constants.NODE_SWITCH_CAPACITY_WEIGHT_KEY, assignment, total_machines)
     switch_cpu_usage = [calc_switch_cpu_usage(machines[i], c) for i, c in enumerate(switch_cap_usage)]
-    vhost_cpu_usage = calculate_set_weights(graph, constants.NODE_CPU_WEIGHT_KEY, assignment)
+    vhost_cpu_usage = calculate_set_weights(graph, constants.NODE_CPU_WEIGHT_KEY, assignment, total_machines)
 
     machine_usages = []
     for i, pm in enumerate(machines):
@@ -59,7 +59,7 @@ def gen_partition(assignment_id, assignment_title, args, graph, machines, node_w
     print()
 
     assignment_record = AssignmentRecord(assignment_id=assignment_id, min_cut=min_cut,
-                                         machines_used=machines, machines_unused=(),
+                                         machines_used=machines, machines_unused=[],
                                          switch_cpu_shares=switch_cpu_usage, vhost_cpu_shares=vhost_cpu_usage,
                                          used_cpu_shares=[u.cpu_share_used for u in machine_usages],
                                          vhost_cpu_usage=vhost_cpu_usage,

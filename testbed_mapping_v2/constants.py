@@ -19,10 +19,10 @@ NODE_CPU_WEIGHT_KEY = 'cpu'
 # We allow for some delta so that
 # (1) graph shape helps reduce search space and
 # (2) resource limit fits graph shape better.
-SWITCH_CAPACITY_IMBALANCE_FACTOR = 0.03
+SWITCH_CAPACITY_IMBALANCE_FACTOR = 0.08
 
 # To what extent do we allow for imbalance on CPU constraint? +/- 15%.
-VHOST_CPU_IMBALANCE_FACTOR = 0.1
+VHOST_CPU_IMBALANCE_FACTOR = 0.02
 
 # Switch CPU shares that will be assigned to every PMs in the first round.
 INIT_SWITCH_CPU_SHARES = 20

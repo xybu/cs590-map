@@ -99,17 +99,19 @@ class AssignmentRecord:
         vhost_cpu_shares = vhost_cpu_shares.copy()
         used_cpu_shares = used_cpu_shares.copy()
         vhost_cpu_usage = vhost_cpu_usage.copy()
-        for i, pm in enumerate(machines_used.copy()):
+        for pm in machines_used.copy():
             try:
                 assignment.index(pm.pm_id)
             except:
                 # PM isn't actually used in assignment.
-                excluded_pm = machines_used.pop(i)
-                self._add_note('PM #%s isn\'t actually used in assignment. Its switch CPU share is %d and vhost share is %d.' %
-                    (str(excluded_pm.pm_id), switch_cpu_shares.pop(i), vhost_cpu_shares.pop(i)))
-                machines_unused.append(excluded_pm)
-                used_cpu_shares.pop(i)
-                vhost_cpu_usage.pop(i)
+                for i, pmi in enumerate(machines_used):
+                    if pm.pm_id == pmi.pm_id:
+                        self._add_note('PM #%s isn\'t used in assignment. Its switch CPU share is %d and vhost share is %d.' %
+                            (pm.pm_id, switch_cpu_shares.pop(i), vhost_cpu_shares.pop(i)))
+                        machines_unused.append(machines_used.pop(i))
+                        used_cpu_shares.pop(i)
+                        vhost_cpu_usage.pop(i)
+                        break
         self.assignment_id = assignment_id
         self.min_cut = min_cut
         self.machines_used = machines_used
@@ -308,9 +310,10 @@ def main():
         switch_cap_shares = [pm.capacity_func.eval(switch_cpu_shares[i]) for i, pm in enumerate(machines_used)]
         norm_switch_cap_shares = normalize_shares(switch_cap_shares)
         norm_vhost_cpu_shares = normalize_shares(vhost_cpu_shares)
-        print('sw_cpu_shares: ' + str(switch_cpu_shares))
-        print('sw_cap_shares: ' + str(switch_cap_shares))
-        print('vh_cpu_shares: ' + str(vhost_cpu_shares))
+        print('prev_assignment: ' + str(prev_assignment.assignment_id if prev_assignment is not None else None))
+        print('sw_cpu_shares:   ' + str(switch_cpu_shares))
+        print('sw_cap_shares:   [' + ', '.join(['%.4f' % v for v in switch_cap_shares]) + ']')
+        print('vh_cpu_shares:   ' + str(vhost_cpu_shares))
 
         if len(machines_used) == 1:
             min_cut = 0
@@ -319,11 +322,11 @@ def main():
             min_cut, assignment = metis.part_graph(metis_graph,
                                                    nparts=len(machines_used),
                                                    tpwgts=list(zip(norm_switch_cap_shares, norm_vhost_cpu_shares)),
-                                                  ubvec=imbalance_vec,
-                                                 recursive=False)
+                                                   ubvec=imbalance_vec,
+                                                   recursive=False)
                                                   # dbglvl=metis.mdbglvl_et.METIS_DBG_ALL)
 
-        print('min_cut:       ' + str(min_cut))
+        print('min_cut:         ' + str(min_cut))
         # print(assignment)
         print()
 
@@ -357,6 +360,11 @@ def main():
         assignment_hist.append(assignment_record)
         assignment_signatures.append((machines_unused, switch_cpu_shares, vhost_cpu_shares))
 
+        print('switch_cap_usages: ' + str(switch_cap_usage))
+        print('switch_cpu_usages: ' + str([v.switch_cpu_usage for v in machine_usages]))
+        print('vhost_cpu_usages:  ' + str(vhost_cpu_usage))
+        print()
+
         # To preserve state we copy the input lists.
         machines_used = machines_used.copy()
         machines_unused = machines_unused.copy()
@@ -382,7 +390,7 @@ def main():
         except:
             pass
         print('  Sticky: ' + str(least_used_pm.pm.sticky))
-        if (total_cpu_shares_free - least_used_pm.cpu_share_used > 0 or nothing_assigned) and not least_used_pm.pm.sticky:
+        if (total_cpu_shares_free - least_used_pm.cpu_share_used > 0 and not least_used_pm.pm.sticky) or nothing_assigned:
             # The unused CPU share of other PMs can cover this PM.
             # This is conservative because in general other PMs can produce no less switch capacity with the CPU
             # hare used by this PM.
@@ -392,7 +400,7 @@ def main():
             vhost_cpu_shares.pop(least_used_pm.old_index)
             print('  PM #%d will be excluded from next round.' % least_used_pm.pm.pm_id)
             task_queue.append(
-                (total_vertex_weight, None, machines_used, machines_unused, switch_cpu_shares, vhost_cpu_shares))
+                (total_vertex_weight, assignment_record, machines_used, machines_unused, switch_cpu_shares, vhost_cpu_shares))
             print()
             continue
             # We tried to add a new task here. It greatly increased search space but didn't improve result.
@@ -495,23 +503,26 @@ def main():
 
         if num_overloaded_pms == len(machines_used) and len(machines_unused) > 0:
             # All used PMs are overloaded but we have free machines.
-            machines_used = machines_used.copy()
-            machines_unused = machines_unused.copy()
-            switch_cpu_shares = switch_cpu_shares.copy()
-            vhost_cpu_shares = vhost_cpu_shares.copy()
-            m = machines_unused.pop()   # The machine to bring back from free list.
-            i = 0
-            for pm in machines_used:
-                if m.pm_id < pm.pm_id:
+            for m in reversed(machines_unused):
+                if not m.sticky:
+                    machines_used = machines_used.copy()
+                    machines_unused = machines_unused.copy()
+                    switch_cpu_shares = switch_cpu_shares.copy()
+                    vhost_cpu_shares = vhost_cpu_shares.copy()
+                    machines_unused.pop(machines_unused.index(m))   # The machine to bring back from free list.
+                    i = 0
+                    for pm in machines_used:
+                        if m.pm_id < pm.pm_id:
+                            break
+                        i += 1
+                    machines_used.insert(i, m)
+                    switch_cpu_shares.insert(i, m.max_cpu_share / 2)
+                    vhost_cpu_shares.insert(i, m.max_cpu_share - switch_cpu_shares[i])
+                    m.sticky = True
+                    task_queue.append(
+                        (min_cut, assignment_record, machines_used, machines_unused, switch_cpu_shares, vhost_cpu_shares))
+                    print('Brought PM #%d back to list.' % m.pm_id)
                     break
-                i += 1
-            machines_used.insert(i, m)
-            switch_cpu_shares.insert(i, constants.INIT_SWITCH_CPU_SHARES)
-            vhost_cpu_shares.insert(i, m.max_cpu_share - constants.INIT_SWITCH_CPU_SHARES)
-            m.sticky = True
-            task_queue.append(
-                (min_cut, assignment_record, machines_used, machines_unused, switch_cpu_shares, vhost_cpu_shares))
-            print('Brought PM #%d back to list.' % m.pm_id)
 
         print()
 
@@ -529,6 +540,10 @@ def main():
     print()
     best_assignment = sorted(assignment_hist, key=operator.attrgetter('overused_pms', 'used_pms', 'min_cut'))[0]
     print(best_assignment)
+    if args.out is not None:
+        outfile_prefix = args.out + '/assignment_best'
+        with open(outfile_prefix + '.txt', 'w') as f:
+            f.write('\n'.join([str(v) for v in best_assignment.assignment]) + '\n')
 
 
 if __name__ == '__main__':
