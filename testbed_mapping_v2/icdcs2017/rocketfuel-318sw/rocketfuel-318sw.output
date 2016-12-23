@@ -1,0 +1,48 @@
+Waterfall
+Best assignment out of 320 candidates is...
+Assignment 197
+  Min cut: 240
+  Machines used:
+    <PM #0 | (0, 360)/390 | f(u) = 0.0288 u^2 + 32.9032 u^1 + 94.9318 u^0>
+      CPU: switch_sh=142, vhost={u=255, sh=248}, total={u=394, sh=390}.
+    <PM #1 | (0, 360)/390 | f(u) = 0.0288 u^2 + 32.9032 u^1 + 94.9318 u^0>
+      CPU: switch_sh=161, vhost={u=228, sh=229}, total={u=390, sh=390}.
+    <PM #2 | (0, 360)/390 | f(u) = 0.0373 u^2 + 11.6508 u^1 + 418.8255 u^0>
+      CPU: switch_sh=253, vhost={u=138, sh=137}, total={u=404, sh=390}.
+    <PM #5 | (2, 180)/190 | f(u) = 0.0020 u^2 + 19.9603 u^1 + -29.4350 u^0>
+      CPU: switch_sh=60, vhost={u=72, sh=73}, total={u=129, sh=133}.
+  Machines excluded:
+    <PM #4 | (10, 180)/190 | f(u) = 0.0448 u^2 + 29.4608 u^1 + -278.9677 u^0>
+    <PM #3 | (10, 180)/190 | f(u) = 0.0448 u^2 + 29.4608 u^1 + -278.9677 u^0>
+SEP
+Equal-METIS
+  Min cut: 1350
+  Machines used:
+    <PM #0 | (0, 360)/390 | f(u) = 0.0288 u^2 + 32.9032 u^1 + 94.9318 u^0>
+      CPU: switch_sh=86, vhost={u=114, sh=114}, total={u=200, sh=200}.
+    <PM #1 | (0, 360)/390 | f(u) = 0.0288 u^2 + 32.9032 u^1 + 94.9318 u^0>
+      CPU: switch_sh=88, vhost={u=60, sh=60}, total={u=148, sh=148}.
+    <PM #2 | (0, 360)/390 | f(u) = 0.0373 u^2 + 11.6508 u^1 + 418.8255 u^0>
+      CPU: switch_sh=153, vhost={u=90, sh=90}, total={u=243, sh=243}.
+    <PM #3 | (10, 180)/190 | f(u) = 0.0448 u^2 + 29.4608 u^1 + -278.9677 u^0>
+      CPU: switch_sh=100, vhost={u=135, sh=135}, total={u=235, sh=235}.
+    <PM #4 | (10, 180)/190 | f(u) = 0.0448 u^2 + 29.4608 u^1 + -278.9677 u^0>
+      CPU: switch_sh=100, vhost={u=162, sh=162}, total={u=262, sh=262}.
+    <PM #5 | (2, 180)/190 | f(u) = 0.0020 u^2 + 19.9603 u^1 + -29.4350 u^0>
+      CPU: switch_sh=153, vhost={u=132, sh=132}, total={u=285, sh=285}.
+SEP
+C90
+  Min cut: 380
+  Machines used:
+    <PM #0 | (0, 360)/390 | f(u) = 0.0288 u^2 + 32.9032 u^1 + 94.9318 u^0>
+      CPU: switch_sh=183, vhost={u=195, sh=195}, total={u=378, sh=378}.
+    <PM #1 | (0, 360)/390 | f(u) = 0.0288 u^2 + 32.9032 u^1 + 94.9318 u^0>
+      CPU: switch_sh=105, vhost={u=195, sh=195}, total={u=300, sh=300}.
+    <PM #2 | (0, 360)/390 | f(u) = 0.0373 u^2 + 11.6508 u^1 + 418.8255 u^0>
+      CPU: switch_sh=116, vhost={u=108, sh=108}, total={u=224, sh=224}.
+    <PM #3 | (10, 180)/190 | f(u) = 0.0448 u^2 + 29.4608 u^1 + -278.9677 u^0>
+      CPU: switch_sh=86, vhost={u=78, sh=78}, total={u=164, sh=164}.
+    <PM #4 | (10, 180)/190 | f(u) = 0.0448 u^2 + 29.4608 u^1 + -278.9677 u^0>
+      CPU: switch_sh=70, vhost={u=75, sh=75}, total={u=145, sh=145}.
+    <PM #5 | (2, 180)/190 | f(u) = 0.0020 u^2 + 19.9603 u^1 + -29.4350 u^0>
+      CPU: switch_sh=47, vhost={u=42, sh=42}, total={u=89, sh=89}.
