@@ -14,9 +14,10 @@ We artificially scaled the four capacity functions we presented in section III.A
 | PM6 | 190 |   0   | 180   | 0.168u^2 + 1929.44u - 2868.28 |
 
 ##RocketFuel Topology
-The [RocketFuel topology](cs590-map/testbed_mapping_v2/icdcs2017/rocketfuel-318sw/rocketfuel-318sw.graph)  we use includes  `318` vertices and `758` edges. The total vertex weight is `18625` and total edge weight is `7580`. The CPU share requirements we assign to [end hosts](cs590-map/testbed_mapping_v2/icdcs2017/rocketfuel-318sw/rocketfuel-318sw.host) sum up to `693`.
+The [RocketFuel topology](icdcs2017/rocketfuel-318sw/rocketfuel-318sw.graph)  we use includes  `318` vertices and `758` edges. The total vertex weight is `18625` and total edge weight is `7580`. The CPU share requirements we assign to [end hosts](icdcs2017/rocketfuel-318sw/rocketfuel-318sw.host) sum up to `693`.
 
 CPU usage of `PM_i` is presented as `(host_u_i + pp_u_i)/Max_i`, where `(host_u_i + pp_u_i)` is the total CPU usage for end hosts and switches.
+
 | Algorithm | Edge-cut | PM1 | PM2 | PM3 | PM4 | PM5 | PM6 |
 |:---------:|:--------:|:---:|:---:|:---:|:---:|:---:|:---:|
 |Equal-METIS| 1350 | 200/390 | 148/390 | 243/390 | 235/190 | 262/190 | 285/190 |
@@ -35,7 +36,7 @@ Visualization of partitioning results for __Waterfall__:
 
 ### Jellyfish Topology
 
-The [Jellyfish topology](cs590-map/testbed_mapping_v2/icdcs2017/jellyfish-320sw/jellyfish-320sw.graph) we use includes  `320` vertices and `960` edges. The total vertex weight is `20800` and total edge weight is `9600`. The CPU share requirements we assign to [end hosts](cs590-map/testbed_mapping_v2/icdcs2017/jellyfish-320sw/jellyfish-320sw.host) sum up to `480`.
+The [Jellyfish topology](icdcs2017/jellyfish-320sw/jellyfish-320sw.graph) we use includes  `320` vertices and `960` edges. The total vertex weight is `20800` and total edge weight is `9600`. The CPU share requirements we assign to [end hosts](icdcs2017/jellyfish-320sw/jellyfish-320sw.host) sum up to `480`.
 
 | Algorithm | Edge-cut | PM1 | PM2 | PM3 | PM4 | PM5 | PM6 |
 |:---------:|:--------:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -54,7 +55,7 @@ Visualization of partitioning results for __Waterfall__:
 
 
 ### Fat-tree Topology
-The [Fat-tree topology](cs590-map/testbed_mapping_v2/icdcs2017/fattree-320sw/fattree-320sw.graph) we use includes  `320` vertices and `2048` edges. The total vertex weight is `42240` and total edge weight is `20480`. The CPU share requirements we assign to [end hosts](cs590-map/testbed_mapping_v2/icdcs2017/fattree-320sw/fattree-320sw.host) sum up to `384`.
+The [Fat-tree topology](icdcs2017/fattree-320sw/fattree-320sw.graph) we use includes  `320` vertices and `2048` edges. The total vertex weight is `42240` and total edge weight is `20480`. The CPU share requirements we assign to [end hosts](icdcs2017/fattree-320sw/fattree-320sw.host) sum up to `384`.
 
 | Algorithm | Edge-cut | PM1 | PM2 | PM3 | PM4 | PM5 | PM6 |
 |:---------:|:--------:|:---:|:---:|:---:|:---:|:---:|:---:|
