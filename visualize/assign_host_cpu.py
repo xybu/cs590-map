@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import random
 import sys
 from visualize_chaco import parse_chaco_input
 
@@ -26,6 +27,9 @@ def main():
         # else:
         #     assignment[i] = 7
         assignment[i] = int(target_cpu_weight * degree_of_nodes[i] / sum_degree)
+        assignment[i] += random.choice((0, 0, 0, -1, 1, 1, 2))
+        if assignment[i] < 0:
+            assignment[i] = 0
         print('%d: %d -> %d' % (i, degree_of_nodes[i], assignment[i]))
     sum_assignment = sum(assignment.values())
     print(sum_assignment)
