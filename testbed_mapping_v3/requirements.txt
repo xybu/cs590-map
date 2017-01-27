@@ -4,3 +4,4 @@ matplotlib
 git+https://github.com/pygraphviz/pygraphviz.git
 
 tabulate
+prettyprint

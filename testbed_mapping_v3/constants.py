@@ -1,7 +1,7 @@
 __all__ = [
     'EDGE_WEIGHT_KEY', 'NODE_SWITCH_CAPACITY_WEIGHT_KEY', 'NODE_CPU_WEIGHT_KEY', 'DEFAULT_SW_IMBALANCE_FACTOR',
     'DEFAULT_VHOST_IMBALANCE_FACTOR', 'INIT_SWITCH_CPU_SHARES', 'SWITCH_CPU_SHARE_UPDATE_FACTOR',
-    'PM_UNDER_UTILIZED_THRESHOLD', 'PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO', 'PM_OVER_UTILIZED_THRESHOLD'
+    'PM_UNDER_UTILIZED_THRESHOLD', 'PM_UNDER_UTILIZED_PORTION_ALLOC_RATIO', 'PM_OVER_UTILIZED_THRESHOLD'
 ]
 
 # The attribute for edge's weight. If changed, must update graph_model as well.
@@ -32,7 +32,7 @@ SWITCH_CPU_SHARE_UPDATE_FACTOR = 0.4
 PM_UNDER_UTILIZED_THRESHOLD = 0.9
 
 # We consider the PM to be over-utilized if total CPU share allocated to the PM is more than 110% of its maximum.
-PM_OVER_UTILIZED_THRESHOLD = 1.1
+PM_OVER_UTILIZED_THRESHOLD = 1.05
 
-# For the under-utilized portion, we reserve 70% and allocate 30% proportionally to switch and vhost shares.
-PM_UNDER_UTILIZED_PORTION_RESERVE_RATIO = 0.7
+# For the under-utilized portion, we allocate 30% to next round.
+PM_UNDER_UTILIZED_PORTION_ALLOC_RATIO = 0.3

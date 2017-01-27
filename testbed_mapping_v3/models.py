@@ -76,10 +76,18 @@ class Machine:
         self.sticky = False
         self.capacity_func = CapacityFunction((min_switch_cpu_share, max_switch_cpu_share), coefficients, False)
 
-    def __repr__(self):
-        return '<PM #%02d | M=%.2f | S=(%2d, %d)/%d | %s>' % (
+    @property
+    def full_str(self):
+        return '<PM #%02d | %.2f*(%02d, %d)/%d | %s>' % (
             self.pm_id, self.share_multiplier, self.min_switch_cpu_share, self.max_switch_cpu_share, self.max_cpu_share,
             str(self.capacity_func))
+
+    def __repr__(self):
+        return '<PM #%02d | %.2f*(%02d, %d)/%d>' % (
+            self.pm_id, self.share_multiplier, self.min_switch_cpu_share, self.max_switch_cpu_share, self.max_cpu_share)
+
+    def __eq__(self, other):
+        return self.pm_id == other.pm_id
 
     @staticmethod
     def read_machines_from_file(file_path):
