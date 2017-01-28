@@ -3,9 +3,8 @@
 import argparse
 from collections import namedtuple
 import concurrent.futures
+import enum
 import logging
-import threading
-import queue
 
 import tabulate
 
@@ -29,6 +28,12 @@ PartitionResult = namedtuple('PartitionResult', ('min_cut', 'assignment',
                                                  'switch_cap_usages', 'switch_cpu_usages', 'vhost_cpu_usages',
                                                  'total_cpu_usages', 'share_weights'))
 
+class DominanceLevel(enum.Enum):
+    NO_DOMINANCE = 0
+    MIN_CUT_EXISTS = 1
+    SUB_LEVEL_DOMINANCE = 2
+    TIER_LEVEL_DOMINANCE = 3
+
 
 class ResultHistory:
 
@@ -46,20 +51,22 @@ class ResultHistory:
         """
         by_used = self.by_tiers[0]
         if len(by_used) == 0:
-            return False
+            return DominanceLevel.NO_DOMINANCE
 
         min_pms_used = min(by_used.keys())
         if min_pms_used < rank.pms_used:
-            return True
+            return DominanceLevel.SUB_LEVEL_DOMINANCE
         elif min_pms_used > rank.pms_used:
-            return False
+            return DominanceLevel.NO_DOMINANCE
 
         by_min_cut = by_used[rank.pms_used]
         min_min_cut = min(by_min_cut.keys())
         if min_min_cut < rank.min_cut:
-            return True
+            return DominanceLevel.SUB_LEVEL_DOMINANCE
+        elif min_min_cut == rank.min_cut:
+            return DominanceLevel.MIN_CUT_EXISTS
 
-        return False
+        return DominanceLevel.NO_DOMINANCE
 
     def save_result_when_no_over_pm(self, input, result, rank):
         by_pms_used = self.by_tiers[rank.tier]
@@ -95,27 +102,29 @@ class ResultHistory:
         """
         by_over_degree = self.by_tiers[1]
         if len(by_over_degree) == 0:
-            return False
+            return DominanceLevel.NO_DOMINANCE
 
         min_over_degree = min(by_over_degree.keys())
         if min_over_degree < rank.pms_over_degree:
-            return True
+            return DominanceLevel.SUB_LEVEL_DOMINANCE
         elif min_over_degree > rank.pms_over_degree:
-            return False
+            return DominanceLevel.NO_DOMINANCE
 
         by_pms_over = by_over_degree[rank.pms_over_degree]
         min_pms_over = min(by_pms_over.keys())
         if min_pms_over < rank.pms_over:
-            return True
+            return DominanceLevel.SUB_LEVEL_DOMINANCE
         elif min_pms_over > rank.pms_over:
-            return False
+            return DominanceLevel.NO_DOMINANCE
 
         by_min_cut = by_pms_over[rank.pms_over]
         min_min_cut = min(by_min_cut.keys())
         if min_min_cut < rank.min_cut:
-            return True
+            return DominanceLevel.SUB_LEVEL_DOMINANCE
+        elif min_min_cut == rank.min_cut:
+            return DominanceLevel.MIN_CUT_EXISTS
 
-        return False
+        return DominanceLevel.NO_DOMINANCE
 
     def save_result_with_over_pm(self, input, result, rank):
         by_over_degree = self.by_tiers[rank.tier]
@@ -152,11 +161,11 @@ class ResultHistory:
     def is_rank_dominated(self, rank):
         """
         :param ResultRank rank:
-        :return True | False:
+        :return DominanceLevel:
         """
         for i in range(0, rank.tier):
             if len(self.by_tiers[i]) > 0:
-                return True
+                return DominanceLevel.TIER_LEVEL_DOMINANCE
         if rank.tier == 0:
             return self.is_rank_dominated_when_no_over_pm(rank)
         elif rank.tier == 1:
@@ -415,14 +424,14 @@ def rank_result(input, result):
                       pms_over_degree=pms_over_degree, min_cut=result.min_cut)
 
 
-def execute_input(graph, graph_properties, metis_input):
+def execute_input(graph, graph_properties, metis_input, **metis_options):
     """
     :param networkx.Graph graph:
     :param GraphProperties graph_properties:
     :param MetisInput metis_input:
     :return (ParititonResult, ResultRank):
     """
-    min_cut, assignment = call_metis(graph, metis_input)
+    min_cut, assignment = call_metis(graph, metis_input, **metis_options)
     result = analyze_result(graph, graph_properties, metis_input, min_cut, assignment)
     rank = rank_result(metis_input, result)
     return result, rank
@@ -434,46 +443,47 @@ def run_imbalance_vector(graph, graph_properties, base_input, i, j):
     return metis_input, result, rank
 
 
-def brute_force_initial_input(graph, graph_properties, pms):
+def dump_ranks(result_store):
+    lines = []
+    def dump_rank(input, result, rank):
+        line = [input.sw_imbalance_factor, input.vhost_imbalance_factor]
+        line.extend(rank)
+        lines.append(line)
+    result_store.traverse(dump_rank)
+    header = ['sw_factor', 'vh_factor']
+    header.extend(ResultRank_Fields)
+    return tabulate.tabulate(lines, headers=header)
+
+
+def brute_force_initial_input(graph, graph_properties, base_input):
     """
     :param networkx.Graph graph:
     :param GraphProperties graph_properties:
     :param [models.Machine] pms:
     :return:
     """
-    def dump_ranks(result_store):
-        lines = []
-        def dump_rank(input, result, rank):
-            line = [input.sw_imbalance_factor, input.vhost_imbalance_factor]
-            line.extend(rank)
-            lines.append(line)
-        result_store.traverse(dump_rank)
-        header = ['sw_factor', 'vh_factor']
-        header.extend(ResultRank_Fields)
-        return tabulate.tabulate(lines, headers=header)
-
     result_store = ResultHistory()
-    base = get_initial_input(pms, constants.DEFAULT_SW_IMBALANCE_FACTOR, constants.DEFAULT_VHOST_IMBALANCE_FACTOR)
     all_futures = []
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        for i in range(0, 51):
-            for j in range(0, 51):
-                all_futures.append(executor.submit(run_imbalance_vector, graph, graph_properties, base, i, j))
+        for i in range(0, 46):
+            for j in range(0, 46):
+                all_futures.append(executor.submit(run_imbalance_vector, graph, graph_properties, base_input, i, j))
     concurrent.futures.wait(all_futures)
     for fut in all_futures:
         metis_input, result, rank = fut.result()
-        if not result_store.is_rank_dominated(rank):
+        if result_store.is_rank_dominated(rank) in (DominanceLevel.NO_DOMINANCE, DominanceLevel.MIN_CUT_EXISTS):
             result_store.save_result(metis_input, result, rank)
     print()
     print(dump_ranks(result_store))
     print()
-    return result_store.best_candidates()[0][0]
+    return result_store
 
 
 class ResultHash:
 
     def __init__(self):
         self.pms_used_history = set()
+        self.assignment_history = set()
 
     def register_pm_used_input(self, pms):
         pm_ids = tuple(sorted([pm.pm_id for pm in pms]))
@@ -483,13 +493,19 @@ class ResultHash:
         pm_ids = tuple(sorted([pm.pm_id for pm in pms]))
         return pm_ids in self.pms_used_history
 
+    def register_assignment(self, assignment):
+        self.assignment_history.add(assignment)
+
+    def is_assignment_known(self, assignment):
+        return assignment in self.assignment_history
+
 
 def waterfall_eliminate_pms(input, result, rank, task_queue, result_hash):
     """
     :param MetisInput input:
     :param PartitionResult result:
     :param ResultRank rank:
-    :param queue.PriorityQueue task_queue:
+    :param [(MetisInput, int)] task_queue:
     :return:
     """
     total_free_shares = sum([pm.max_cpu_share for pm in result.pms_used.values()]) -\
@@ -504,13 +520,18 @@ def waterfall_eliminate_pms(input, result, rank, task_queue, result_hash):
     # than {p1, p2, p3} and there is no need to dive into the former.
 
     w, candidate_pm_id = result.share_weights[0]
-    candidate_pm = result.pms_used[candidate_pm_id]
     shares_used = result.total_cpu_usages[candidate_pm_id]
+    if shares_used > 0:
+        candidate_pm = result.pms_used[candidate_pm_id]
+    else:
+        candidate_pm = result.pms_unused[candidate_pm_id]
     remaining_free_shares = total_free_shares - (candidate_pm.max_cpu_share - shares_used)
     pms_used = list(input.pms)
     pm_index = pms_used.index(candidate_pm)
     pms_used.pop(pm_index)
-    if remaining_free_shares >= shares_used and not result_hash.is_pms_used_input_registered(pms_used):
+    # Change: We create a new branch if a PM is not used by METIS (even when number of remaining free shares is
+    # negative), or if remaining free shares can cover the shares used by this PM.
+    if (shares_used == 0 or remaining_free_shares >= shares_used) and not result_hash.is_pms_used_input_registered(pms_used):
         pms_unused = list(input.pms_unused)
         sw_cpu_shares = list(input.sw_cpu_shares)
         vhost_cpu_shares = list(input.vhost_cpu_shares)
@@ -520,7 +541,7 @@ def waterfall_eliminate_pms(input, result, rank, task_queue, result_hash):
         mutated_input = input._replace(pms=tuple(pms_used), pms_unused=tuple(pms_unused),
                                        sw_cpu_shares=tuple(sw_cpu_shares), vhost_cpu_shares=tuple(vhost_cpu_shares))
         result_hash.register_pm_used_input(pms_used)
-        task_queue.put((len(pms_unused), (mutated_input, 5)))
+        task_queue.append((mutated_input, constants.INIT_DOMINANCE_TOLERANCE))
         logging.info('PM choice branch: {%s}.', [str(pm.pm_id) for pm in pms_used])
 
 
@@ -531,21 +552,38 @@ def waterfall_adjust_shares(input, result, rank, dominance_allowance_count, task
     vhost_cpu_shares = [0] * num_pms
     last_under_utilized_increase = -1
 
-    if result_store.is_rank_dominated(rank):
-        if dominance_allowance_count <= 0:
-            logging.info('Rank %s is dominated and allowance is exhausted. Stop this branch.', rank)
-            return
+    # Change: We added a factor called dominance allowance. It first acts as an upper bound for how many more rounds
+    # to perform when no progress is made. Secondly it's the seed value for RNG to make METIS result different given
+    # same constraints.
+
+    if result_hash.is_assignment_known(result.assignment):
+        dominance_allowance_count -= 3
+    else:
+        result_hash.register_assignment(result.assignment)
+
+    rank_dominance_level = result_store.is_rank_dominated(rank)
+    result_store.save_result(input, result, rank)
+
+    if rank_dominance_level == DominanceLevel.NO_DOMINANCE:
+        dominance_allowance_count = constants.INIT_DOMINANCE_TOLERANCE
+    elif rank_dominance_level == DominanceLevel.MIN_CUT_EXISTS:
         dominance_allowance_count -= 1
     else:
-        dominance_allowance_count = 10
+        dominance_allowance_count -= 2
+
+    if dominance_allowance_count < 0:
+        logging.info('Stop exploring om choice branch {%s} because allowance exhausted.',
+                     [str(pm.pm_id) for pm in input.pms])
+        return
 
     # Traverse from the PM taking most load to the one taking least load.
     for i, (w, pm_id) in enumerate(reversed(result.share_weights)):
-        pm = result.pms_used[pm_id]
-        pm_index = input.pms.index(pm)
         total_cpu_usage = result.total_cpu_usages[pm_id]
         switch_cpu_usage = result.switch_cpu_usages[pm_id]
         vhost_cpu_usage = result.vhost_cpu_usages[pm_id]
+
+        pm = result.pms_used[pm_id] if total_cpu_usage > 0 else result.pms_unused[pm_id]
+        pm_index = input.pms.index(pm)
         if is_pm_overutilized(pm, total_cpu_usage, delta=deltas[i]):
             shares_over = pm_overutilized_shares(pm, total_cpu_usage, deltas[i])
             if i < num_pms - 1:
@@ -563,11 +601,13 @@ def waterfall_adjust_shares(input, result, rank, dominance_allowance_count, task
                           vhost_cpu_usage, input.vhost_cpu_shares[pm_index], next_vhost_cpu_share)
         else:
             is_under = is_pm_underutilized(pm, total_cpu_usage, delta=deltas[i])
+            # Change: for both in-range PMs and under PMs, we increase shares so that they go to in-range level.
             if is_under:
                 # The PM is still under-utilized after taking the delta shares. We increase not only the delta shares,
                 # but also a portion of the under shares after taking the delta.
-                shares_under = pm_underutilized_shares(pm, total_cpu_usage, delta=deltas[i])
-                shares_usable = max(2, int(shares_under * constants.PM_UNDER_UTILIZED_PORTION_ALLOC_RATIO)) + deltas[i]
+                shares_under = pm_underutilized_shares(pm, total_cpu_usage, delta=deltas[i]) + deltas[i]
+                shares_usable = max(2, shares_under)
+                # shares_usable = max(2, int(shares_under * constants.PM_UNDER_UTILIZED_PORTION_ALLOC_RATIO))
                 # Share increase of this PM should not exceed share increase of any previous under-utilized PM.
                 if last_under_utilized_increase > 0:
                     if shares_usable > last_under_utilized_increase:
@@ -586,7 +626,7 @@ def waterfall_adjust_shares(input, result, rank, dominance_allowance_count, task
                 # METIS chose not to use this PM.
                 logging.critical('METIS chose not to use %s in iteration.', pm)
                 total_cpu_share = input.sw_cpu_shares[pm_index] + input.vhost_cpu_shares[pm_index]
-                switch_cpu_delta = min(max(1, int(shares_usable * input.switch_cpu_shares[pm_index] / total_cpu_share)),
+                switch_cpu_delta = min(max(1, int(shares_usable * input.sw_cpu_shares[pm_index] / total_cpu_share)),
                                        pm.max_switch_cpu_share - switch_cpu_usage)
                 vhost_cpu_delta = max(1, shares_usable - switch_cpu_delta)
             switch_cpu_shares[pm_index] = switch_cpu_usage + switch_cpu_delta
@@ -602,8 +642,8 @@ def waterfall_adjust_shares(input, result, rank, dominance_allowance_count, task
                               pm, deltas[i],
                               switch_cpu_usage, input.sw_cpu_shares[pm_index], switch_cpu_shares[pm_index],
                               vhost_cpu_usage, input.vhost_cpu_shares[pm_index], vhost_cpu_shares[pm_index])
-    print(switch_cpu_shares)
-    print(vhost_cpu_shares)
+    new_input = input._replace(sw_cpu_shares=tuple(switch_cpu_shares), vhost_cpu_shares=tuple(vhost_cpu_shares))
+    task_queue.append((new_input, dominance_allowance_count))
 
 
 def waterfall_single_iteration(graph, graph_properties, input, dominance_allowance_count, task_queue,
@@ -613,23 +653,37 @@ def waterfall_single_iteration(graph, graph_properties, input, dominance_allowan
     :param GraphProperties graph_properties:
     :param MetisInput initial_input:
     :param int dominance_allowance_count:
-    :param queue.PriorityQueue task_queue:
+    :param [(MetisInput, int)] task_queue:
     :param ResultHistory result_store:
     :param ResultHash result_hash:
     :return:
     """
     print('*' * 79)
-    fut = executor.submit(execute_input, graph, graph_properties, input)
+    print(input)
+    fut = executor.submit(execute_input, graph, graph_properties, input, seed=dominance_allowance_count)
     result, rank = fut.result()
     print(result)
     print(rank)
-    result_store.save_result(input, result, rank)
-
     waterfall_eliminate_pms(input, result, rank, task_queue, result_hash)
-
     waterfall_adjust_shares(input, result, rank, dominance_allowance_count, task_queue, result_store, result_hash)
-
     print('*' * 79)
+
+
+def dump_result_ranks(result_store):
+    lines = []
+    def dump_rank(input, result, rank):
+        pms_used = sorted(result.pms_used.keys())
+        line = [(input.sw_imbalance_factor, input.vhost_imbalance_factor),
+                [pm.pm_id for pm in input.pms], input.sw_cpu_shares, input.vhost_cpu_shares,
+                pms_used,
+                [result.switch_cpu_usages[i] for i in pms_used],
+                [result.vhost_cpu_usages[i] for i in pms_used],
+                rank.pms_under, (rank.pms_over, rank.pms_over_degree), rank.min_cut]
+        lines.append(line)
+    result_store.traverse(dump_rank)
+    header = ('imb_vec', 'pms_in', 'sw_shares', 'vhost_shares',
+              'pms_used', 'sw_usages', 'vhost_usages', 'under', 'over', 'min_cut')
+    return tabulate.tabulate(lines, headers=header)
 
 
 def waterfall_main_loop(graph, graph_properties, initial_input, dominance_allowance_count=10):
@@ -640,17 +694,24 @@ def waterfall_main_loop(graph, graph_properties, initial_input, dominance_allowa
     :param int dominance_allowance_count:
     :return:
     """
-    task_queue = queue.PriorityQueue()
+    task_queue = []
     result_hash = ResultHash()
     result_store = ResultHistory()
-    task_queue.put((len(initial_input.pms_unused), (initial_input, dominance_allowance_count)))
+    task_queue.append((initial_input, dominance_allowance_count))
     result_hash.register_pm_used_input(initial_input.pms)
-    with concurrent.futures.ProcessPoolExecutor(max_workers=2) as executor:
-        while not task_queue.empty():
-            priority, task = task_queue.get()
+    with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
+        while len(task_queue):
+            task = task_queue.pop(0)
             waterfall_single_iteration(graph=graph, graph_properties=graph_properties, input=task[0],
                                        dominance_allowance_count=task[1], task_queue=task_queue,
                                        result_store=result_store, result_hash=result_hash, executor=executor)
+    print()
+    print(dump_result_ranks(result_store))
+    print()
+    iv_store = brute_force_initial_input(graph, graph_properties, result_store.best_candidates()[0][0])
+    print()
+    print(dump_result_ranks(iv_store))
+    print()
 
 
 def main():
@@ -679,18 +740,20 @@ def main():
 
     logging.basicConfig(level=logging.DEBUG, format='[%(asctime)-15s] %(message)s')
 
+    initial_input = get_initial_input(machines,
+                                      sw_imbalance_factor=constants.DEFAULT_SW_IMBALANCE_FACTOR,
+                                      vhost_imbalance_factor=constants.DEFAULT_VHOST_IMBALANCE_FACTOR)
     if args.find_iv:
         logging.info('Brute-forcing initial input with different imbalance vectors...')
-        initial_input = brute_force_initial_input(graph, graph_properties, machines)
+        store = brute_force_initial_input(graph, graph_properties, initial_input)
+        initial_input = store.best_candidates()[0][0]
     else:
         logging.info('Will use imbalance vector (sw=%f, vh=%f)', args.sw_imbalance_factor, args.vhost_imbalance_factor)
-        initial_input = get_initial_input(machines,
-                                          sw_imbalance_factor=constants.DEFAULT_SW_IMBALANCE_FACTOR,
-                                          vhost_imbalance_factor=constants.DEFAULT_VHOST_IMBALANCE_FACTOR)
 
     print(initial_input)
 
-    waterfall_main_loop(graph, graph_properties, initial_input, dominance_allowance_count=10)
+    waterfall_main_loop(graph, graph_properties, initial_input,
+                        dominance_allowance_count=constants.INIT_DOMINANCE_TOLERANCE)
 
 
 if __name__ == '__main__':

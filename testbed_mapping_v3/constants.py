@@ -1,8 +1,9 @@
-__all__ = [
+__all__ = (
     'EDGE_WEIGHT_KEY', 'NODE_SWITCH_CAPACITY_WEIGHT_KEY', 'NODE_CPU_WEIGHT_KEY', 'DEFAULT_SW_IMBALANCE_FACTOR',
     'DEFAULT_VHOST_IMBALANCE_FACTOR', 'INIT_SWITCH_CPU_SHARES', 'SWITCH_CPU_SHARE_UPDATE_FACTOR',
-    'PM_UNDER_UTILIZED_THRESHOLD', 'PM_UNDER_UTILIZED_PORTION_ALLOC_RATIO', 'PM_OVER_UTILIZED_THRESHOLD'
-]
+    'PM_UNDER_UTILIZED_THRESHOLD', 'PM_UNDER_UTILIZED_PORTION_ALLOC_RATIO', 'PM_OVER_UTILIZED_THRESHOLD',
+    'INIT_DOMINANCE_TOLERANCE'
+)
 
 # The attribute for edge's weight. If changed, must update graph_model as well.
 EDGE_WEIGHT_KEY = 'weight'
@@ -12,6 +13,8 @@ NODE_SWITCH_CAPACITY_WEIGHT_KEY = 'weight'
 
 # The attribute for node's CPU requirement value.
 NODE_CPU_WEIGHT_KEY = 'cpu'
+
+INIT_DOMINANCE_TOLERANCE = 50
 
 # To what extent do we allow for imbalance on switch capacity constraint?
 # We allow for some delta so that
