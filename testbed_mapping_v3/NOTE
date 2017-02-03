@@ -1,0 +1,7 @@
+A command that could demo a case in which 2 PMs are used but higher min cut
+is obtained:
+
+xb@ubuntu:[~/Desktop/cs590-map/testbed_mapping_v3]:
+./main.py -g input/graphs/1221.r0.cch.abr.graph
+          -p input/pm/pms_0123_scaled_by_100.txt -c input/graphs/1221_665.host
+          --find-iv

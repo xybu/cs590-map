@@ -1,0 +1,1 @@
+xb@ubuntu:[~/Desktop/cs590-map/testbed_mapping_v3]: ./main.py -g input/graphs/1221.r0.cch.abr.graph -p input/pm/pms_0123_scaled_by_100.txt -c input/graphs/1221_665.host --find-iv --out=./demo/bf_iv2500/rocketfuel-1221 &> ./demo/bf_iv2500/rocketfuel-1221/out.txt

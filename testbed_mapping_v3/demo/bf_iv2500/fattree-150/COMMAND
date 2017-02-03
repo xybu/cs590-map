@@ -1,0 +1,1 @@
+xb@ubuntu:[~/Desktop/cs590-map/testbed_mapping_v3]: ./main.py -g input/graphs/fattree-151sw.graph -p input/pm/pms_0123_scaled_by_100.txt -c input/graphs/fattree-151sw.955rnd.host  --find-iv --out ./demo/bf_iv2500/fattree-150 &> ./demo/bf_iv2500/fattree-150/out.txt

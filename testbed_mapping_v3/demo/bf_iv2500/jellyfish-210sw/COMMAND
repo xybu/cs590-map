@@ -1,0 +1,1 @@
+xb@ubuntu:[~/Desktop/cs590-map/testbed_mapping_v3]: ./main.py -g input/graphs/jellyfish-210sw.graph -p input/pm/pms_0123_scaled_by_100.txt -c input/graphs/jellyfish-210sw.694rnd.host --find-iv --out ./demo/bf_iv2500/jellyfish-210sw &> ./demo/bf_iv2500/jellyfish-210sw/out.txt

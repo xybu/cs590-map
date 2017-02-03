@@ -3,8 +3,11 @@
 import argparse
 from collections import namedtuple
 import concurrent.futures
+import csv
 import enum
+import functools
 import logging
+import os
 
 import tabulate
 
@@ -14,7 +17,7 @@ import models
 import utils_input
 
 
-MetisInput = namedtuple('MetisInput', ('pms', 'pms_unused', 'sw_cpu_shares', 'vhost_cpu_shares',
+MetisInput = namedtuple('MetisInput', ('pms', 'pms_unused', 'sw_cpu_shares', 'vhost_cpu_shares', 'seed',
                                        'sw_imbalance_factor', 'vhost_imbalance_factor'))
 
 ResultRank_Fields = ('tier', 'pms_over', 'pms_under', 'pms_unused', 'pms_used', 'pms_over_degree', 'min_cut')
@@ -27,6 +30,7 @@ PartitionResult = namedtuple('PartitionResult', ('min_cut', 'assignment',
                                                  'pms_used', 'pms_unused', 'pms_over', 'pms_under',
                                                  'switch_cap_usages', 'switch_cpu_usages', 'vhost_cpu_usages',
                                                  'total_cpu_usages', 'share_weights'))
+
 
 class DominanceLevel(enum.Enum):
     NO_DOMINANCE = 0
@@ -198,6 +202,20 @@ class ResultHistory:
         self.traverse_results_with_over_pm(f)
 
 
+class SerialResultHistory:
+    """ A store that saves results linearly. """
+
+    def __init__(self):
+        self.hist = []
+
+    def save_result(self, input, result, rank):
+        self.hist.append((input, result, rank))
+
+    def traverse(self, f):
+        for i in self.hist:
+            f(*i)
+
+
 def call_metis(graph, params, **metis_options):
     """
     :param networkx.Graph graph:
@@ -219,7 +237,8 @@ def call_metis(graph, params, **metis_options):
         # print('imbalance_vec:   (sw=%.2f, vhost=%.2f)' % imbalance_vec)
         min_cut, assignment = metis.part_graph(graph, nparts=num_pms,
                                                tpwgts=list(zip(norm_switch_cap_shares, norm_vhost_cpu_shares)),
-                                               ubvec=imbalance_vec, recursive=False, **metis_options)
+                                               ubvec=imbalance_vec, recursive=False,
+                                               seed=params.seed)
         # Translate array index to PM #.
         pm_index_mapping = [pm.pm_id for pm in params.pms]
         for i, a in enumerate(assignment):
@@ -303,7 +322,7 @@ def get_initial_input(pms, sw_imbalance_factor, vhost_imbalance_factor):
         sw_cpu_share = max(constants.INIT_SWITCH_CPU_SHARES, pm.min_switch_cpu_share)
         sw_cpu_shares.append(sw_cpu_share)
         vhost_cpu_shares.append(pm.max_cpu_share - sw_cpu_share)
-    return MetisInput(pms=tuple(pms), pms_unused=(),
+    return MetisInput(pms=tuple(pms), pms_unused=(), seed=constants.INIT_DOMINANCE_TOLERANCE,
                       sw_cpu_shares=tuple(sw_cpu_shares), vhost_cpu_shares=tuple(vhost_cpu_shares),
                       sw_imbalance_factor=sw_imbalance_factor, vhost_imbalance_factor=vhost_imbalance_factor)
 
@@ -443,39 +462,48 @@ def run_imbalance_vector(graph, graph_properties, base_input, i, j):
     return metis_input, result, rank
 
 
-def dump_ranks(result_store):
-    lines = []
-    def dump_rank(input, result, rank):
+def dump_ranks(result_store, to_string_func):
+    lines = [['sw_factor', 'vh_factor'] + list(ResultRank_Fields)]
+    def append_to_lines(input, result, rank):
         line = [input.sw_imbalance_factor, input.vhost_imbalance_factor]
         line.extend(rank)
         lines.append(line)
-    result_store.traverse(dump_rank)
-    header = ['sw_factor', 'vh_factor']
-    header.extend(ResultRank_Fields)
-    return tabulate.tabulate(lines, headers=header)
+    result_store.traverse(append_to_lines)
+    return to_string_func(lines)
 
 
-def brute_force_initial_input(graph, graph_properties, base_input):
+def dump_to_csv(lines, filepath):
+    with open(filepath, 'w') as csvfile:
+        writer = csv.writer(csvfile)
+        for line in lines:
+            writer.writerow(line)
+
+
+def brute_force_initial_input(graph, graph_properties, base_input, output_filename=None):
     """
     :param networkx.Graph graph:
     :param GraphProperties graph_properties:
     :param [models.Machine] pms:
     :return:
     """
+    iter_store = SerialResultHistory()
     result_store = ResultHistory()
     all_futures = []
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        for i in range(0, 46):
-            for j in range(0, 46):
+        for i in range(0, 51):
+            for j in range(0, 51):
                 all_futures.append(executor.submit(run_imbalance_vector, graph, graph_properties, base_input, i, j))
     concurrent.futures.wait(all_futures)
     for fut in all_futures:
         metis_input, result, rank = fut.result()
+        iter_store.save_result(metis_input, result, rank)
         if result_store.is_rank_dominated(rank) in (DominanceLevel.NO_DOMINANCE, DominanceLevel.MIN_CUT_EXISTS):
             result_store.save_result(metis_input, result, rank)
     print()
-    print(dump_ranks(result_store))
+    print(dump_ranks(result_store, to_string_func=functools.partial(tabulate.tabulate, headers='firstrow')))
     print()
+    if output_filename:
+        dump_ranks(iter_store, functools.partial(dump_to_csv, filepath=output_filename))
     return result_store
 
 
@@ -538,7 +566,7 @@ def waterfall_eliminate_pms(input, result, rank, task_queue, result_hash):
         sw_cpu_shares.pop(pm_index)
         vhost_cpu_shares.pop(pm_index)
         pms_unused.append(candidate_pm)
-        mutated_input = input._replace(pms=tuple(pms_used), pms_unused=tuple(pms_unused),
+        mutated_input = input._replace(pms=tuple(pms_used), pms_unused=tuple(pms_unused),# seed=constants.INIT_DOMINANCE_TOLERANCE,
                                        sw_cpu_shares=tuple(sw_cpu_shares), vhost_cpu_shares=tuple(vhost_cpu_shares))
         result_hash.register_pm_used_input(pms_used)
         task_queue.append((mutated_input, constants.INIT_DOMINANCE_TOLERANCE))
@@ -642,7 +670,8 @@ def waterfall_adjust_shares(input, result, rank, dominance_allowance_count, task
                               pm, deltas[i],
                               switch_cpu_usage, input.sw_cpu_shares[pm_index], switch_cpu_shares[pm_index],
                               vhost_cpu_usage, input.vhost_cpu_shares[pm_index], vhost_cpu_shares[pm_index])
-    new_input = input._replace(sw_cpu_shares=tuple(switch_cpu_shares), vhost_cpu_shares=tuple(vhost_cpu_shares))
+    new_input = input._replace(sw_cpu_shares=tuple(switch_cpu_shares), vhost_cpu_shares=tuple(vhost_cpu_shares),
+                               seed=dominance_allowance_count)
     task_queue.append((new_input, dominance_allowance_count))
 
 
@@ -660,13 +689,14 @@ def waterfall_single_iteration(graph, graph_properties, input, dominance_allowan
     """
     print('*' * 79)
     print(input)
-    fut = executor.submit(execute_input, graph, graph_properties, input, seed=dominance_allowance_count)
+    fut = executor.submit(execute_input, graph, graph_properties, input)
     result, rank = fut.result()
     print(result)
     print(rank)
     waterfall_eliminate_pms(input, result, rank, task_queue, result_hash)
     waterfall_adjust_shares(input, result, rank, dominance_allowance_count, task_queue, result_store, result_hash)
     print('*' * 79)
+    return result, rank
 
 
 def dump_result_ranks(result_store):
@@ -674,19 +704,19 @@ def dump_result_ranks(result_store):
     def dump_rank(input, result, rank):
         pms_used = sorted(result.pms_used.keys())
         line = [(input.sw_imbalance_factor, input.vhost_imbalance_factor),
-                [pm.pm_id for pm in input.pms], input.sw_cpu_shares, input.vhost_cpu_shares,
+                [pm.pm_id for pm in input.pms], input.sw_cpu_shares, input.vhost_cpu_shares, input.seed,
                 pms_used,
                 [result.switch_cpu_usages[i] for i in pms_used],
                 [result.vhost_cpu_usages[i] for i in pms_used],
                 rank.pms_under, (rank.pms_over, rank.pms_over_degree), rank.min_cut]
         lines.append(line)
     result_store.traverse(dump_rank)
-    header = ('imb_vec', 'pms_in', 'sw_shares', 'vhost_shares',
+    header = ('imb_vec', 'pms_in', 'sw_shares', 'vhost_shares', 'seed',
               'pms_used', 'sw_usages', 'vhost_usages', 'under', 'over', 'min_cut')
     return tabulate.tabulate(lines, headers=header)
 
 
-def waterfall_main_loop(graph, graph_properties, initial_input, dominance_allowance_count=10):
+def waterfall_main_loop(graph, graph_properties, initial_input, output_dir=None, dominance_allowance_count=10):
     """
     :param networkx.Graph graph:
     :param GraphProperties graph_properties:
@@ -697,18 +727,25 @@ def waterfall_main_loop(graph, graph_properties, initial_input, dominance_allowa
     task_queue = []
     result_hash = ResultHash()
     result_store = ResultHistory()
+    iterative_store = SerialResultHistory()
     task_queue.append((initial_input, dominance_allowance_count))
     result_hash.register_pm_used_input(initial_input.pms)
     with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
         while len(task_queue):
             task = task_queue.pop(0)
-            waterfall_single_iteration(graph=graph, graph_properties=graph_properties, input=task[0],
-                                       dominance_allowance_count=task[1], task_queue=task_queue,
-                                       result_store=result_store, result_hash=result_hash, executor=executor)
+            result, rank = waterfall_single_iteration(graph=graph, graph_properties=graph_properties, input=task[0],
+                                                      dominance_allowance_count=task[1], task_queue=task_queue,
+                                                      result_store=result_store, result_hash=result_hash,
+                                                      executor=executor)
+            iterative_store.save_result(task[0], result, rank)
+    print()
+    print(dump_result_ranks(iterative_store))
     print()
     print(dump_result_ranks(result_store))
     print()
-    iv_store = brute_force_initial_input(graph, graph_properties, result_store.best_candidates()[0][0])
+    output_filename = os.path.join(output_dir, 'find_iv_final.csv') if output_dir else None
+    iv_store = brute_force_initial_input(graph, graph_properties, result_store.best_candidates()[0][0],
+                                         output_filename=output_filename)
     print()
     print(dump_result_ranks(iv_store))
     print()
@@ -745,7 +782,8 @@ def main():
                                       vhost_imbalance_factor=constants.DEFAULT_VHOST_IMBALANCE_FACTOR)
     if args.find_iv:
         logging.info('Brute-forcing initial input with different imbalance vectors...')
-        store = brute_force_initial_input(graph, graph_properties, initial_input)
+        output_filename = os.path.join(args.out, 'find_iv_initial.csv') if args.out is not None else None
+        store = brute_force_initial_input(graph, graph_properties, initial_input, output_filename=output_filename)
         initial_input = store.best_candidates()[0][0]
     else:
         logging.info('Will use imbalance vector (sw=%f, vh=%f)', args.sw_imbalance_factor, args.vhost_imbalance_factor)
@@ -753,6 +791,7 @@ def main():
     print(initial_input)
 
     waterfall_main_loop(graph, graph_properties, initial_input,
+                        output_dir=args.out,
                         dominance_allowance_count=constants.INIT_DOMINANCE_TOLERANCE)
 
 
