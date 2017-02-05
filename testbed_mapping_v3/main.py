@@ -7,9 +7,12 @@ import csv
 import enum
 import functools
 import logging
+import math
 import os
 
 import tabulate
+import matplotlib.pyplot as plt
+import networkx as nx
 
 import constants
 import metis
@@ -74,6 +77,7 @@ class ResultHistory:
 
     def save_result_when_no_over_pm(self, input, result, rank):
         by_pms_used = self.by_tiers[rank.tier]
+        # Could use defaultdict. But anyway.
         if rank.pms_used not in by_pms_used:
             by_pms_used[rank.pms_used] = dict()
         by_min_cut = by_pms_used[rank.pms_used]
@@ -716,6 +720,37 @@ def dump_result_ranks(result_store):
     return tabulate.tabulate(lines, headers=header)
 
 
+def visualize_assignment(graph, assignment, outfile_path=None, show=False):
+    try:
+        edge_weights = [math.log(w) / 2.4 for (u, v, w) in graph.edges(data='weight')]
+    except:
+        edge_weights = 1
+
+    try:
+        weights = [n[1][constants.NODE_SWITCH_CAPACITY_WEIGHT_KEY] for n in graph.nodes(data=True)]
+        sizes = [math.pow(w, 0.55) * 6 for w in weights]
+    except KeyError:
+        weights = 50
+        sizes = weights
+
+    fig = plt.figure()
+    # plt.title("Visualization of \"%s\"" % args.path, {'fontweight': 'bold'})
+    plt.axis('off')
+    pos = nx.nx_agraph.graphviz_layout(graph)
+
+    nx.draw_networkx_nodes(graph, pos, node_size=sizes, node_color=assignment, cmap=plt.get_cmap('plasma'), alpha=0.95)
+    nx.draw_networkx_edges(graph, pos, width=edge_weights, alpha=0.7)
+
+    # nx.draw(graph, pos, with_labels=False, node_color=degrees, node_size=weights, cmap=plt.get_cmap('viridis'))
+    fig.tight_layout()
+    if outfile_path is not None:
+        for fmt in ('svg', 'pdf'):
+            plt.savefig(outfile_path + '.' + fmt, transparent=True, bbox_inches='tight', format=fmt, pad_inches=-0.4)
+    if show:
+        plt.show()
+    plt.close()
+
+
 def waterfall_main_loop(graph, graph_properties, initial_input, output_dir=None, dominance_allowance_count=10):
     """
     :param networkx.Graph graph:
@@ -743,11 +778,18 @@ def waterfall_main_loop(graph, graph_properties, initial_input, output_dir=None,
     print()
     print(dump_result_ranks(result_store))
     print()
-    output_filename = os.path.join(output_dir, 'find_iv_final.csv') if output_dir else None
-    iv_store = brute_force_initial_input(graph, graph_properties, result_store.best_candidates()[0][0],
-                                         output_filename=output_filename)
+    iv_store = brute_force_initial_input(
+        graph, graph_properties, result_store.best_candidates()[0][0],
+        output_filename=os.path.join(output_dir, 'find_iv_final.csv') if output_dir else None)
     print()
     print(dump_result_ranks(iv_store))
+    if output_dir:
+        for i, (metis_input, result, rank) in enumerate(iv_store.best_candidates()):
+            outfile_path = os.path.join(output_dir, 'best_assignment_%d' % i)
+            with open(outfile_path + '.txt', 'w') as f:
+                f.write('\n'.join([str(i) for i in result.assignment]))
+            del f
+            visualize_assignment(graph, result.assignment, outfile_path)
     print()
 
 
