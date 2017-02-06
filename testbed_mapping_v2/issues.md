@@ -4,4 +4,7 @@ same thing.
 
 PM exclusion when nothing is assigned.
 
+PM exclusion when cap function is not defined at 0.
+
 CPU share adjustment when PM isn't assigned any positive vhost CPU shares.
+

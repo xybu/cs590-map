@@ -1,1 +1,0 @@
-xb@ubuntu:[~/Desktop/cs590-map/testbed_mapping_v2]: ./main.py -g demo/1221.r0.cch.abr.graph -p demo/pms_six_scaled_by_100.txt -c demo/1221.1003.host -o ./demo/1221-1003-6pms > ./demo/1221-1003-6pms/output.txt
