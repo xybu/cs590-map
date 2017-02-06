@@ -572,9 +572,11 @@ def waterfall_eliminate_pms(input, result, rank, task_queue, result_hash):
         pms_unused.append(candidate_pm)
         mutated_input = input._replace(pms=tuple(pms_used), pms_unused=tuple(pms_unused),# seed=constants.INIT_DOMINANCE_TOLERANCE,
                                        sw_cpu_shares=tuple(sw_cpu_shares), vhost_cpu_shares=tuple(vhost_cpu_shares))
-        result_hash.register_pm_used_input(pms_used)
-        task_queue.append((mutated_input, constants.INIT_DOMINANCE_TOLERANCE))
+        # result_hash.register_pm_used_input(pms_used)
+        # task_queue.append((mutated_input, constants.INIT_DOMINANCE_TOLERANCE))
         logging.info('PM choice branch: {%s}.', [str(pm.pm_id) for pm in pms_used])
+        return mutated_input
+    return None
 
 
 def waterfall_adjust_shares(input, result, rank, dominance_allowance_count, task_queue, result_store, result_hash):
@@ -644,6 +646,8 @@ def waterfall_adjust_shares(input, result, rank, dominance_allowance_count, task
                 if last_under_utilized_increase > 0:
                     if shares_usable > last_under_utilized_increase:
                         shares_usable = last_under_utilized_increase
+                    elif shares_usable < last_under_utilized_increase:
+                        last_under_utilized_increase = shares_usable
                 elif last_under_utilized_increase < 0:
                     last_under_utilized_increase = shares_usable
             else:
@@ -697,7 +701,11 @@ def waterfall_single_iteration(graph, graph_properties, input, dominance_allowan
     result, rank = fut.result()
     print(result)
     print(rank)
-    waterfall_eliminate_pms(input, result, rank, task_queue, result_hash)
+    elim_input = waterfall_eliminate_pms(input, result, rank, task_queue, result_hash)
+    if elim_input:
+        iv_store = brute_force_initial_input(graph, graph_properties, elim_input)
+        result_hash.register_pm_used_input(elim_input.pms)
+        task_queue.append((iv_store.best_candidates()[0][0], constants.INIT_DOMINANCE_TOLERANCE))
     waterfall_adjust_shares(input, result, rank, dominance_allowance_count, task_queue, result_store, result_hash)
     print('*' * 79)
     return result, rank
