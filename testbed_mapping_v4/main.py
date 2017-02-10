@@ -538,9 +538,9 @@ def waterfall_branch_out(input, result, rank, result_hash):
     :param ResultHash result_hash:
     :return:
     """
-    click.echo('Branch factors: pms_over=%d, pms_under=%d, pms_unused_by_metis=%d.' % (
-        rank.pms_over, rank.pms_under, len(result.pms_unused)))
-    if rank.pms_over > 0 and rank.pms_under == 0 and len(result.pms_unused) == 0:
+    click.echo('Branch factors: pms_over=%d, pms_under=%d, pms_unused_by_metis=%d, pms_free=%d.' % (
+        rank.pms_over, rank.pms_under, len(result.pms_unused), len(input.pms_unused)))
+    if rank.pms_over > 0 and rank.pms_under == 0 and len(result.pms_unused) == 0 and len(input.pms_unused) > 0:
         # Extract the input lists.
         next_pm = input.pms_unused[0]
         pms_used = list(input.pms)
@@ -568,7 +568,7 @@ def waterfall_branch_out(input, result, rank, result_hash):
     return None
 
 
-def waterfall_adjust_shares(input, result, rank, result_store, result_hash):
+def waterfall_adjust_shares(input, result, rank, result_store, result_hash, new_branch_created=False):
     num_pms = len(input.pms)
     deltas = [0] * num_pms
     switch_cpu_shares = [0] * num_pms
@@ -590,11 +590,14 @@ def waterfall_adjust_shares(input, result, rank, result_store, result_hash):
     rank_dominance_level = result_store.is_rank_dominated(rank)
     result_store.save_result(input, result, rank)
 
-    if rank_dominance_level == DominanceLevel.NO_DOMINANCE:
+    if dominance_allowance_count > 4 and rank.pms_over == len(input.pms) and new_branch_created:
+        dominance_allowance_count = 4
+    elif rank_dominance_level == DominanceLevel.NO_DOMINANCE:
         dominance_allowance_count = constants.INIT_DOMINANCE_TOLERANCE
     elif rank_dominance_level == DominanceLevel.MIN_CUT_EXISTS:
         dominance_allowance_count -= 1
     else:
+        # A high dominance.
         dominance_allowance_count -= 4
 
     if dominance_allowance_count < 0:
@@ -612,15 +615,20 @@ def waterfall_adjust_shares(input, result, rank, result_store, result_hash):
 
         pm = result.pms_used[pm_id] if total_cpu_usage > 0 else result.pms_unused[pm_id]
         pm_index = input.pms.index(pm)
+        # FIXME: What if the next PM is not used but becomes over-utilized with delta shares?
         if is_pm_overutilized(pm, total_cpu_usage, delta=deltas[i]):
             shares_over = pm_overutilized_shares(pm, total_cpu_usage, deltas[i])
             if i < num_pms - 1:
                 # Pass the excessive shares to the next most used PM.
                 deltas[i + 1] = shares_over
             # Proportionally shrink current CPU usages so that they sum up to max cpu share.
-            next_switch_cpu_share = min(pm.max_switch_cpu_share,
-                                        max(pm.min_switch_cpu_share,
-                                            int(switch_cpu_usage / total_cpu_usage * pm.max_cpu_share)))
+            if total_cpu_usage > 0:
+                next_switch_cpu_share = min(pm.max_switch_cpu_share,
+                                            max(pm.min_switch_cpu_share,
+                                                int(switch_cpu_usage / total_cpu_usage * pm.max_cpu_share)))
+            else:
+                next_switch_cpu_share = min(pm.max_switch_cpu_share,
+                                            max(pm.min_switch_cpu_share, constants.INIT_SWITCH_CPU_SHARES))
             next_vhost_cpu_share = pm.max_cpu_share - next_switch_cpu_share
             switch_cpu_shares[pm_index] = next_switch_cpu_share
             vhost_cpu_shares[pm_index] = next_vhost_cpu_share
@@ -706,7 +714,7 @@ def waterfall_single_iteration(graph, graph_properties, input, task_queue, resul
         result_hash.register_pm_used_input(branch_input.pms)
         task_queue.append(iv_store.best_candidates()[-1][0])
 
-    adjust_input = waterfall_adjust_shares(input, result, rank, result_store, result_hash)
+    adjust_input = waterfall_adjust_shares(input, result, rank, result_store, result_hash, branch_input is not None)
     if adjust_input:
         task_queue.append(adjust_input)
 
@@ -745,6 +753,7 @@ def waterfall_main_loop(graph, graph_properties, initial_input, output_dir=None)
     result_hash = ResultHash()
     result_store = ResultHistory()
     from  collections import defaultdict
+    iterative_store = SerialResultHistory()
     iterative_store_by_branches = defaultdict(SerialResultHistory)
 
     task_queue.append(initial_input)
@@ -756,7 +765,12 @@ def waterfall_main_loop(graph, graph_properties, initial_input, output_dir=None)
                                                       input=metis_input, task_queue=task_queue,
                                                       result_store=result_store, result_hash=result_hash,
                                                       executor=executor)
+            iterative_store.save_result(metis_input, result, rank)
             iterative_store_by_branches[tuple([pm.pm_id for pm in metis_input.pms])].save_result(metis_input, result, rank)
+
+    click.secho('\nSequential results:\n', bold=True)
+    click.echo(dump_result_ranks(iterative_store))
+    click.echo()
 
     click.secho('\nSequential results by branches:\n', bold=True)
     for k in sorted(iterative_store_by_branches.keys()):
@@ -838,25 +852,43 @@ def get_initial_input(graph, graph_properties, pms, sw_imbalance_factor, vhost_i
     :param float vhost_imbalance_factor:
     :return MetisInput:
     """
+    vhost_divisor = 100 / graph_properties.total_vhost_weight
+    swcap_divisor = 100 / graph_properties.total_vertex_weight
+    # Use the tightest constraint as the first key.
+    total_cpu_shares = sum([pm.max_cpu_share for pm in pms])
+    total_sw_caps = sum([pm.capacity_func.eval(pm.max_switch_cpu_share) for pm in pms])
+    if total_cpu_shares * vhost_divisor <= total_sw_caps * swcap_divisor:
+        key1 = lambda pm: pm.max_cpu_share
+        key2 = lambda pm: pm.capacity_func.eval(pm.max_switch_cpu_share)
+        key_order = 0
+    else:
+        key1 = lambda pm: pm.capacity_func.eval(pm.max_switch_cpu_share)
+        key2 = lambda pm: pm.max_cpu_share
+        key_order = 1
     # Sort the PMs from most powerful to least powerful.
-    pms_sorted = sorted([(pm.max_cpu_share,
-                          pm.capacity_func.eval(pm.max_switch_cpu_share),
-                          -pm.min_switch_cpu_share,
-                          pm.pm_id,
-                          pm) for pm in pms], reverse=True)
+    pms_sorted = sorted([(key1(pm), key2(pm), -pm.min_switch_cpu_share, pm.pm_id, pm) for pm in pms], reverse=True)
 
     total_cpu_shares = 0
-    divisor = 100 / graph_properties.total_vhost_weight
+    total_sw_caps = 0
     pms_used = []
     pms_free = []
     click.echo('PMs sorted by usefulness:')
-    for i, (max_cpu_share, _, _, _, pm) in enumerate(pms_sorted):
-        if total_cpu_shares <= graph_properties.total_vhost_weight:
+    for i, (k1, k2, _, _, pm) in enumerate(pms_sorted):
+        if key_order == 0:
+            max_cpu_share = k1
+            max_sw_cap = k2
+        else:
+            max_cpu_share = k2
+            max_sw_cap = k1
+        if total_cpu_shares <= graph_properties.total_vhost_weight or \
+                   total_sw_caps < graph_properties.total_vertex_weight:
             total_cpu_shares += max_cpu_share
-            click.secho('  [%6.2f%%] %s ' % (total_cpu_shares * divisor, pm.full_str), fg='green')
+            total_sw_caps += max_sw_cap
+            click.secho('  [%7.2f%%] [%7.2f%%] %s | max_sh=%d, max_cap=%d' % (
+                total_cpu_shares * vhost_divisor, total_sw_caps * swcap_divisor, pm.full_str, max_cpu_share, max_sw_cap), fg='green')
             pms_used.append(pm)
         else:
-            click.echo('  [       ] %s' % pm.full_str)
+            click.echo('  [        ] [        ] %s' % pm.full_str)
             pms_free.append(pm)
     click.echo()
 
