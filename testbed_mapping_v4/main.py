@@ -8,6 +8,7 @@ import enum
 import functools
 import math
 import os
+import sys
 
 import click
 import tabulate
@@ -912,11 +913,24 @@ def print_input(metis_input, indent=0):
     indent = ' ' * indent
     click.echo('%s<MetisInput> imb=(%.2f, %.2f), seed=%d' % (
         indent, metis_input.sw_imbalance_factor, metis_input.vhost_imbalance_factor, metis_input.seed))
+
+    switch_cap_shares = []
+    click.echo('\n{0}{0}Chosen PMs:'.format(indent))
     for i, pm in enumerate(metis_input.pms):
-        click.echo('%s  [%2d] %s | sw_share=%d, vhost_share=%d' % (
-            indent, i, pm, metis_input.sw_cpu_shares[i], metis_input.vhost_cpu_shares[i]))
+        switch_cap_shares.append(int(pm.capacity_func.eval(metis_input.sw_cpu_shares[i])))
+        click.echo('{0}{0}{0}[{1:2d}] {2}'.format(indent, i, pm))
+    norm_switch_cap_shares = normalize_shares(switch_cap_shares)
+    norm_vhost_cpu_shares = normalize_shares(metis_input.vhost_cpu_shares)
+
+    table_rows = [('', 'PM #', 'sw_cpu', 'vh_cpu', 'sw_cap', 'norm_sw', 'norm_vh')]
+    for i, pm in enumerate(metis_input.pms):
+        table_rows.append((i, pm.pm_id, metis_input.sw_cpu_shares[i], metis_input.vhost_cpu_shares[i],
+                           switch_cap_shares[i], norm_switch_cap_shares[i], norm_vhost_cpu_shares[i]))
+    print('\n' + tabulate.tabulate(table_rows, headers='firstrow'))
+
+    click.echo('\n{0}{0}Free PMs:'.format(indent))
     for i, pm in enumerate(metis_input.pms_unused):
-        click.echo('%s  [%2d] %s | free' % (indent, i + len(metis_input.pms), pm))
+        click.echo('{0}{0}{0}[{1:2d}] {2}'.format(indent, i, pm))
 
 
 def main():
