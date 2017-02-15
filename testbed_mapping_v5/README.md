@@ -17,3 +17,6 @@ decrease).
 # Ideas
 
 1. Only use fractions as input. Absolute-valued input is converted and printed only for readability.
+
+2. We want to adjust shares to improve fidelity (i.e., reduce values by Tier 1 criteria -- degree of over-utilization,
+   and min cut), to use less resource.

@@ -14,7 +14,6 @@ NODE_SWITCH_CAPACITY_WEIGHT_KEY = 'weight'
 # The attribute for node's CPU requirement value.
 NODE_CPU_WEIGHT_KEY = 'cpu'
 
-# Roughly maximum number of rounds to run if the branch does not make progress.
 INIT_DOMINANCE_TOLERANCE = 48
 
 # To what extent do we allow for imbalance on switch capacity constraint?
