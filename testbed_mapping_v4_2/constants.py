@@ -39,3 +39,5 @@ PM_OVER_UTILIZED_THRESHOLD = 1.05
 
 # For the under-utilized portion, we allocate 30% to next round.
 PM_UNDER_UTILIZED_PORTION_ALLOC_RATIO = 0.3
+
+SHARE_ADJUSTMENT_NEW_ALPHA = 0.6

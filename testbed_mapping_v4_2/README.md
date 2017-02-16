@@ -1,3 +1,9 @@
+There are a few ways to reduce the gap between prev input and next input:
+
+1. Set imb vec to [0.01, 0.01] of subsequent shares of each branch in share adjustment phase -- METIS gives bad result.
+2. Use a moving average for prev and next (derived) input -- adopted by this version.
+3. Derive next input from prev input, rather than basing next input on result of prev input -- v5.
+
 The branching strategy of v4 is to including more PMs as needed, instead of
 eliminating PMs.
 

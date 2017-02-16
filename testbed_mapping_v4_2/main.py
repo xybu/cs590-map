@@ -681,8 +681,11 @@ def waterfall_adjust_shares(input, result, rank, result_store, result_hash, new_
                               pm, deltas[i],
                               switch_cpu_usage, input.sw_cpu_shares[pm_index], switch_cpu_shares[pm_index],
                               vhost_cpu_usage, input.vhost_cpu_shares[pm_index], vhost_cpu_shares[pm_index]))
+    switch_cpu_shares = [int(o * (1 - constants.SHARE_ADJUSTMENT_NEW_ALPHA) + n * constants.SHARE_ADJUSTMENT_NEW_ALPHA) for o, n in zip(input.sw_cpu_shares, switch_cpu_shares)]
+    vhost_cpu_shares = [int(o * (1 - constants.SHARE_ADJUSTMENT_NEW_ALPHA) + n * constants.SHARE_ADJUSTMENT_NEW_ALPHA) for o, n in zip(input.vhost_cpu_shares, vhost_cpu_shares)]
     new_input = input._replace(sw_cpu_shares=tuple(switch_cpu_shares), vhost_cpu_shares=tuple(vhost_cpu_shares),
-                               seed=dominance_allowance_count, sw_imbalance_factor=0.01, vhost_imbalance_factor=0.01)
+                               seed=dominance_allowance_count)
+
     click.echo()
     return new_input
 
@@ -698,7 +701,7 @@ def waterfall_single_iteration(graph, graph_properties, input, task_queue, resul
     :return:
     """
     click.echo('-' * 79 + '\n')
-    click.echo('Input:')
+    click.echo('Input (%d in queue):' % len(task_queue))
     print_input(input, indent=2)
     click.echo()
 
@@ -911,26 +914,23 @@ def print_input(metis_input, indent=0):
     :return:
     """
     indent = ' ' * indent
-    click.echo('%s<MetisInput> imb=(%.2f, %.2f), seed=%d' % (
-        indent, metis_input.sw_imbalance_factor, metis_input.vhost_imbalance_factor, metis_input.seed))
-
-    switch_cap_shares = []
-    click.echo('\n{0}{0}Chosen PMs:'.format(indent))
-    for i, pm in enumerate(metis_input.pms):
-        switch_cap_shares.append(int(pm.capacity_func.eval(metis_input.sw_cpu_shares[i])))
-        click.echo('{0}{0}{0}[{1:2d}] {2}'.format(indent, i, pm))
+    switch_cap_shares = [round(pm.capacity_func.eval(metis_input.sw_cpu_shares[i]), 2) for i, pm in enumerate(metis_input.pms)]
     norm_switch_cap_shares = normalize_shares(switch_cap_shares)
     norm_vhost_cpu_shares = normalize_shares(metis_input.vhost_cpu_shares)
 
-    table_rows = [('', 'PM #', 'sw_cpu', 'vh_cpu', 'sw_cap', 'norm_sw', 'norm_vh')]
-    for i, pm in enumerate(metis_input.pms):
-        table_rows.append((i, pm.pm_id, metis_input.sw_cpu_shares[i], metis_input.vhost_cpu_shares[i],
-                           switch_cap_shares[i], norm_switch_cap_shares[i], norm_vhost_cpu_shares[i]))
-    print('\n' + tabulate.tabulate(table_rows, headers='firstrow'))
+    click.echo('%s<MetisInput> imb=(%.2f, %.2f), seed=%d' % (
+        indent, metis_input.sw_imbalance_factor, metis_input.vhost_imbalance_factor, metis_input.seed))
 
-    click.echo('\n{0}{0}Free PMs:'.format(indent))
+    table_rows = [('PM #', 'sw_cpu', 'vh_cpu', 'sw_cap', 'sw_frac', 'vh_frac')]
+    for i, pm in enumerate(metis_input.pms):
+        table_rows.append((pm, metis_input.sw_cpu_shares[i], metis_input.vhost_cpu_shares[i],
+                           switch_cap_shares[i],
+                           round(norm_switch_cap_shares[i] * 100, 2),
+                           round(norm_vhost_cpu_shares[i] * 100, 2)))
     for i, pm in enumerate(metis_input.pms_unused):
-        click.echo('{0}{0}{0}[{1:2d}] {2}'.format(indent, i, pm))
+        table_rows.append((pm, '-', '-', '-', '-', '-'))
+    # Note: tabulate can generate latex or HTML code.
+    print(indent + tabulate.tabulate(table_rows, headers='firstrow', tablefmt='simple').replace('\n', '\n  '))
 
 
 def main():

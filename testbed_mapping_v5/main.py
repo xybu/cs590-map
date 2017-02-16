@@ -231,6 +231,7 @@ class ResultHash:
     def __init__(self):
         self.pms_used_history = set()
         self.assignment_history = set()
+        self.input_history = set()
 
     def register_pm_used_input(self, pms):
         pm_ids = tuple(sorted([pm.pm_id for pm in pms]))
@@ -239,6 +240,12 @@ class ResultHash:
     def is_pms_used_input_registered(self, pms):
         pm_ids = tuple(sorted([pm.pm_id for pm in pms]))
         return pm_ids in self.pms_used_history
+
+    def register_input(self, input):
+        self.input_history.add((tuple([pm.pm_id for pm in input.pms]), input.sw_fractions, input.vhost_fractions))
+
+    def is_input_known(self, input):
+        return ((tuple([pm.pm_id for pm in input.pms]), input.sw_fractions, input.vhost_fractions)) in self.input_history
 
     def register_assignment(self, assignment):
         self.assignment_history.add(assignment)
@@ -432,6 +439,8 @@ def analyze_result(graph, graph_properties, input, min_cut, assignment):
     assert(sum(switch_cap_usages.values()) == graph_properties.total_vertex_weight)
     assert(sum(vhost_cpu_usages.values()) == graph_properties.total_vhost_weight)
     pms_ok_count = 0
+    percent_vertex_weight = 100 / graph_properties.total_vertex_weight
+    percent_vhost_weigh = 100 / graph_properties.total_vhost_weight
     for pm in input.pms:
         if pm.pm_id not in assignment:
             pms_unused[pm.pm_id] = pm
@@ -450,9 +459,7 @@ def analyze_result(graph, graph_properties, input, min_cut, assignment):
                 assert(pms_under[pm.pm_id] > 0)
             else:
                 pms_ok_count += 1
-        weight = round(switch_cap_usages[pm.pm_id] / graph_properties.total_vertex_weight +
-                       vhost_cpu_usages[pm.pm_id] / graph_properties.total_vhost_weight, 4)
-        share_weights[pm.pm_id] = weight
+        share_weights[pm.pm_id] = (switch_cap_usages[pm.pm_id] * percent_vertex_weight, vhost_cpu_usages[pm.pm_id] * percent_vhost_weigh)
         utilizations[pm.pm_id] = round(total_cpu_usages[pm.pm_id] / pm.max_cpu_share, 4)
     assert(len(pms_unused) + len(pms_used) == len(input.pms))
     assert(len(pms_over) + len(pms_under) + pms_ok_count == len(pms_used))
@@ -476,7 +483,7 @@ def print_result_brief(graph_properties, metis_input, result, indent=0):
     click.echo('%s<PartitionResult> min_cut=%d' % (indent, result.min_cut))
     total_vhost_req_div = 100 / graph_properties.total_vhost_weight
     total_sw_cap_req_div = 100 / graph_properties.total_vertex_weight
-    share_weights = sorted([(w, pm_id) for pm_id, w in result.share_weights.items()], reverse=True)
+    share_weights = sorted([(round(ws+wp, 2), pm_id) for pm_id, (ws, wp) in result.share_weights.items()], reverse=True)
 
     for weight, pm_id in share_weights:
         try:
@@ -495,7 +502,6 @@ def print_result_brief(graph_properties, metis_input, result, indent=0):
         else:
             color_f = str
             adj = 'Use'
-        index = metis_input.pms.index(pm)
         rows.append((color_f(str(pm)),
                      round(weight * 50, 2),
                      result.switch_cap_usages[pm_id],
@@ -581,7 +587,7 @@ def waterfall_branch_out(graph, graph_properties, input, result, rank, result_ha
     return None
 
 
-def waterfall_adjust_overloaded_pm(graph, graph_properties, input, result, rank, dominance_allowance_count):
+def waterfall_adjust_overloaded_pm(graph, graph_properties, input, result, rank, dominance_allowance_count, step=constants.OVER_UTIL_MOVE_STEP):
     """
     :param MetisFractionInput input:
     :param PartitionResult result:
@@ -594,7 +600,9 @@ def waterfall_adjust_overloaded_pm(graph, graph_properties, input, result, rank,
     if len(input.pms) > rank.pms_used:
         i = []
         for m in (0.92, 0.94, 0.96, 0.98, 1.02, 1.04, 1.06, 1.08):
-            i.append(get_initial_input(graph, graph_properties, input.pms, input.pms_unused, input.sw_imbalance_factor, input.vhost_imbalance_factor, init_switch_cpu_share=constants.INIT_SWITCH_CPU_SHARES*m)._replace(seed=4))
+            i.append(get_initial_input(graph, graph_properties, input.pms, input.pms_unused,
+                                       input.sw_imbalance_factor, input.vhost_imbalance_factor,
+                                       init_switch_cpu_share=constants.INIT_SWITCH_CPU_SHARES*m)._replace(seed=4))
         return i
     #     sw_fractions = list(input.sw_fractions)
     #     vhost_fractions = list(input.vhost_fractions)
@@ -614,7 +622,7 @@ def waterfall_adjust_overloaded_pm(graph, graph_properties, input, result, rank,
         if pm.pm_id in result.pms_over:
             pm_metrics.append((1, result.utilizations[pm.pm_id], pm.pm_id, pm))
         else:
-            pm_metrics.append((0, -result.share_weights[pm.pm_id], pm.pm_id, pm))
+            pm_metrics.append((0, -sum(result.share_weights[pm.pm_id]), pm.pm_id, pm))
     pm_metrics_sorted = sorted(pm_metrics)
     print(pm_metrics_sorted)
     move_to = pm_metrics_sorted[random.randrange(0, len(pm_metrics_sorted) - 1)][-1]
@@ -622,23 +630,42 @@ def waterfall_adjust_overloaded_pm(graph, graph_properties, input, result, rank,
     move_from = pm_metrics_sorted[-1][-1]
     move_from_index = input.pms.index(move_from)
     if result.switch_cpu_usages[move_from.pm_id] > result.vhost_cpu_usages[move_from.pm_id]:
-        if input.sw_fractions[move_from_index] > 0.01:
+        if input.sw_fractions[move_from_index] > step:
             sw_fractions = list(input.sw_fractions)
-            sw_fractions[move_from_index] -= 0.01
-            sw_fractions[move_to_index] += 0.01
-            click.echo('Move 0.01 sw fraction from PM %d to PM %d.' % (move_from.pm_id, move_to.pm_id))
+            sw_fractions[move_from_index] -= step
+            sw_fractions[move_to_index] += step
+            click.echo('  Move %f sw fraction from PM %d to PM %d.' % (step, move_from.pm_id, move_to.pm_id))
             return input._replace(sw_fractions=tuple(sw_fractions), seed=dominance_allowance_count)
     else:
-        if input.vhost_fractions[move_from_index] > 0.01:
+        if input.vhost_fractions[move_from_index] > step:
             vhost_fractions = list(input.vhost_fractions)
-            vhost_fractions[move_from_index] -= 0.01
-            vhost_fractions[move_to_index] += 0.01
-            click.echo('Move 0.01 vhost fraction from PM %d to PM %d.' % (move_from.pm_id, move_to.pm_id))
+            vhost_fractions[move_from_index] -= step
+            vhost_fractions[move_to_index] += step
+            click.echo('  Move %f vhost fraction from PM %d to PM %d.' % (step, move_from.pm_id, move_to.pm_id))
             return input._replace(vhost_fractions=tuple(vhost_fractions), seed=dominance_allowance_count)
     return None
 
 
-def waterfall_adjust_shares(graph, graph_properties, input, result, rank, result_store, result_hash, new_branch_created=False):
+def waterfall_adjust_pm_normal(graph, graph_properties, input, result, rank, result_store, result_hash, dominance_allowance_count, step=constants.REG_UTIL_MOVE_STEP):
+    share_weights = sorted([(sum(w), pm_id) for pm_id, w in result.share_weights.items()], reverse=True)
+    pm_id = share_weights[random.randrange(0, int(len(share_weights)/2))][-1]
+    pm = result.pms_used[pm_id] if pm_id in result.pms_used else result.pms_unused[pm_id]
+    pm_index = input.pms.index(pm)
+    direction = 1 if result.share_weights[pm_id][0] >= result.share_weights[pm_id][1] else -1
+    sw_fractions = list(input.sw_fractions)
+    sw_fractions[pm_index] += step * direction
+    sw_fractions = normalize_shares(sw_fractions)
+    vhost_fractions = list(input.vhost_fractions)
+    vhost_fractions[pm_index] -= step * direction
+    vhost_fractions = normalize_shares(vhost_fractions)
+    return [input._replace(sw_fractions=sw_fractions, seed=int(dominance_allowance_count / 2)),
+            input._replace(vhost_fractions=vhost_fractions, seed=int(dominance_allowance_count / 2))]
+
+
+def waterfall_adjust_shares(graph, graph_properties,
+                            input, result, rank,
+                            prev_input, prev_result, prev_rank,
+                            result_store, result_hash, new_branch_created=False):
     dominance_allowance_count = input.seed
 
     # Change: We added a factor called dominance allowance. It first acts as an upper bound for how many more rounds
@@ -674,6 +701,8 @@ def waterfall_adjust_shares(graph, graph_properties, input, result, rank, result
 
     if rank.pms_over > 0:
         return waterfall_adjust_overloaded_pm(graph, graph_properties, input, result, rank, dominance_allowance_count)
+
+    return waterfall_adjust_pm_normal(graph, graph_properties, input, result, rank, result_store, result_hash, dominance_allowance_count)
 
 
 def waterfall_adjust_shares_old(input, result, rank, result_store, result_hash, new_branch_created=False):
@@ -800,7 +829,7 @@ def waterfall_adjust_shares_old(input, result, rank, result_store, result_hash, 
     return new_input
 
 
-def waterfall_single_iteration(graph, graph_properties, input, task_queue, result_store, result_hash, executor):
+def waterfall_single_iteration(graph, graph_properties, input, task_queue, result_store, result_hash, prev_input, prev_result, prev_rank, executor):
     """
     :param networkx.Graph graph:
     :param GraphProperties graph_properties:
@@ -811,9 +840,11 @@ def waterfall_single_iteration(graph, graph_properties, input, task_queue, resul
     :return:
     """
     click.echo('-' * 79 + '\n')
-    click.echo('Input:')
+    click.echo('Input (%d in queue):' % len(task_queue))
     print_input(input, indent=2)
     click.echo()
+
+    result_hash.register_input(input)
 
     fut = executor.submit(execute_input, graph, graph_properties, input)
     result, rank = fut.result()
@@ -826,15 +857,15 @@ def waterfall_single_iteration(graph, graph_properties, input, task_queue, resul
     if branch_input:
         iv_store = brute_force_initial_input(graph, graph_properties, branch_input)
         result_hash.register_pm_used_input(branch_input.pms)
-        task_queue.append(iv_store.best_candidates()[-1][0])
+        task_queue.append((iv_store.best_candidates()[-1][0], input, result, rank))
 
-    adjust_input = waterfall_adjust_shares(graph, graph_properties, input, result, rank, result_store, result_hash, branch_input is not None)
+    adjust_input = waterfall_adjust_shares(graph, graph_properties, input, result, rank, prev_input, prev_result, prev_rank, result_store, result_hash, branch_input is not None)
     if adjust_input:
         if isinstance(adjust_input, list):
             for i in adjust_input:
-                task_queue.append(i)
+                task_queue.append((i, input, result, rank))
         else:
-            task_queue.append(adjust_input)
+            task_queue.append((adjust_input, input, result, rank))
 
     return result, rank
 
@@ -873,14 +904,17 @@ def waterfall_main_loop(graph, graph_properties, initial_input, output_dir=None)
     iterative_store = SerialResultHistory()
     iterative_store_by_branches = defaultdict(SerialResultHistory)
 
-    task_queue.append(initial_input)
+    task_queue.append((initial_input, None, None, None))
     result_hash.register_pm_used_input(initial_input.pms)
     with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
         while len(task_queue):
-            metis_input = task_queue.pop(0)
+            metis_input, prev_input, prev_result, prev_rank = task_queue.pop(0)
+            if result_hash.is_input_known(metis_input):
+                continue
             result, rank = waterfall_single_iteration(graph=graph, graph_properties=graph_properties,
                                                       input=metis_input, task_queue=task_queue,
                                                       result_store=result_store, result_hash=result_hash,
+                                                      prev_input=prev_input, prev_result=prev_result, prev_rank=prev_rank,
                                                       executor=executor)
             iterative_store.save_result(metis_input, result, rank)
             iterative_store_by_branches[tuple([pm.pm_id for pm in metis_input.pms])].save_result(metis_input, result, rank)

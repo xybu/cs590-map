@@ -1,7 +1,0 @@
-networkx
-matplotlib
-git+https://github.com/pygraphviz/pygraphviz.git
-
-click
-tabulate
-prettyprint
