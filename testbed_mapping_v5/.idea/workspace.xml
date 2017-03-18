@@ -28,8 +28,8 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="575">
-              <caret line="670" column="45" lean-forward="false" selection-start-line="670" selection-start-column="45" selection-end-line="670" selection-end-column="45" />
+            <state relative-caret-position="506">
+              <caret line="667" column="79" lean-forward="false" selection-start-line="667" selection-start-column="79" selection-end-line="667" selection-end-column="79" />
               <folding>
                 <element signature="e#24#39#0" expanded="true" />
                 <element signature="e#1795#8195#0" expanded="false" />
@@ -166,6 +166,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -236,7 +237,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
     </panes>
   </component>
@@ -943,8 +943,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="575">
-          <caret line="670" column="45" lean-forward="false" selection-start-line="670" selection-start-column="45" selection-end-line="670" selection-end-column="45" />
+        <state relative-caret-position="506">
+          <caret line="667" column="79" lean-forward="false" selection-start-line="667" selection-start-column="79" selection-end-line="667" selection-end-column="79" />
           <folding>
             <element signature="e#24#39#0" expanded="true" />
             <element signature="e#1795#8195#0" expanded="false" />
