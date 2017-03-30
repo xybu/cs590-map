@@ -669,12 +669,13 @@ def waterfall_adjust_shares(input, result, rank, result_store, result_hash, new_
             if switch_cpu_usage > 0:
                 switch_cpu_delta = min(max(1, int(shares_usable * switch_cpu_usage / total_cpu_usage)),
                                        pm.max_switch_cpu_share - switch_cpu_usage)
-                vhost_cpu_delta = max(0, shares_usable - switch_cpu_delta)
             else:
                 total_cpu_share = input.sw_cpu_shares[pm_index] + input.vhost_cpu_shares[pm_index]
                 switch_cpu_delta = min(max(1, int(shares_usable * input.sw_cpu_shares[pm_index] / total_cpu_share)),
                                        pm.max_switch_cpu_share - switch_cpu_usage)
-                vhost_cpu_delta = max(0, shares_usable - switch_cpu_delta)
+            if switch_cpu_usage + switch_cpu_delta < pm.min_switch_cpu_share:
+                switch_cpu_delta = pm.min_switch_cpu_share - switch_cpu_usage
+            vhost_cpu_delta = max(0, shares_usable - switch_cpu_delta)
             switch_cpu_shares[pm_index] = switch_cpu_usage + switch_cpu_delta
             if len(result.pms_over) == num_pms:
                 vhost_cpu_shares[pm_index] = pm.max_cpu_share - switch_cpu_shares[pm_index]

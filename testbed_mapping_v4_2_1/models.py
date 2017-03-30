@@ -73,24 +73,23 @@ class Machine:
         self.max_cpu_share = max_cpu_share
         self.min_switch_cpu_share = min_switch_cpu_share
         self.max_switch_cpu_share = max_switch_cpu_share
-        self.sticky = False
         self.capacity_func = CapacityFunction((min_switch_cpu_share, max_switch_cpu_share), coefficients, False)
 
     @property
     def full_str(self):
-        return '<PM #%02d | %.2f*(%02d, %d)/%d | %s>' % (
-            self.pm_id, self.share_multiplier, self.min_switch_cpu_share, self.max_switch_cpu_share, self.max_cpu_share,
+        return '<PM #%02d | (%02d, %d)/%d/%.2f | %s>' % (
+            self.pm_id, self.min_switch_cpu_share, self.max_switch_cpu_share, self.max_cpu_share, self.share_multiplier,
             str(self.capacity_func))
 
     def __repr__(self):
-        return '<PM #%02d | %.2f*(%02d, %d)/%d>' % (
-            self.pm_id, self.share_multiplier, self.min_switch_cpu_share, self.max_switch_cpu_share, self.max_cpu_share)
+        return '<PM #%02d | (%02d, %d)/%d/%.2f>' % (
+            self.pm_id, self.min_switch_cpu_share, self.max_switch_cpu_share, self.max_cpu_share, self.share_multiplier)
 
     def __eq__(self, other):
         return self.pm_id == other.pm_id
 
     @staticmethod
-    def read_machines_from_file(file_path):
+    def read_machines_from_file(file_path, normalize=True):
         """
         Parse the input file to a list of Machine objects. The input line format is:
         MAX_CPU_SHARE MIN_SWITCH_CPU_SHARE MAX_SWITCH_CPU_SHARE c_0 c_1 c_2 ...
@@ -109,6 +108,12 @@ class Machine:
                 min_switch_cpu_share = utils_input.to_num(min_switch_cpu_share)
                 max_switch_cpu_share = utils_input.to_num(max_switch_cpu_share)
                 coefficients = [utils_input.to_num(c) for c in coefficients.split()]
+                if normalize and share_multiplier != 1:
+                    max_cpu_share = max_cpu_share * share_multiplier
+                    min_switch_cpu_share = min_switch_cpu_share * share_multiplier
+                    max_switch_cpu_share = max_switch_cpu_share * share_multiplier
+                    # f(x) = g(my) -> y=x/m -> g(y) = f(x/m)
+                    coefficients = [c / (share_multiplier ** i) for i, c in enumerate(coefficients)]
                 pm = Machine(pm_id=len(all_pms), share_multiplier=share_multiplier, max_cpu_share=max_cpu_share,
                              min_switch_cpu_share=min_switch_cpu_share, max_switch_cpu_share=max_switch_cpu_share,
                              coefficients=coefficients)
