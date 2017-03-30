@@ -12,7 +12,7 @@ import constants
 import metis
 import models
 
-from main import dump_args, dump_parameters, dump_pms, print_graph_properties, dump_ranks
+from main import dump_args, dump_parameters, dump_pms, print_graph_properties, dump_result_ranks
 from main import read_graph
 from main import normalize_shares, analyze_result, print_result_brief, rank_result
 from main import visualize_assignment, rank_to_dict, result_to_dict
@@ -54,15 +54,15 @@ def print_baseline(graph, baseline_name, baseline_title, metis_input, result, ra
     print()
     result_store = SerialResultHistory()
     result_store.save_result(metis_input, result, rank)
-    print(dump_ranks(result_store, to_string_func=functools.partial(tabulate.tabulate, headers='firstrow')))
+    print(dump_result_ranks(result_store))
     print()
     print()
     if args.out:
         outfile_path = os.path.join(args.out, baseline_name)
         with open(outfile_path + '.txt', 'w') as f:
             f.write('\n'.join([str(i) for i in result.assignment]))
-        del f
-        visualize_assignment(graph, result.assignment, outfile_path)
+        # del f
+        # visualize_assignment(graph, result.assignment, outfile_path)
 
 
 def main():
