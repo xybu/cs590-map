@@ -967,7 +967,7 @@ def main():
     graph, graph_properties = read_graph(args.graph_file, args.vhost_cpu_file)
     print_graph_properties(graph_properties)
 
-    # TODO: What if it decideis one PM is enough initially?
+    # TODO: What if it decides one PM is enough initially?
     initial_input = get_initial_input(graph, graph_properties, machines,
                                       sw_imbalance_factor=args.sw_imbalance_factor,
                                       vhost_imbalance_factor=args.vhost_imbalance_factor)
