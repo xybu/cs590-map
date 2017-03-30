@@ -6,6 +6,7 @@ import concurrent.futures
 import csv
 import enum
 import functools
+import json
 import math
 import os
 import sys
@@ -35,6 +36,18 @@ PartitionResult = namedtuple('PartitionResult', ('min_cut', 'assignment',
                                                  'pms_used', 'pms_unused', 'pms_over', 'pms_under',
                                                  'switch_cap_usages', 'switch_cpu_usages', 'vhost_cpu_usages',
                                                  'total_cpu_usages', 'share_weights'))
+
+
+def rank_to_dict(rank):
+    return {k: getattr(rank, k) for k in ResultRank_Fields}
+
+
+def result_to_dict(result):
+    d = result._asdict()
+    d['assignment'] = '(ignored.)'
+    d['pms_used'] = sorted(result.pms_used.keys())
+    d['pms_unused'] = sorted(result.pms_unused.keys())
+    return d
 
 
 class DominanceLevel(enum.Enum):
@@ -808,7 +821,9 @@ def waterfall_main_loop(graph, graph_properties, initial_input, output_dir=None)
             outfile_path = os.path.join(output_dir, 'best_assignment_%d' % i)
             with open(outfile_path + '.txt', 'w') as f:
                 f.write('\n'.join([str(i) for i in result.assignment]))
-            del f
+            with open(outfile_path + '.json', 'w') as f:
+                json.dump({'result': result_to_dict(result), 'rank': rank_to_dict(rank)},
+                          f, sort_keys=True, indent=4, separators=(',', ': '))
             visualize_assignment(graph, result.assignment, outfile_path)
     print()
 
