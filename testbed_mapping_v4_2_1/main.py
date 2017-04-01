@@ -832,7 +832,7 @@ def waterfall_main_loop(graph, graph_properties, initial_input, output_dir=None)
             with open(outfile_path + '.json', 'w') as f:
                 json.dump({'result': result_to_dict(result), 'rank': rank_to_dict(rank)},
                           f, sort_keys=True, indent=4, separators=(',', ': '))
-            visualize_assignment(graph, result.assignment, outfile_path)
+            # visualize_assignment(graph, result.assignment, outfile_path)
     print()
 
 
