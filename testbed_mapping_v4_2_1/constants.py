@@ -26,7 +26,9 @@ DEFAULT_SW_IMBALANCE_FACTOR = 0.08
 DEFAULT_VHOST_IMBALANCE_FACTOR = 0.02
 
 # Switch CPU shares that will be assigned to every PMs in the first round.
+INIT_SWITCH_CPU_FIXED = False
 INIT_SWITCH_CPU_SHARES = 20
+INIT_SWITCH_CPU_FRAC = 0.9
 
 # Coefficient for updating switch CPU share of PMs. next = a*old + (1-a)*would_be.
 SWITCH_CPU_SHARE_UPDATE_FACTOR = 0.4
