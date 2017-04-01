@@ -543,6 +543,14 @@ def run_imbalance_vector(graph, graph_properties, base_input, i, j):
     result, rank = execute_input(graph, graph_properties, metis_input)
     return metis_input, result, rank
 
+  
+def calc_init_sw_shares(pm):
+    if constants.INIT_SWITCH_CPU_FIXED:
+        v = constants.INIT_SWITCH_CPU_SHARES
+    else:
+        v = constants.INIT_SWITCH_CPU_FRAC * pm.max_cpu_share
+    return min(max(int(v), pm.min_switch_cpu_share), pm.max_switch_cpu_share)
+  
 
 def waterfall_branch_out(input, result, rank, result_hash):
     """
@@ -569,7 +577,7 @@ def waterfall_branch_out(input, result, rank, result_hash):
         sw_cpu_shares = []
         vhost_cpu_shares = []
         for pm in pms_used:
-            sw_share = max(constants.INIT_SWITCH_CPU_SHARES, pm.min_switch_cpu_share)
+            sw_share = calc_init_sw_shares(pm)
             sw_cpu_shares.append(sw_share)
             vhost_cpu_shares.append(pm.max_cpu_share - sw_share)
         mutated_input = input._replace(pms=tuple(pms_used), pms_unused=tuple(pms_unused),
@@ -926,7 +934,7 @@ def get_initial_input(graph, graph_properties, pms, sw_imbalance_factor, vhost_i
     sw_cpu_shares = []
     vhost_cpu_shares = []
     for pm in pms_used:
-        sw_cpu_share = max(constants.INIT_SWITCH_CPU_SHARES, pm.min_switch_cpu_share)
+        sw_cpu_share = calc_init_sw_shares(pm)
         sw_cpu_shares.append(sw_cpu_share)
         vhost_cpu_shares.append(pm.max_cpu_share - sw_cpu_share)
     return MetisInput(pms=tuple(pms_used), pms_unused=tuple(pms_free), seed=constants.INIT_DOMINANCE_TOLERANCE,
