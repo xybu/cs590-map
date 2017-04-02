@@ -562,7 +562,7 @@ def waterfall_branch_out(input, result, rank, result_hash):
     """
     click.echo('Branch factors: pms_over=%d, pms_under=%d, pms_unused_by_metis=%d, pms_free=%d.' % (
         rank.pms_over, rank.pms_under, len(result.pms_unused), len(input.pms_unused)))
-    if rank.pms_over > 0 and rank.pms_under == 0 and len(result.pms_unused) == 0 and len(input.pms_unused) > 0:
+    if rank.pms_over >= int(rank.pms_used * constants.BRANCH_THRESHOLD) and len(input.pms_unused) > 0:
         # Extract the input lists.
         next_pm = input.pms_unused[0]
         pms_used = list(input.pms)
