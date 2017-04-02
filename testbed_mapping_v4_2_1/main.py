@@ -636,7 +636,7 @@ def waterfall_adjust_shares(input, result, rank, result_store, result_hash, new_
         switch_cpu_usage = result.switch_cpu_usages[pm_id]
         vhost_cpu_usage = result.vhost_cpu_usages[pm_id]
 
-        pm = result.pms_used[pm_id] if total_cpu_usage > 0 else result.pms_unused[pm_id]
+        pm = result.pms_used[pm_id] if pm_id in result.pms_used > 0 else result.pms_unused[pm_id]
         pm_index = input.pms.index(pm)
 
         if pm_id in result.pms_over:
