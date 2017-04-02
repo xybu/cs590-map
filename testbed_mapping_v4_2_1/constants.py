@@ -33,6 +33,9 @@ INIT_SWITCH_CPU_FRAC = 0.9
 # Coefficient for updating switch CPU share of PMs. next = a*old + (1-a)*would_be.
 SWITCH_CPU_SHARE_UPDATE_FACTOR = 0.4
 
+# Branch when the fraction overloaded PMs / total PMs is no less than this threshold.
+BRANCH_THRESHOLD = 0.5
+
 # We consider the PM to be under-utilized if less than 90% of CPU shares of a PM is used.
 PM_UNDER_UTILIZED_THRESHOLD = 0.9
 
