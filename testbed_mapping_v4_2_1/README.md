@@ -1,3 +1,18 @@
+Testbed Mapper
+==============
+
+# Intro
+
+# Features
+
+# Usage
+
+# Ideology
+
+# Design
+
+
+
 1. Can move shares upwards as well.
 
 2. More aggressive moving avg value and conservative over threshold.
