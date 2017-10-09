@@ -1,17 +1,17 @@
 Testbed Mapper
 ==============
 
-# Intro
+## Intro
 
-# Features
+## Features
 
-# Usage
+## Ideology
 
-# Ideology
+## Design
 
-# Design
+## Usage
 
-
+## Simulations
 
 1. Can move shares upwards as well.
 
