@@ -1,7 +1,8 @@
 Testbed Mapping
 ===============
 
-This is the proof-of-concept implementation of our idea presented in our paper about high fidelity testbed mapping. More details can be found in [the paper](https://www.cs.purdue.edu/homes/fahmy/papers/high-fidelity-network.pdf) and [presentation slides](https://www.cs.purdue.edu/homes/fahmy/talks/icccn2017.pdf).
+This is the proof-of-concept implementation of our idea presented in our paper about high fidelity testbed mapping. More details, demos, and experiments can be found in [the paper](https://www.cs.purdue.edu/homes/fahmy/papers/high-fidelity-network.pdf) and
+[presentation slides](https://www.cs.purdue.edu/homes/fahmy/talks/icccn2017.pdf).
 
 ## Usage
 
@@ -56,20 +57,41 @@ in the `input/` directory.
 
 ## Installation
 
+Assuming Ubuntu 16.04:
+
+```bash
+sudo apt install python3-tk libcgraph6 graphviz-dev graphviz python-dev python3-dev
+wget -O- https://bootstrap.pypa.io/get-pip.py | sudo python3
+pip3 install -r requirements.txt
+
+# Install METIS from source.
+cd /tmp
+wget http://glaros.dtc.umn.edu/gkhome/fetch/sw/metis/metis-5.1.0.tar.gz
+tar xvf metis-5.1.0.tar.gz
+cd metis-5.1.0
+make config shared=1
+make -j`nproc`
+sudo make install
+sudo ldconfig
+```
+
+## ChangeLog
+
+### From v4_1
+
 1. Can move shares upwards as well.
 
 2. More aggressive moving avg value and conservative over threshold.
 
 There are a few ways to reduce the gap between prev input and next input:
 
-1. Set imb vec to [0.01, 0.01] of subsequent shares of each branch in share adjustment phase -- METIS gives bad result.
-2. Use a moving average for prev and next (derived) input -- adopted by this version.
-3. Derive next input from prev input, rather than basing next input on result of prev input -- v5.
+(1). Set imb vec to [0.01, 0.01] of subsequent shares of each branch in share adjustment phase -- but METIS gives bad result.
+(2). Use a moving average for prev and next (derived) input -- adopted by this version.
+(3). Derive next input from prev input, rather than basing next input on result of prev input -- to be tried in v5.
 
-The branching strategy of v4 is to including more PMs as needed, instead of
-eliminating PMs.
+### From v3
 
-## Calculating the minimum set of PMs needed
+Compared to v3, the branching strategy of v4 is to include more PMs as needed, instead of eliminating PMs.
 
 This step is to find out the smallest set of PMs needed so that branching step only extends the set. To obtain the
 smallest possible (lowerbound) set, for each resource we estimate scarcity by max possible available and min
@@ -106,14 +128,14 @@ resources.
 3. Starting from empty set {}, iteratively put PM1, PM2, ..., PMk' to the set until for all resources the max possible
    offering for the resource by all PMs in the set is at least the min possible need for that resource. 
 
-## Evaulation
+## Evaulation of Changes
 
-When resource is aboundant, the program runs significantly faster.
+When resource is abundant, the program runs significantly faster.
 
 When switching resource is similarly scarce as vhost CPU resource, the algorithm gives bad estimate
 (cap_f(MAX_SWITCH_CPU_SHARE) is too optimistic because PMs can't use that much CPU shares for packet switching).
 In this case the program runs slower.
 
-Patch: if a new branch is created because all PMs are stressed, then in share adjustment phase slash the counter?
+Patch: if a new branch is created because all PMs are stressed, then in share adjustment phase slash the counter -- did.
 
 The range of iv brute force is shrinked because the resource bound is usually tight.
