@@ -41,6 +41,20 @@ For example,
 More sample graphs and corresponding virtual host CPU requirement files, and definitions of physical machines (PMs), can be found
 in the `input/` directory.
 
+## File Hierarchy
+
+* `demo/`: some interesting test cases we found along the way, and scripts to produce new results.
+* `doc/`: some questions we discussed during the meetings, and their potential solutions.
+* `input/`: input graphs, vhost CPU requirement files, and PM definitions.
+* `constants.py`: where all the program-wide constants are defined.
+* `gen_baseline.py`: the script to generate baseline results using the same input.
+* `main.py`: the main program of our implementation.
+* `metis.py`: Python binding of METIS library.
+* `models.py`: abstractions of capacity function, physical machine, etc., are defined here.
+* `requirements.txt`: packages this program depends on.
+* `utils_input.py`: utility functions used for processing input by both `gen_baseline.py` and `main.py`.
+
+## Installation
 
 1. Can move shares upwards as well.
 
@@ -103,8 +117,3 @@ In this case the program runs slower.
 Patch: if a new branch is created because all PMs are stressed, then in share adjustment phase slash the counter?
 
 The range of iv brute force is shrinked because the resource bound is usually tight.
-
-
-## Test commands
-
-
