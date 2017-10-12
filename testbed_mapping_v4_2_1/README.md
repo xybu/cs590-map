@@ -1,17 +1,46 @@
-Testbed Mapper
-==============
+Testbed Mapping
+===============
 
-## Intro
-
-## Features
-
-## Ideology
-
-## Design
+This is the proof-of-concept implementation of our idea presented in our paper about high fidelity testbed mapping. More details can be found in [the paper](https://www.cs.purdue.edu/homes/fahmy/papers/high-fidelity-network.pdf) and [presentation slides](https://www.cs.purdue.edu/homes/fahmy/talks/icccn2017.pdf).
 
 ## Usage
 
-## Simulations
+```
+xb@ubuntu:[~/Desktop/cs590-map/testbed_mapping_v4_2_1]: ./main.py --help
+usage: main.py [-h] -g GRAPH_FILE -p PM_FILE -c VHOST_CPU_FILE [-o OUT]
+               [--sw-imbalance-factor SW_IMBALANCE_FACTOR]
+               [--vhost-imbalance-factor VHOST_IMBALANCE_FACTOR] [--find-iv]
+
+A refined graph partition algorithm based on METIS.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -g GRAPH_FILE, --graph-file GRAPH_FILE
+                        File to read input graph from.
+  -p PM_FILE, --pm-file PM_FILE
+                        File to read PM information.
+  -c VHOST_CPU_FILE, --vhost-cpu-file VHOST_CPU_FILE
+                        File to read vhost CPU information.
+  -o OUT, --out OUT     If given, will generate output files to this dir.
+  --sw-imbalance-factor SW_IMBALANCE_FACTOR
+                        Imbalance factor for switch constraint. Use a value in
+                        [0, 0.15].
+  --vhost-imbalance-factor VHOST_IMBALANCE_FACTOR
+                        Imbalance factor for vhost CPU constraint. Use a value
+                        in [0, 0.15].
+  --find-iv, --find-imbalance-vector
+                        If set, brute force potentially best imbalance vector.
+```
+
+For example,
+
+```
+./main.py -g input/graphs/1221.r0.cch.abr.graph -c input/graphs/1221_1053rnd.host -p input/pm/pms_01230123.txt --find-iv
+```
+
+More sample graphs and corresponding virtual host CPU requirement files, and definitions of physical machines (PMs), can be found
+in the `input/` directory.
+
 
 1. Can move shares upwards as well.
 
@@ -78,6 +107,4 @@ The range of iv brute force is shrinked because the resource bound is usually ti
 
 ## Test commands
 
-```
-./main.py -g input/graphs/1221.r0.cch.abr.graph -c input/graphs/1221_1053rnd.host -p input/pm/pms_01230123.txt --find-iv
-```
+
